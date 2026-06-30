@@ -122,7 +122,7 @@ class _CarFormState extends State<CarForm> {
             
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Status', border: OutlineInputBorder()),
-              value: _selectedStatus,
+              initialValue: _selectedStatus,
               items: _statusOptions.map((String status) {
                 return DropdownMenuItem<String>(value: status, child: Text(status));
               }).toList(),
@@ -146,7 +146,7 @@ class _CarFormState extends State<CarForm> {
 
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Fuel Type', border: OutlineInputBorder()),
-              value: _selectedFuel,
+              initialValue: _selectedFuel,
               items: _fuelOptions.map((String fuel) {
                 return DropdownMenuItem<String>(value: fuel, child: Text(fuel));
               }).toList(),
@@ -156,7 +156,7 @@ class _CarFormState extends State<CarForm> {
 
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Tire Type', border: OutlineInputBorder()),
-              value: _selectedTire,
+              initialValue: _selectedTire,
               items: _tireOptions.map((String tire) {
                 return DropdownMenuItem<String>(value: tire, child: Text(tire));
               }).toList(),
