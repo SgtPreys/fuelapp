@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'database/database_helper.dart';
+import 'models/station.dart';
 
 class StationForm extends StatefulWidget {
   const StationForm({super.key});
@@ -8,7 +10,11 @@ class StationForm extends StatefulWidget {
 }
 
 class _StationFormState extends State<StationForm> {
-  // Standardized list of gas station types
+  // --- Controllers ---
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _infoController = TextEditingController();
+
   final List<String> _typeOptions = [
     'Standard / City', 
     'Highway / Autobahn', 
@@ -18,6 +24,37 @@ class _StationFormState extends State<StationForm> {
   ];
 
   String? _selectedType;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _locationController.dispose();
+    _infoController.dispose();
+    super.dispose();
+  }
+
+  // --- Save Logic ---
+  Future<void> _saveStation() async {
+    if (_nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a Station Name!')),
+      );
+      return;
+    }
+
+    final newStation = Station(
+      name: _nameController.text,
+      location: _locationController.text,
+      type: _selectedType,
+      additionalInfo: _infoController.text,
+    );
+
+    await DatabaseHelper.instance.insertStation(newStation.toMap());
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,47 +75,38 @@ class _StationFormState extends State<StationForm> {
             ),
             const SizedBox(height: 20),
 
-            // 1. Name
-            const TextField(
-              decoration: InputDecoration(labelText: 'Name (e.g. Shell, Aral)', border: OutlineInputBorder()),
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Name (e.g. Shell, Aral)*', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
-            // 2. Location
-            const TextField(
-              decoration: InputDecoration(labelText: 'Location / City', border: OutlineInputBorder()),
+            TextField(
+              controller: _locationController,
+              decoration: const InputDecoration(labelText: 'Location / City', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
-            // 3. Type Dropdown
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Type', border: OutlineInputBorder()),
               initialValue: _selectedType,
               items: _typeOptions.map((String type) {
                 return DropdownMenuItem<String>(value: type, child: Text(type));
               }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedType = newValue;
-                });
-              },
+              onChanged: (String? newValue) => setState(() => _selectedType = newValue),
             ),
             const SizedBox(height: 10),
 
-            // 4. Additional Information
-            const TextField(
-              decoration: InputDecoration(labelText: 'Additional Information / Notes', border: OutlineInputBorder()),
+            TextField(
+              controller: _infoController,
+              decoration: const InputDecoration(labelText: 'Additional Information / Notes', border: OutlineInputBorder()),
               maxLines: 3,
             ),
             const SizedBox(height: 20),
 
-            // Save Button
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  // We'll add the saving logic here later!
-                  Navigator.pop(context);
-                },
+                onPressed: _saveStation, // Calls our save function!
                 child: const Text('Save Gas Station'),
               ),
             ),

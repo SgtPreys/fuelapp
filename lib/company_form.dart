@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'database/database_helper.dart';
+import 'models/company.dart';
 
 class CompanyForm extends StatefulWidget {
   const CompanyForm({super.key});
@@ -8,6 +10,53 @@ class CompanyForm extends StatefulWidget {
 }
 
 class _CompanyFormState extends State<CompanyForm> {
+  // --- Controllers ---
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _contactController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
+  final TextEditingController _infoController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _locationController.dispose();
+    _contactController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _websiteController.dispose();
+    _infoController.dispose();
+    super.dispose();
+  }
+
+  // --- Save Logic ---
+  Future<void> _saveCompany() async {
+    if (_nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a Company Name!')),
+      );
+      return;
+    }
+
+    final newCompany = Company(
+      name: _nameController.text,
+      location: _locationController.text,
+      contactPerson: _contactController.text,
+      email: _emailController.text,
+      telephone: _phoneController.text,
+      website: _websiteController.text,
+      additionalInfo: _infoController.text,
+    );
+
+    await DatabaseHelper.instance.insertCompany(newCompany.toMap());
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,59 +76,55 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             const SizedBox(height: 20),
 
-            // 1. Company Name
-            const TextField(
-              decoration: InputDecoration(labelText: 'Company Name', border: OutlineInputBorder()),
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Company Name*', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
-            // 2. Location
-            const TextField(
-              decoration: InputDecoration(labelText: 'Location / Address', border: OutlineInputBorder()),
+            TextField(
+              controller: _locationController,
+              decoration: const InputDecoration(labelText: 'Location / Address', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
-            // 3. Contact Person
-            const TextField(
-              decoration: InputDecoration(labelText: 'Contact Person', border: OutlineInputBorder()),
+            TextField(
+              controller: _contactController,
+              decoration: const InputDecoration(labelText: 'Contact Person', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
-            // 4. Email 
-            const TextField(
-              decoration: InputDecoration(labelText: 'Email Address', border: OutlineInputBorder()),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'Email Address', border: OutlineInputBorder()),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 10),
 
-            // 5. Telephone 
-            const TextField(
-              decoration: InputDecoration(labelText: 'Telephone Number', border: OutlineInputBorder()),
+            TextField(
+              controller: _phoneController,
+              decoration: const InputDecoration(labelText: 'Telephone Number', border: OutlineInputBorder()),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 10),
 
-            // 6. Website 
-            const TextField(
-              decoration: InputDecoration(labelText: 'Website', border: OutlineInputBorder()),
+            TextField(
+              controller: _websiteController,
+              decoration: const InputDecoration(labelText: 'Website', border: OutlineInputBorder()),
               keyboardType: TextInputType.url,
             ),
             const SizedBox(height: 10),
 
-            // 7. NEW: Additional Information / Notes
-            const TextField(
-              decoration: InputDecoration(labelText: 'Additional Info / Notes', border: OutlineInputBorder()),
-              maxLines: 3, // Makes it a taller text box
+            TextField(
+              controller: _infoController,
+              decoration: const InputDecoration(labelText: 'Additional Info / Notes', border: OutlineInputBorder()),
+              maxLines: 3,
             ),
             const SizedBox(height: 20),
 
-            // Save Button
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  // We'll add the saving logic here later!
-                  Navigator.pop(context);
-                },
+                onPressed: _saveCompany, // Calls our save function!
                 child: const Text('Save Company'),
               ),
             ),

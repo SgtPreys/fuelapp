@@ -122,9 +122,12 @@ class _CarFormState extends State<CarForm> {
             
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Status', border: OutlineInputBorder()),
-              initialValue: _selectedStatus,
+              initialValue: _selectedStatus, 
               items: _statusOptions.map((String status) {
-                return DropdownMenuItem<String>(value: status, child: Text(status));
+                return DropdownMenuItem<String>(
+                  value: status, 
+                  child: Text(status)
+                );
               }).toList(),
               onChanged: (String? newValue) => setState(() => _selectedStatus = newValue),
             ),
@@ -144,11 +147,14 @@ class _CarFormState extends State<CarForm> {
             ),
             const SizedBox(height: 10),
 
-            DropdownButtonFormField<String>(
+           DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: 'Fuel Type', border: OutlineInputBorder()),
               initialValue: _selectedFuel,
               items: _fuelOptions.map((String fuel) {
-                return DropdownMenuItem<String>(value: fuel, child: Text(fuel));
+                return DropdownMenuItem<String>(
+                  value: fuel, 
+                  child: Text(fuel)
+                );
               }).toList(),
               onChanged: (String? newValue) => setState(() => _selectedFuel = newValue),
             ),
@@ -158,7 +164,10 @@ class _CarFormState extends State<CarForm> {
               decoration: const InputDecoration(labelText: 'Tire Type', border: OutlineInputBorder()),
               initialValue: _selectedTire,
               items: _tireOptions.map((String tire) {
-                return DropdownMenuItem<String>(value: tire, child: Text(tire));
+                return DropdownMenuItem<String>(
+                  value: tire, 
+                  child: Text(tire)
+                );
               }).toList(),
               onChanged: (String? newValue) => setState(() => _selectedTire = newValue),
             ),

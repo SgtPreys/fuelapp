@@ -8,6 +8,9 @@ import 'station_form.dart';
 import 'company_form.dart';
 
 void main() {
+  // Add this line to ensure the engine is ready for the database!
+  WidgetsFlutterBinding.ensureInitialized(); 
+  
   runApp(const FuelApp());
 }
 
