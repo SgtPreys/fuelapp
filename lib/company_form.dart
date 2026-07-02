@@ -3,14 +3,15 @@ import 'database/database_helper.dart';
 import 'models/company.dart';
 
 class CompanyForm extends StatefulWidget {
-  const CompanyForm({super.key});
+  final Company? existingCompany; // NEW: Accepts an existing company
+
+  const CompanyForm({super.key, this.existingCompany});
 
   @override
   State<CompanyForm> createState() => _CompanyFormState();
 }
 
 class _CompanyFormState extends State<CompanyForm> {
-  // --- Controllers ---
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
@@ -18,6 +19,21 @@ class _CompanyFormState extends State<CompanyForm> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // NEW: Pre-fill data if editing
+    if (widget.existingCompany != null) {
+      _nameController.text = widget.existingCompany!.name;
+      _locationController.text = widget.existingCompany!.location ?? '';
+      _contactController.text = widget.existingCompany!.contactPerson ?? '';
+      _emailController.text = widget.existingCompany!.email ?? '';
+      _phoneController.text = widget.existingCompany!.telephone ?? '';
+      _websiteController.text = widget.existingCompany!.website ?? '';
+      _infoController.text = widget.existingCompany!.additionalInfo ?? '';
+    }
+  }
 
   @override
   void dispose() {
@@ -31,7 +47,6 @@ class _CompanyFormState extends State<CompanyForm> {
     super.dispose();
   }
 
-  // --- Save Logic ---
   Future<void> _saveCompany() async {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -40,7 +55,8 @@ class _CompanyFormState extends State<CompanyForm> {
       return;
     }
 
-    final newCompany = Company(
+    final companyData = Company(
+      id: widget.existingCompany?.id, // Keep ID if editing
       name: _nameController.text,
       location: _locationController.text,
       contactPerson: _contactController.text,
@@ -50,15 +66,21 @@ class _CompanyFormState extends State<CompanyForm> {
       additionalInfo: _infoController.text,
     );
 
-    await DatabaseHelper.instance.insertCompany(newCompany.toMap());
+    if (widget.existingCompany == null) {
+      await DatabaseHelper.instance.insertCompany(companyData.toMap());
+    } else {
+      await DatabaseHelper.instance.updateCompany(companyData.toMap());
+    }
 
     if (mounted) {
-      Navigator.pop(context);
+      Navigator.pop(context, true); // Pass 'true' back to trigger refresh
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.existingCompany != null;
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -71,8 +93,11 @@ class _CompanyFormState extends State<CompanyForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
-              child: Text('Add Company / Shop', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Center(
+              child: Text(
+                isEditing ? 'Edit Company / Shop' : 'Add Company / Shop', 
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -124,10 +149,28 @@ class _CompanyFormState extends State<CompanyForm> {
 
             Center(
               child: ElevatedButton(
-                onPressed: _saveCompany, // Calls our save function!
-                child: const Text('Save Company'),
+                onPressed: _saveCompany,
+                child: Text(isEditing ? 'Update Company' : 'Save Company'),
               ),
             ),
+            
+            // --- NEW: DELETE BUTTON ---
+            if (isEditing) ...[
+              const SizedBox(height: 10),
+              Center(
+                child: TextButton(
+                  onPressed: () async {
+                    // Tell the database to delete this ID
+                    await DatabaseHelper.instance.deleteCompany(widget.existingCompany!.id!);
+                    if (mounted) {
+                      Navigator.pop(context, true); // Close form and trigger refresh
+                    }
+                  },
+                  child: const Text('Delete Company', style: TextStyle(color: Colors.red)),
+                ),
+              ),
+            ],
+            
             const SizedBox(height: 20),
           ],
         ),

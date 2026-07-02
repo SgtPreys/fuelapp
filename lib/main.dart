@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart'; // NEW: We imported the package!
+import 'package:fuelapp/home_screen.dart';
 import 'fuel_form.dart';
 import 'maintenance_form.dart';
 import 'manage_data_screen.dart';
@@ -40,16 +41,18 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   // 0: Home, 1: Stats, 2: Manage Data, 3: Settings
   int _selectedIndex = 0;
+  final GlobalKey<ManageDataScreenState> _manageDataKey = GlobalKey();
+  final GlobalKey<HomeScreenState> _homeKey = GlobalKey();
 
   // --- NEW: Helper function to swap the screen content ---
   Widget _getCurrentScreen() {
     switch (_selectedIndex) {
       case 0:
-        return const Center(child: Text('Analytics and Recent Activity will go here!'));
+        return HomeScreen(key: _homeKey);
       case 1:
         return const Center(child: Text('Detailed Statistics & Charts'));
       case 2:
-        return const ManageDataScreen(); // Your tabbed screen!
+        return ManageDataScreen(key: _manageDataKey); // Your tabbed screen!
       case 3:
         return const Center(child: Text('App Settings & Preferences'));
       default:
@@ -67,12 +70,17 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.indigo,
           foregroundColor: Colors.white,
           label: 'Add New Car',
-          onTap: () {
-            showModalBottomSheet(
+          onTap: () async {
+            final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              builder: (context) => const CarForm(),
+              builder: (context) => const CarForm(), 
             );
+            // If we successfully added a car, force the screen to rebuild and fetch new data
+            if (result == true) {
+              _manageDataKey.currentState?.refreshData();
+              setState(() {}); 
+            }
           },
         ),
         SpeedDialChild(
@@ -80,12 +88,15 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.teal,
           foregroundColor: Colors.white,
           label: 'Add New Station',
-          onTap: () {
-            showModalBottomSheet(
+          onTap: () async {
+            final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               builder: (context) => const StationForm(),
             );
+            if (result == true) {
+              _manageDataKey.currentState?.refreshData();
+              setState(() {}); }
           },
         ),
         SpeedDialChild(
@@ -93,12 +104,15 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.purple,
           foregroundColor: Colors.white,
           label: 'Add New Company',
-          onTap: () {
-            showModalBottomSheet(
+          onTap: () async {
+            final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               builder: (context) => const CompanyForm(),
             );
+            if (result == true) {
+              _manageDataKey.currentState?.refreshData();
+              setState(() {}); }
           },
         ),
       ];
@@ -106,29 +120,38 @@ class _MainScreenState extends State<MainScreen> {
       // Default: If we are on Home, Stats, or Settings:
       return [
         SpeedDialChild(
-          child: const Icon(Icons.local_gas_station),
+          child: const Icon(Icons.ev_station),
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
           label: 'Add Fuel Stop',
-          onTap: () {
-            showModalBottomSheet(
+          onTap: () async {
+            final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               builder: (context) => const FuelForm(),
             );
+            if (result == true){
+              _homeKey.currentState?.refreshData();
+              setState(() {});
+            }
+             
           },
         ),
         SpeedDialChild(
           child: const Icon(Icons.build),
           backgroundColor: Colors.orange,
           foregroundColor: Colors.white,
-          label: 'Add Maintenance Stop',
-          onTap: () {
-            showModalBottomSheet(
+          label: 'Add Maintenance',
+          onTap: () async {
+            final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               builder: (context) => const MaintenanceForm(),
             );
+            if (result == true) {
+              _homeKey.currentState?.refreshData();
+              setState(() {});
+            }
           },
         ),
       ];

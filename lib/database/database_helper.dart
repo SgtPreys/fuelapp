@@ -139,4 +139,146 @@ class DatabaseHelper {
     Database db = await instance.database;
     return await db.query('companies');
   }
+  // --- UPDATE OPERATIONS ---
+
+  // Update a Car
+  Future<int> updateCar(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update('cars', row, where: 'id = ?', whereArgs: [id]);
+  }
+
+  // Update a Station
+  Future<int> updateStation(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update('stations', row, where: 'id = ?', whereArgs: [id]);
+  }
+
+  // Update a Company
+  Future<int> updateCompany(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update('companies', row, where: 'id = ?', whereArgs: [id]);
+  }
+  // --- DELETE OPERATIONS ---
+
+  Future<int> deleteCar(int id) async {
+    Database db = await instance.database;
+    return await db.delete('cars', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteStation(int id) async {
+    Database db = await instance.database;
+    return await db.delete('stations', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteCompany(int id) async {
+    Database db = await instance.database;
+    return await db.delete('companies', where: 'id = ?', whereArgs: [id]);
+  }
+  // ==========================================
+  // --- FUEL OPERATIONS ---
+  // ==========================================
+
+  Future<int> insertFuelStop(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert('fuel_stops', row);
+  }
+
+  Future<List<Map<String, dynamic>>> getAllFuelStops() async {
+    Database db = await instance.database;
+    // We order by date DESC so the newest fuel stops appear at the top!
+    return await db.query('fuel_stops', orderBy: 'date DESC');
+  }
+
+  Future<int> updateFuelStop(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update('fuel_stops', row, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteFuelStop(int id) async {
+    Database db = await instance.database;
+    return await db.delete('fuel_stops', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // ==========================================
+  // --- MAINTENANCE OPERATIONS ---
+  // ==========================================
+
+  Future<int> insertMaintenanceStop(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert('maintenance_stops', row);
+  }
+
+  Future<List<Map<String, dynamic>>> getAllMaintenanceStops() async {
+    Database db = await instance.database;
+    return await db.query('maintenance_stops', orderBy: 'date DESC');
+  }
+
+  Future<int> updateMaintenanceStop(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update('maintenance_stops', row, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteMaintenanceStop(int id) async {
+    Database db = await instance.database;
+    return await db.delete('maintenance_stops', where: 'id = ?', whereArgs: [id]);
+  }
+  // ==========================================
+  // --- DASHBOARD / JOIN OPERATIONS ---
+  // ==========================================
+
+  // Gets the 5 most recent fuel stops with the actual Car and Station names
+  Future<List<Map<String, dynamic>>> getRecentFuelStops() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT f.*, c.carName, s.name as stationName 
+      FROM fuel_stops f
+      JOIN cars c ON f.carId = c.id
+      JOIN stations s ON f.stationId = s.id
+      ORDER BY f.date DESC
+      LIMIT 10
+    ''');
+  }
+
+  // Gets the 5 most recent maintenance stops with the actual Car and Company names
+  Future<List<Map<String, dynamic>>> getRecentMaintenanceStops() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT m.*, c.carName, comp.name as companyName 
+      FROM maintenance_stops m
+      JOIN cars c ON m.carId = c.id
+      JOIN companies comp ON m.companyId = comp.id
+      ORDER BY m.date DESC
+      LIMIT 10
+    ''');
+  }
+
+  
+  // Gets ALL fuel stops with names for the Manage Data screen
+  Future<List<Map<String, dynamic>>> getAllFuelStopsWithDetails() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT f.*, c.carName, s.name as stationName 
+      FROM fuel_stops f
+      JOIN cars c ON f.carId = c.id
+      JOIN stations s ON f.stationId = s.id
+      ORDER BY f.date DESC
+    ''');
+  }
+
+  // Gets ALL maintenance stops with names for the Manage Data screen
+  Future<List<Map<String, dynamic>>> getAllMaintenanceStopsWithDetails() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT m.*, c.carName, comp.name as companyName 
+      FROM maintenance_stops m
+      JOIN cars c ON m.carId = c.id
+      JOIN companies comp ON m.companyId = comp.id
+      ORDER BY m.date DESC
+    ''');
+  }
 }

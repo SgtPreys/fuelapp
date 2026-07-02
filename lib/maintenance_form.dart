@@ -1,114 +1,202 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'database/database_helper.dart';
+import 'models/maintenance_stop.dart';
 
 class MaintenanceForm extends StatefulWidget {
-  const MaintenanceForm({super.key});
+  final MaintenanceStop? existingMaintenanceStop;
+
+  const MaintenanceForm({super.key, this.existingMaintenanceStop});
 
   @override
   State<MaintenanceForm> createState() => _MaintenanceFormState();
 }
 
 class _MaintenanceFormState extends State<MaintenanceForm> {
-  // --- Temporary Dummy Data ---
-  final List<String> _myCars = ['Daily Driver', 'Weekend Car'];
-  final List<String> _companies = ['Local Mechanic', 'Tire Shop', 'Dealership', 'Other'];
-  
-  // NEW: Standardized list of maintenance occurrences
-  final List<String> _occurrences = [
-    'Oil Change', 
-    'Tire Replacement / Alignment', 
-    'Brake Service', 
-    'Inspection', 
-    'General Repair', 
-    'Other'
-  ];
+  final TextEditingController _occurrenceController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _infoController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
 
-  String? _selectedCar;
-  String? _selectedCompany;
-  String? _selectedOccurrence; // NEW: Variable to remember the selected occurrence
+  List<Map<String, dynamic>> _cars = [];
+  List<Map<String, dynamic>> _companies = [];
+
+  int? _selectedCarId;
+  int? _selectedCompanyId;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _loadDropdownData();
+  }
+
+  Future<void> _loadDropdownData() async {
+    final cars = await DatabaseHelper.instance.getAllCars();
+    final companies = await DatabaseHelper.instance.getAllCompanies();
+
+    setState(() {
+      _cars = cars;
+      _companies = companies;
+      _isLoading = false;
+
+      if (widget.existingMaintenanceStop != null) {
+        _selectedCarId = widget.existingMaintenanceStop!.carId;
+        _selectedCompanyId = widget.existingMaintenanceStop!.companyId;
+        _occurrenceController.text = widget.existingMaintenanceStop!.occurrence;
+        _priceController.text = widget.existingMaintenanceStop!.totalPrice?.toString() ?? '';
+        _infoController.text = widget.existingMaintenanceStop!.additionalInfo ?? '';
+        _dateController.text = widget.existingMaintenanceStop!.date;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _occurrenceController.dispose();
+    _priceController.dispose();
+    _infoController.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveMaintenance() async {
+    if (_selectedCarId == null || _selectedCompanyId == null || _occurrenceController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a Car, Company, and state the Occurrence!')),
+      );
+      return;
+    }
+
+    final maintenanceData = MaintenanceStop(
+      id: widget.existingMaintenanceStop?.id,
+      carId: _selectedCarId!,
+      companyId: _selectedCompanyId!,
+      occurrence: _occurrenceController.text,
+      totalPrice: double.tryParse(_priceController.text),
+      additionalInfo: _infoController.text,
+      date: _dateController.text,
+    );
+
+    if (widget.existingMaintenanceStop == null) {
+      await DatabaseHelper.instance.insertMaintenanceStop(maintenanceData.toMap());
+    } else {
+      await DatabaseHelper.instance.updateMaintenanceStop(maintenanceData.toMap());
+    }
+
+    if (mounted) Navigator.pop(context, true);
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Padding(padding: EdgeInsets.all(20), child: Center(child: CircularProgressIndicator()));
+    }
+
+    final isEditing = widget.existingMaintenanceStop != null;
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        top: 20,
-        left: 20,
-        right: 20,
+        top: 20, left: 20, right: 20,
       ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Add Maintenance Stop', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Center(
+              child: Text(isEditing ? 'Edit Maintenance' : 'Add Maintenance', 
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
             const SizedBox(height: 20),
-            
-            // 1. Car Selection Dropdown
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Select Car', border: OutlineInputBorder()),
-              initialValue: _selectedCar,
-              items: _myCars.map((String car) {
-                return DropdownMenuItem<String>(value: car, child: Text(car));
+
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(labelText: 'Select Vehicle*', border: OutlineInputBorder()),
+              value: _selectedCarId,
+              items: _cars.map((car) {
+                return DropdownMenuItem<int>(
+                  value: car['id'] as int,
+                  child: Text(car['carName']),
+                );
               }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedCar = newValue;
-                });
-              },
+              onChanged: (int? newValue) => setState(() => _selectedCarId = newValue),
+              hint: _cars.isEmpty ? const Text('No Cars Available - Add one first!') : null,
             ),
             const SizedBox(height: 10),
 
-            // 2. Company/Shop Selection Dropdown
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Select Company/Shop', border: OutlineInputBorder()),
-              initialValue: _selectedCompany,
-              items: _companies.map((String company) {
-                return DropdownMenuItem<String>(value: company, child: Text(company));
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(labelText: 'Select Shop/Company*', border: OutlineInputBorder()),
+              value: _selectedCompanyId,
+              items: _companies.map((company) {
+                return DropdownMenuItem<int>(
+                  value: company['id'] as int,
+                  child: Text(company['name']),
+                );
               }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedCompany = newValue;
-                });
-              },
+              onChanged: (int? newValue) => setState(() => _selectedCompanyId = newValue),
+              hint: _companies.isEmpty ? const Text('No Shops Available - Add one first!') : null,
             ),
             const SizedBox(height: 10),
 
-            // 3. UPDATED: Occurrence Dropdown
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Occurrence / Type of Service', border: OutlineInputBorder()),
-              initialValue: _selectedOccurrence,
-              items: _occurrences.map((String occurrence) {
-                return DropdownMenuItem<String>(value: occurrence, child: Text(occurrence));
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedOccurrence = newValue;
-                });
-              },
+            TextField(
+              controller: _occurrenceController,
+              decoration: const InputDecoration(labelText: 'Occurrence / Service Done*', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
-            // 4. Total Price
-            const TextField(
-              decoration: InputDecoration(labelText: 'Total Price', border: OutlineInputBorder()),
+            TextField(
+              controller: _priceController,
+              decoration: const InputDecoration(labelText: 'Total Cost', border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
+            
+            TextField(
+              controller: _dateController,
+              decoration: const InputDecoration(labelText: 'Date*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
+              readOnly: true,
+              onTap: () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2101),
+                );
+                if (pickedDate != null) {
+                  setState(() { _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate); });
+                }
+              },
+            ),
+            const SizedBox(height: 10),
 
-            // 5. Additional Info 
-            const TextField(
-              decoration: InputDecoration(labelText: 'Additional Info / Notes', border: OutlineInputBorder()),
-              maxLines: 3, 
+            TextField(
+              controller: _infoController,
+              decoration: const InputDecoration(labelText: 'Additional Info (e.g. Part Numbers)', border: OutlineInputBorder()),
+              maxLines: 2,
             ),
             const SizedBox(height: 20),
 
-            // Save Button
-            ElevatedButton(
-              onPressed: () {
-                // We'll add the saving logic here later!
-                Navigator.pop(context);
-              },
-              child: const Text('Save Entry'),
+            Center(
+              child: ElevatedButton(
+                onPressed: _saveMaintenance,
+                child: Text(isEditing ? 'Update Maintenance' : 'Save Maintenance'),
+              ),
             ),
+
+            if (isEditing) ...[
+              const SizedBox(height: 10),
+              Center(
+                child: TextButton(
+                  onPressed: () async {
+                    await DatabaseHelper.instance.deleteMaintenanceStop(widget.existingMaintenanceStop!.id!);
+                    if (mounted) Navigator.pop(context, true);
+                  },
+                  child: const Text('Delete Maintenance', style: TextStyle(color: Colors.red)),
+                ),
+              ),
+            ],
             const SizedBox(height: 20),
           ],
         ),

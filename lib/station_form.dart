@@ -3,14 +3,15 @@ import 'database/database_helper.dart';
 import 'models/station.dart';
 
 class StationForm extends StatefulWidget {
-  const StationForm({super.key});
+  final Station? existingStation; // NEW: Accepts an existing station
+
+  const StationForm({super.key, this.existingStation});
 
   @override
   State<StationForm> createState() => _StationFormState();
 }
 
 class _StationFormState extends State<StationForm> {
-  // --- Controllers ---
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
@@ -26,6 +27,18 @@ class _StationFormState extends State<StationForm> {
   String? _selectedType;
 
   @override
+  void initState() {
+    super.initState();
+    // NEW: Pre-fill data if editing
+    if (widget.existingStation != null) {
+      _nameController.text = widget.existingStation!.name;
+      _locationController.text = widget.existingStation!.location ?? '';
+      _selectedType = widget.existingStation!.type;
+      _infoController.text = widget.existingStation!.additionalInfo ?? '';
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _locationController.dispose();
@@ -33,7 +46,6 @@ class _StationFormState extends State<StationForm> {
     super.dispose();
   }
 
-  // --- Save Logic ---
   Future<void> _saveStation() async {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -42,22 +54,29 @@ class _StationFormState extends State<StationForm> {
       return;
     }
 
-    final newStation = Station(
+    final stationData = Station(
+      id: widget.existingStation?.id, // Keep ID if editing
       name: _nameController.text,
       location: _locationController.text,
       type: _selectedType,
       additionalInfo: _infoController.text,
     );
 
-    await DatabaseHelper.instance.insertStation(newStation.toMap());
+    if (widget.existingStation == null) {
+      await DatabaseHelper.instance.insertStation(stationData.toMap());
+    } else {
+      await DatabaseHelper.instance.updateStation(stationData.toMap());
+    }
 
     if (mounted) {
-      Navigator.pop(context);
+      Navigator.pop(context, true); // Pass 'true' back to trigger refresh
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.existingStation != null;
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -70,8 +89,11 @@ class _StationFormState extends State<StationForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
-              child: Text('Add Gas Station', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Center(
+              child: Text(
+                isEditing ? 'Edit Gas Station' : 'Add Gas Station', 
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -106,10 +128,28 @@ class _StationFormState extends State<StationForm> {
 
             Center(
               child: ElevatedButton(
-                onPressed: _saveStation, // Calls our save function!
-                child: const Text('Save Gas Station'),
+                onPressed: _saveStation,
+                child: Text(isEditing ? 'Update Gas Station' : 'Save Gas Station'),
               ),
             ),
+            
+            // --- NEW: DELETE BUTTON ---
+            if (isEditing) ...[
+              const SizedBox(height: 10),
+              Center(
+                child: TextButton(
+                  onPressed: () async {
+                    // Tell the database to delete this ID
+                    await DatabaseHelper.instance.deleteStation(widget.existingStation!.id!);
+                    if (mounted) {
+                      Navigator.pop(context, true); // Close form and trigger refresh
+                    }
+                  },
+                  child: const Text('Delete Gas Station', style: TextStyle(color: Colors.red)),
+                ),
+              ),
+            ],
+            
             const SizedBox(height: 20),
           ],
         ),
