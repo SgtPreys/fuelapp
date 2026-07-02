@@ -62,9 +62,84 @@ class _MainScreenState extends State<MainScreen> {
 
   // --- NEW: Helper function to change the FAB options based on screen ---
   List<SpeedDialChild> _getSpeedDialOptions(BuildContext context) {
+    // 1. Define the two standard options we want everywhere
+    final fuelOption = SpeedDialChild(
+      child: const Icon(Icons.ev_station),
+      backgroundColor: Colors.blue,
+      foregroundColor: Colors.white,
+      label: 'Add Fuel Stop',
+      onTap: () async {
+        final result = await showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) => const FuelForm(),
+        );
+        if (result == true) {
+          _homeKey.currentState?.refreshData();
+          _manageDataKey.currentState?.refreshData();
+          setState(() {});
+        }
+      },
+    );
+
+    final maintenanceOption = SpeedDialChild(
+      child: const Icon(Icons.build),
+      backgroundColor: Colors.orange,
+      foregroundColor: Colors.white,
+      label: 'Add Maintenance',
+      onTap: () async {
+        final result = await showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) => const MaintenanceForm(),
+        );
+        if (result == true) {
+          _homeKey.currentState?.refreshData();
+          _manageDataKey.currentState?.refreshData();
+          setState(() {});
+        }
+      },
+    );
+
+    // 2. If we are on the "Manage Data" tab (Index 2), return all 5 options!
     if (_selectedIndex == 2) {
-      // If we are on the Manage Data screen:
       return [
+        fuelOption,
+        maintenanceOption,
+        SpeedDialChild(
+          child: const Icon(Icons.local_gas_station),
+          backgroundColor: Colors.teal,
+          foregroundColor: Colors.white,
+          label: 'Add Gas Station',
+          onTap: () async {
+            final result = await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => const StationForm(),
+            );
+            if (result == true) {
+              _manageDataKey.currentState?.refreshData();
+              setState(() {});
+            }
+          },
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.store),
+          backgroundColor: Colors.purple,
+          foregroundColor: Colors.white,
+          label: 'Add Company',
+          onTap: () async {
+            final result = await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => const CompanyForm(),
+            );
+            if (result == true) {
+              _manageDataKey.currentState?.refreshData();
+              setState(() {});
+            }
+          },
+        ),
         SpeedDialChild(
           child: const Icon(Icons.directions_car),
           backgroundColor: Colors.indigo,
@@ -74,88 +149,22 @@ class _MainScreenState extends State<MainScreen> {
             final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              builder: (context) => const CarForm(), 
-            );
-            // If we successfully added a car, force the screen to rebuild and fetch new data
-            if (result == true) {
-              _manageDataKey.currentState?.refreshData();
-              setState(() {}); 
-            }
-          },
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.local_gas_station),
-          backgroundColor: Colors.teal,
-          foregroundColor: Colors.white,
-          label: 'Add New Station',
-          onTap: () async {
-            final result = await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => const StationForm(),
+              builder: (context) => const CarForm(),
             );
             if (result == true) {
               _manageDataKey.currentState?.refreshData();
-              setState(() {}); }
-          },
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.store),
-          backgroundColor: Colors.purple,
-          foregroundColor: Colors.white,
-          label: 'Add New Company',
-          onTap: () async {
-            final result = await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => const CompanyForm(),
-            );
-            if (result == true) {
-              _manageDataKey.currentState?.refreshData();
-              setState(() {}); }
-          },
-        ),
-      ];
-    } else {
-      // Default: If we are on Home, Stats, or Settings:
-      return [
-        SpeedDialChild(
-          child: const Icon(Icons.ev_station),
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          label: 'Add Fuel Stop',
-          onTap: () async {
-            final result = await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => const FuelForm(),
-            );
-            if (result == true){
-              _homeKey.currentState?.refreshData();
-              setState(() {});
-            }
-             
-          },
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.build),
-          backgroundColor: Colors.orange,
-          foregroundColor: Colors.white,
-          label: 'Add Maintenance',
-          onTap: () async {
-            final result = await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (context) => const MaintenanceForm(),
-            );
-            if (result == true) {
-              _homeKey.currentState?.refreshData();
               setState(() {});
             }
           },
         ),
       ];
     }
+
+    // 3. Otherwise (Home or Statistics), just return the standard 2
+    return [
+      fuelOption,
+      maintenanceOption,
+    ];
   }
 
   @override

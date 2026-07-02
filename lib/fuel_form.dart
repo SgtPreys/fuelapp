@@ -28,7 +28,7 @@ class _FuelFormState extends State<FuelForm> {
   @override
   void initState() {
     super.initState();
-    _dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now()); // Defaults to today
+    _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()); // Defaults to today
     _loadDropdownData();
   }
 
@@ -147,7 +147,7 @@ class _FuelFormState extends State<FuelForm> {
 
             TextField(
               controller: _distanceController,
-              decoration: const InputDecoration(labelText: 'Driven Distance (km/miles)', border: OutlineInputBorder()),
+              decoration: const InputDecoration(labelText: 'Driven Distance (km)', border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
@@ -157,7 +157,7 @@ class _FuelFormState extends State<FuelForm> {
                 Expanded(
                   child: TextField(
                     controller: _litersController,
-                    decoration: const InputDecoration(labelText: 'Liters / Gallons', border: OutlineInputBorder()),
+                    decoration: const InputDecoration(labelText: 'Liters', border: OutlineInputBorder()),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -165,7 +165,7 @@ class _FuelFormState extends State<FuelForm> {
                 Expanded(
                   child: TextField(
                     controller: _priceController,
-                    decoration: const InputDecoration(labelText: 'Total Price', border: OutlineInputBorder()),
+                    decoration: const InputDecoration(labelText: 'Total Price (€)', border: OutlineInputBorder()),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -173,20 +173,40 @@ class _FuelFormState extends State<FuelForm> {
             ),
             const SizedBox(height: 10),
 
-            // --- DATE PICKER FIELD ---
+            // --- UPDATED DATE & TIME PICKER FIELD ---
             TextField(
               controller: _dateController,
-              decoration: const InputDecoration(labelText: 'Date (YYYY-MM-DD)*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
+              decoration: const InputDecoration(labelText: 'Date & Time*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
               readOnly: true, // Prevents manual typing
               onTap: () async {
+                // 1. Pick the Date
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2101),
                 );
-                if (pickedDate != null) {
-                  setState(() { _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate); });
+                
+                // 2. If a date was chosen, pick the Time
+                if (pickedDate != null && mounted) {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  
+                  // 3. Combine them and format!
+                  if (pickedTime != null) {
+                    DateTime combinedDateTime = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                    setState(() { 
+                      _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(combinedDateTime); 
+                    });
+                  }
                 }
               },
             ),

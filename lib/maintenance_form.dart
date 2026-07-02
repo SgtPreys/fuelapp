@@ -28,7 +28,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
   @override
   void initState() {
     super.initState();
-    _dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
     _loadDropdownData();
   }
 
@@ -153,9 +153,10 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             ),
             const SizedBox(height: 10),
             
+            // --- UPDATED DATE & TIME PICKER FIELD ---
             TextField(
               controller: _dateController,
-              decoration: const InputDecoration(labelText: 'Date*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
+              decoration: const InputDecoration(labelText: 'Date & Time*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
               readOnly: true,
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
@@ -164,8 +165,25 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2101),
                 );
-                if (pickedDate != null) {
-                  setState(() { _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate); });
+                
+                if (pickedDate != null && mounted) {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  
+                  if (pickedTime != null) {
+                    DateTime combinedDateTime = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                    setState(() { 
+                      _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(combinedDateTime); 
+                    });
+                  }
                 }
               },
             ),
