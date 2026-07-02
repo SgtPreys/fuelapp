@@ -21,7 +21,7 @@ class FuelApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fuel App',
+      title: 'FuelApp',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true, 
@@ -170,7 +170,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // Dynamic App Bar Title
-    List<String> titles = ['Dashboard', 'Statistics', 'Manage Data', 'Settings'];
+    List<String> titles = ['Home', 'Statistics', 'Manage Data', 'Settings'];
 
     return Scaffold(
       appBar: AppBar(

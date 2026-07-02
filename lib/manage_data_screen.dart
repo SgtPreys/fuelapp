@@ -56,43 +56,58 @@ class ManageDataScreenState extends State<ManageDataScreen> {
     }
 
     return DefaultTabController(
-      length: 5, // INCREASED TO 5 TABS
+      length: 5,
       child: Column(
         children: [
           const TabBar(
-            isScrollable: true, // Lets you swipe the tabs left/right so they aren't squished!
+            isScrollable: true,
             tabAlignment: TabAlignment.start,
             labelColor: Colors.blue,
             unselectedLabelColor: Colors.grey,
             indicatorColor: Colors.blue,
+            // --- NEW ORDER: Fuel, Maintenance, Stations, Companies, Cars ---
             tabs: [
-              Tab(icon: Icon(Icons.directions_car), text: 'Cars'),
-              Tab(icon: Icon(Icons.local_gas_station), text: 'Stations'),
-              Tab(icon: Icon(Icons.store), text: 'Companies'),
               Tab(icon: Icon(Icons.ev_station), text: 'Fuel'),
               Tab(icon: Icon(Icons.build), text: 'Maintenance'),
+              Tab(icon: Icon(Icons.local_gas_station), text: 'Stations'),
+              Tab(icon: Icon(Icons.store), text: 'Companies'),
+              Tab(icon: Icon(Icons.directions_car), text: 'Cars'),
             ],
           ),
           Expanded(
             child: TabBarView(
+              // --- MATCHING NEW ORDER ---
               children: [
-                // --- TAB 1: CARS ---
-                _cars.isEmpty
-                    ? const Center(child: Text('No cars saved yet.'))
+                // 1. FUEL
+                _fuel.isEmpty
+                    ? const Center(child: Text('No fuel stops saved yet.'))
                     : ListView.builder(
-                        itemCount: _cars.length,
+                        itemCount: _fuel.length,
                         itemBuilder: (context, index) {
-                          final carMap = _cars[index];
+                          final fuelStop = _fuel[index];
                           return ListTile(
-                            leading: const Icon(Icons.directions_car),
-                            title: Text(carMap['carName']),
-                            subtitle: Text(carMap['manufacturer'] ?? 'Unknown Manufacturer'),
+                            leading: const Icon(Icons.ev_station, color: Colors.blue),
+                            title: Text('${fuelStop['carName']} @ ${fuelStop['stationName']}'),
+                            subtitle: Builder(
+                              builder: (context) {
+                                final fuelObj = FuelStop.fromMap(fuelStop);
+                                String consumptionStr = fuelObj.consumption != null 
+                                    ? '${fuelObj.consumption!.toStringAsFixed(2)} L/100km' 
+                                    : '-';
+                                String priceLStr = fuelObj.pricePerLiter != null 
+                                    ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
+                                    : '-';
+                                return Text('Date: ${fuelStop['date']}\n$consumptionStr • $priceLStr');
+                              }
+                            ),
+                            isThreeLine: true,
+                            trailing: Text(fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}' : ''),
                             onTap: () async {
-                              final selectedCar = Car.fromMap(carMap);
+                              final selectedFuel = FuelStop.fromMap(fuelStop);
                               final result = await showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
-                                builder: (context) => CarForm(existingCar: selectedCar),
+                                builder: (context) => FuelForm(existingFuelStop: selectedFuel),
                               );
                               if (result == true) refreshData();
                             },
@@ -100,7 +115,33 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         },
                       ),
 
-                // --- TAB 2: STATIONS ---
+                // 2. MAINTENANCE
+                _maintenance.isEmpty
+                    ? const Center(child: Text('No maintenance saved yet.'))
+                    : ListView.builder(
+                        itemCount: _maintenance.length,
+                        itemBuilder: (context, index) {
+                          final maintStop = _maintenance[index];
+                          return ListTile(
+                            leading: const Icon(Icons.build, color: Colors.orange),
+                            title: Text('${maintStop['occurrence']}'),
+                            subtitle: Text('${maintStop['carName']} @ ${maintStop['companyName']}\nDate: ${maintStop['date']}'),
+                            isThreeLine: true,
+                            trailing: Text(maintStop['totalPrice'] != null ? '€${maintStop['totalPrice']}' : ''),
+                            onTap: () async {
+                              final selectedMaint = MaintenanceStop.fromMap(maintStop);
+                              final result = await showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) => MaintenanceForm(existingMaintenanceStop: selectedMaint),
+                              );
+                              if (result == true) refreshData();
+                            },
+                          );
+                        },
+                      ),
+
+                // 3. STATIONS
                 _stations.isEmpty
                     ? const Center(child: Text('No gas stations saved yet.'))
                     : ListView.builder(
@@ -124,7 +165,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         },
                       ),
 
-                // --- TAB 3: COMPANIES ---
+                // 4. COMPANIES
                 _companies.isEmpty
                     ? const Center(child: Text('No companies saved yet.'))
                     : ListView.builder(
@@ -148,66 +189,23 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         },
                       ),
 
-                // --- TAB 4: FUEL (NEW) ---
-                _fuel.isEmpty
-                    ? const Center(child: Text('No fuel stops saved yet.'))
+                // 5. CARS
+                _cars.isEmpty
+                    ? const Center(child: Text('No cars saved yet.'))
                     : ListView.builder(
-                        itemCount: _fuel.length,
+                        itemCount: _cars.length,
                         itemBuilder: (context, index) {
-                          final fuelStop = _fuel[index];
+                          final carMap = _cars[index];
                           return ListTile(
-                            leading: const Icon(Icons.ev_station, color: Colors.blue),
-                            title: Text('${fuelStop['carName']} @ ${fuelStop['stationName']}'),
-                            // NEW: Multi-line subtitle with calculations
-                            subtitle: Builder(
-                              builder: (context) {
-                                final fuelObj = FuelStop.fromMap(fuelStop);
-                                
-                                String consumptionStr = fuelObj.consumption != null 
-                                    ? '${fuelObj.consumption!.toStringAsFixed(2)} L/100km' 
-                                    : '-';
-                                    
-                                String priceLStr = fuelObj.pricePerLiter != null 
-                                    ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
-                                    : '-';
-
-                                return Text('Date: ${fuelStop['date']} • €${fuelStop['totalPrice'] ?? '0.00'}\n$consumptionStr • $priceLStr');
-                              }
-                            ),
-                            isThreeLine: true, // Room for the extra text
+                            leading: const Icon(Icons.directions_car),
+                            title: Text(carMap['carName']),
+                            subtitle: Text(carMap['manufacturer'] ?? 'Unknown Manufacturer'),
                             onTap: () async {
-                              final selectedFuel = FuelStop.fromMap(fuelStop);
+                              final selectedCar = Car.fromMap(carMap);
                               final result = await showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
-                                builder: (context) => FuelForm(existingFuelStop: selectedFuel),
-                              );
-                              if (result == true) refreshData();
-                            },
-                          );
-                        },
-                      ),
-
-                // --- TAB 5: MAINTENANCE (NEW) ---
-                _maintenance.isEmpty
-                    ? const Center(child: Text('No maintenance saved yet.'))
-                    : ListView.builder(
-                        itemCount: _maintenance.length,
-                        itemBuilder: (context, index) {
-                          final maintStop = _maintenance[index];
-                          return ListTile(
-                            leading: const Icon(Icons.build, color: Colors.orange),
-                            title: Text('${maintStop['occurrence']}'),
-                            subtitle: Text('${maintStop['carName']} @ ${maintStop['companyName']}\nDate: ${maintStop['date']}'),
-                            isThreeLine: true,
-                            trailing: Text(maintStop['totalPrice'] != null ? '€${maintStop['totalPrice']}' : ''),
-                            onTap: () async {
-                              // Rebuild the MaintenanceStop object to pass to the form
-                              final selectedMaint = MaintenanceStop.fromMap(maintStop);
-                              final result = await showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (context) => MaintenanceForm(existingMaintenanceStop: selectedMaint),
+                                builder: (context) => CarForm(existingCar: selectedCar),
                               );
                               if (result == true) refreshData();
                             },
@@ -221,4 +219,4 @@ class ManageDataScreenState extends State<ManageDataScreen> {
       ),
     );
   }
-}
+} // Make sure you keep the very final closing bracket of the class!
