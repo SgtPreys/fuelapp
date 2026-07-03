@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Helps us format dates cleanly
 import 'database/database_helper.dart';
 import 'models/fuel_stop.dart';
+import 'package:flutter/services.dart';
 
 class FuelForm extends StatefulWidget {
   final FuelStop? existingFuelStop;
@@ -34,11 +35,17 @@ class _FuelFormState extends State<FuelForm> {
 
   // --- NEW: Fetch Cars and Stations for the Dropdowns ---
   Future<void> _loadDropdownData() async {
-    final cars = await DatabaseHelper.instance.getAllCars();
+    final allCars = await DatabaseHelper.instance.getAllCars();
     final stations = await DatabaseHelper.instance.getAllStations();
 
     setState(() {
-      _cars = cars;
+      // --- NEW: Safely filter the car list ---
+      _cars = allCars.where((car) {
+        final isActive = car['status'] == 'Active';
+        final isAlreadySelected = widget.existingFuelStop != null && car['id'] == widget.existingFuelStop!.carId;
+        return isActive || isAlreadySelected;
+      }).toList();
+
       _stations = stations;
       _isLoading = false;
 
@@ -179,6 +186,7 @@ class _FuelFormState extends State<FuelForm> {
               decoration: const InputDecoration(labelText: 'Date & Time*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
               readOnly: true, // Prevents manual typing
               onTap: () async {
+                HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                 // 1. Pick the Date
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
@@ -214,7 +222,12 @@ class _FuelFormState extends State<FuelForm> {
 
             Center(
               child: ElevatedButton(
-                onPressed: _saveFuelStop,
+                onPressed: () {
+                  // Trigger a satisfying physical tap sensation
+                  HapticFeedback.mediumImpact();
+                  // Then execute your save logic
+                  _saveFuelStop(); 
+                },
                 child: Text(isEditing ? 'Update Fuel Stop' : 'Save Fuel Stop'),
               ),
             ),
@@ -224,6 +237,7 @@ class _FuelFormState extends State<FuelForm> {
               Center(
                 child: TextButton(
                   onPressed: () async {
+                    HapticFeedback.heavyImpact();
                     await DatabaseHelper.instance.deleteFuelStop(widget.existingFuelStop!.id!);
                     if (mounted) Navigator.pop(context, true);
                   },

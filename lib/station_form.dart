@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
 import 'models/station.dart';
+import 'package:flutter/services.dart';
 
 class StationForm extends StatefulWidget {
   final Station? existingStation; // NEW: Accepts an existing station
@@ -128,7 +129,13 @@ class _StationFormState extends State<StationForm> {
 
             Center(
               child: ElevatedButton(
-                onPressed: _saveStation,
+                onPressed: () {
+                  // Trigger a satisfying physical tap sensation
+                  HapticFeedback.mediumImpact(); 
+                  
+                  // Then execute your save logic
+                  _saveStation(); 
+                },
                 child: Text(isEditing ? 'Update Gas Station' : 'Save Gas Station'),
               ),
             ),
@@ -139,6 +146,7 @@ class _StationFormState extends State<StationForm> {
               Center(
                 child: TextButton(
                   onPressed: () async {
+                    HapticFeedback.heavyImpact();
                     // Tell the database to delete this ID
                     await DatabaseHelper.instance.deleteStation(widget.existingStation!.id!);
                     if (mounted) {

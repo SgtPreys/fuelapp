@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
 import 'models/car.dart';
+import 'package:flutter/services.dart';
 
 class CarForm extends StatefulWidget {
   // NEW: This allows the form to accept an existing car when we want to edit!
@@ -216,7 +217,12 @@ class _CarFormState extends State<CarForm> {
             
             Center(
               child: ElevatedButton(
-                onPressed: _saveCar,
+                onPressed: () {
+                  // Trigger a satisfying physical tap sensation
+                  HapticFeedback.mediumImpact();
+                  // Then execute your save logic
+                  _saveCar(); 
+                },
                 child: Text(isEditing ? 'Update Vehicle' : 'Save Vehicle'),
               ),
             ),
@@ -227,6 +233,7 @@ class _CarFormState extends State<CarForm> {
               Center(
                 child: TextButton(
                   onPressed: () async {
+                    HapticFeedback.heavyImpact();
                     // Tell the database to delete this ID
                     await DatabaseHelper.instance.deleteCar(widget.existingCar!.id!);
                     if (mounted) {

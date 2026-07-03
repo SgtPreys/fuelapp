@@ -39,6 +39,7 @@ dependencies:
   path: ^1.9.1
   intl: ^0.20.3
   flutter_launcher_icons: ^0.14.4
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_test:

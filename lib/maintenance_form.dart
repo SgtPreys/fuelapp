@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'database/database_helper.dart';
 import 'models/maintenance_stop.dart';
+import 'package:flutter/services.dart';
 
 class MaintenanceForm extends StatefulWidget {
   final MaintenanceStop? existingMaintenanceStop;
@@ -13,7 +14,9 @@ class MaintenanceForm extends StatefulWidget {
 }
 
 class _MaintenanceFormState extends State<MaintenanceForm> {
-  final TextEditingController _occurrenceController = TextEditingController();
+  // --- NEW: Dropdown options and variable ---
+  final List<String> _occurrenceOptions = ['Repair', 'Parts', 'Check', 'Insurance', 'Tax', 'TÜV', 'Other'];
+  String? _selectedOccurrence;
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -33,18 +36,27 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
   }
 
   Future<void> _loadDropdownData() async {
-    final cars = await DatabaseHelper.instance.getAllCars();
+    final allCars = await DatabaseHelper.instance.getAllCars();
     final companies = await DatabaseHelper.instance.getAllCompanies();
 
     setState(() {
-      _cars = cars;
+      // --- NEW: Safely filter the car list ---
+      _cars = allCars.where((car) {
+        final isActive = car['status'] == 'Active';
+        final isAlreadySelected = widget.existingMaintenanceStop != null && car['id'] == widget.existingMaintenanceStop!.carId;
+        return isActive || isAlreadySelected;
+      }).toList();
+
       _companies = companies;
       _isLoading = false;
 
       if (widget.existingMaintenanceStop != null) {
         _selectedCarId = widget.existingMaintenanceStop!.carId;
         _selectedCompanyId = widget.existingMaintenanceStop!.companyId;
-        _occurrenceController.text = widget.existingMaintenanceStop!.occurrence;
+        _selectedOccurrence = widget.existingMaintenanceStop!.occurrence;
+        if (!_occurrenceOptions.contains(_selectedOccurrence)) {
+          _selectedOccurrence = 'Other'; // Fallback for old custom text entries
+        }
         _priceController.text = widget.existingMaintenanceStop!.totalPrice?.toString() ?? '';
         _infoController.text = widget.existingMaintenanceStop!.additionalInfo ?? '';
         _dateController.text = widget.existingMaintenanceStop!.date;
@@ -54,7 +66,6 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
   @override
   void dispose() {
-    _occurrenceController.dispose();
     _priceController.dispose();
     _infoController.dispose();
     _dateController.dispose();
@@ -62,10 +73,8 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
   }
 
   Future<void> _saveMaintenance() async {
-    if (_selectedCarId == null || _selectedCompanyId == null || _occurrenceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a Car, Company, and state the Occurrence!')),
-      );
+    if (_selectedCarId == null || _selectedCompanyId == null || _selectedOccurrence == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill out all required fields')));
       return;
     }
 
@@ -73,7 +82,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
       id: widget.existingMaintenanceStop?.id,
       carId: _selectedCarId!,
       companyId: _selectedCompanyId!,
-      occurrence: _occurrenceController.text,
+      occurrence: _selectedOccurrence!,
       totalPrice: double.tryParse(_priceController.text),
       additionalInfo: _infoController.text,
       date: _dateController.text,
@@ -114,7 +123,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
             DropdownButtonFormField<int>(
               decoration: const InputDecoration(labelText: 'Select Vehicle*', border: OutlineInputBorder()),
-              value: _selectedCarId,
+              initialValue: _selectedCarId,
               items: _cars.map((car) {
                 return DropdownMenuItem<int>(
                   value: car['id'] as int,
@@ -128,7 +137,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
             DropdownButtonFormField<int>(
               decoration: const InputDecoration(labelText: 'Select Shop/Company*', border: OutlineInputBorder()),
-              value: _selectedCompanyId,
+              initialValue: _selectedCompanyId,
               items: _companies.map((company) {
                 return DropdownMenuItem<int>(
                   value: company['id'] as int,
@@ -140,9 +149,14 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             ),
             const SizedBox(height: 10),
 
-            TextField(
-              controller: _occurrenceController,
-              decoration: const InputDecoration(labelText: 'Occurrence / Service Done*', border: OutlineInputBorder()),
+            // --- NEW: Occurrence Dropdown ---
+            DropdownButtonFormField<String>(
+              initialValue: _selectedOccurrence,
+              decoration: const InputDecoration(labelText: 'Occurrence Type*', border: OutlineInputBorder()),
+              items: _occurrenceOptions.map((String type) {
+                return DropdownMenuItem<String>(value: type, child: Text(type));
+              }).toList(),
+              onChanged: (String? newValue) => setState(() => _selectedOccurrence = newValue),
             ),
             const SizedBox(height: 10),
 
@@ -159,6 +173,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
               decoration: const InputDecoration(labelText: 'Date & Time*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
               readOnly: true,
               onTap: () async {
+                HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
@@ -198,7 +213,12 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
             Center(
               child: ElevatedButton(
-                onPressed: _saveMaintenance,
+                onPressed: () {
+                  // Trigger a satisfying physical tap sensation
+                  HapticFeedback.mediumImpact();
+                  // Then execute your save logic
+                  _saveMaintenance(); 
+                },
                 child: Text(isEditing ? 'Update Maintenance' : 'Save Maintenance'),
               ),
             ),
@@ -208,6 +228,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
               Center(
                 child: TextButton(
                   onPressed: () async {
+                    HapticFeedback.heavyImpact();
                     await DatabaseHelper.instance.deleteMaintenanceStop(widget.existingMaintenanceStop!.id!);
                     if (mounted) Navigator.pop(context, true);
                   },

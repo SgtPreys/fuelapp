@@ -281,4 +281,94 @@ class DatabaseHelper {
       ORDER BY m.date DESC
     ''');
   }
+  // ==========================================
+  // --- STATISTICS & AGGREGATION ---
+  // ==========================================
+
+  // Calculates total fuel costs, total distance, and total liters
+  Future<Map<String, dynamic>> getFuelAggregates() async {
+    Database db = await instance.database;
+    final result = await db.rawQuery('''
+      SELECT 
+        SUM(totalPrice) as totalFuelCost,
+        SUM(distance) as totalDistance,
+        SUM(liters) as totalLiters
+      FROM fuel_stops
+    ''');
+    return result.isNotEmpty ? result.first : {};
+  }
+
+  // Calculates the total cost of all maintenance
+  Future<double> getTotalMaintenanceCost() async {
+    Database db = await instance.database;
+    final result = await db.rawQuery('''
+      SELECT SUM(totalPrice) as totalCost FROM maintenance_stops
+    ''');
+    if (result.isNotEmpty && result.first['totalCost'] != null) {
+      return (result.first['totalCost'] as num).toDouble();
+    }
+    return 0.0;
+  }
+    // Fetches fuel stops from oldest to newest for the line chart
+  Future<List<Map<String, dynamic>>> getFuelStopsForChart() async {
+    Database db = await instance.database;
+    return await db.query('fuel_stops', orderBy: 'date ASC');
+  }
+  // ==========================================
+  // --- SPENDING TRACKING FOR MANAGE DATA ---
+  // ==========================================
+
+  // Gets all stations and calculates the total money spent at each
+  Future<List<Map<String, dynamic>>> getAllStationsWithSpend() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT s.*, SUM(f.totalPrice) as totalSpent
+      FROM stations s
+      LEFT JOIN fuel_stops f ON s.id = f.stationId
+      GROUP BY s.id
+    ''');
+  }
+
+  // Gets all companies and calculates the total money spent at each
+  Future<List<Map<String, dynamic>>> getAllCompaniesWithSpend() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT c.*, SUM(m.totalPrice) as totalSpent
+      FROM companies c
+      LEFT JOIN maintenance_stops m ON c.id = m.companyId
+      GROUP BY c.id
+    ''');
+  }
+
+  //Gets all cars and calculates the total money spent on fuel and maintenance for each
+  Future<List<Map<String, dynamic>>> getAllCarsWithSpend() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT c.*, 
+        (SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c .id) as totalFuelSpent,
+        (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id) as totalMaintenanceSpent,
+        ((SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c.id) + (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id)) as totalSpent
+      FROM cars c
+    ''');
+  }
+
+  //Gets all stats per car, including total liters, total distance, total fuel cost, average price per liter, average cost per stop, average liters per stop, average distance per stop, and average consumption (L/100km)
+  Future<List<Map<String, dynamic>>> getStatsPerCar() async {
+    Database db = await instance.database;
+    // This query gets all cars and sums/averages their fuel data
+    return await db.rawQuery('''
+      SELECT c.carName, 
+             SUM(f.liters) as totalLiters, 
+             SUM(f.distance) as totalDistance, 
+             SUM(f.totalPrice) as totalFuelCost,
+             AVG(f.totalPrice / f.liters) as avgPricePerLiter,
+             AVG(f.totalPrice) as avgCostPerStop,
+             AVG(f.liters) as avgLitersPerStop,
+             AVG(f.distance) as avgDistancePerStop,
+             AVG((f.liters / f.distance) * 100) as avgConsumption
+      FROM cars c
+      LEFT JOIN fuel_stops f ON c.id = f.carId
+      GROUP BY c.id
+    ''');
+  }
 }

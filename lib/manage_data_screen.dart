@@ -10,6 +10,7 @@ import 'fuel_form.dart'; // NEW
 import 'models/fuel_stop.dart'; // NEW
 import 'maintenance_form.dart'; // NEW
 import 'models/maintenance_stop.dart'; // NEW
+import 'package:flutter/services.dart';
 
 class ManageDataScreen extends StatefulWidget {
   const ManageDataScreen({super.key});
@@ -33,11 +34,14 @@ class ManageDataScreenState extends State<ManageDataScreen> {
   }
 
   Future<void> refreshData() async {
-    final cars = await DatabaseHelper.instance.getAllCars();
-    final stations = await DatabaseHelper.instance.getAllStations();
-    final companies = await DatabaseHelper.instance.getAllCompanies();
-    final fuel = await DatabaseHelper.instance.getAllFuelStopsWithDetails(); // NEW
-    final maintenance = await DatabaseHelper.instance.getAllMaintenanceStopsWithDetails(); // NEW
+    final cars = await DatabaseHelper.instance.getAllCarsWithSpend();
+    
+    // --- UPDATED THESE TWO LINES ---
+    final stations = await DatabaseHelper.instance.getAllStationsWithSpend(); 
+    final companies = await DatabaseHelper.instance.getAllCompaniesWithSpend(); 
+    
+    final fuel = await DatabaseHelper.instance.getAllFuelStopsWithDetails(); 
+    final maintenance = await DatabaseHelper.instance.getAllMaintenanceStopsWithDetails(); 
 
     setState(() {
       _cars = cars;
@@ -103,6 +107,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             isThreeLine: true,
                             trailing: Text(fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}' : ''),
                             onTap: () async {
+                              HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                               final selectedFuel = FuelStop.fromMap(fuelStop);
                               final result = await showModalBottomSheet(
                                 context: context,
@@ -129,6 +134,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             isThreeLine: true,
                             trailing: Text(maintStop['totalPrice'] != null ? '€${maintStop['totalPrice']}' : ''),
                             onTap: () async {
+                              HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                               final selectedMaint = MaintenanceStop.fromMap(maintStop);
                               final result = await showModalBottomSheet(
                                 context: context,
@@ -152,7 +158,11 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             leading: const Icon(Icons.local_gas_station, color: Colors.teal),
                             title: Text(station['name']),
                             subtitle: Text(station['type'] ?? 'Unknown Type'),
+                            trailing: Text('Total Spent:\n${station['totalSpent'] != null ? '€${(station['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal, fontSize: 15),
+                            ),
                             onTap: () async {
+                              HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                               final selectedStation = Station.fromMap(station);
                               final result = await showModalBottomSheet(
                                 context: context,
@@ -176,7 +186,11 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
                             subtitle: Text(company['contactPerson'] ?? 'No contact person'),
+                            trailing: Text('Total Spent:\n${company['totalSpent'] != null ? '€${(company['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 15),
+                            ),
                             onTap: () async {
+                              HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                               final selectedCompany = Company.fromMap(company);
                               final result = await showModalBottomSheet(
                                 context: context,
@@ -200,7 +214,11 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             leading: const Icon(Icons.directions_car, color: Colors.indigo),
                             title: Text(carMap['carName']),
                             subtitle: Text('${carMap['manufacturer'] ?? 'Unknown Manufacturer'} \nStatus: ${carMap['status'] ?? 'Unknown'}'),
+                            trailing: Text('Total Spent:\n${carMap['totalSpent'] != null ? '€${(carMap['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo, fontSize: 15),
+                            ),
                             onTap: () async {
+                              HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                               final selectedCar = Car.fromMap(carMap);
                               final result = await showModalBottomSheet(
                                 context: context,

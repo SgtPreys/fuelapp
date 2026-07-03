@@ -7,6 +7,8 @@ import 'manage_data_screen.dart';
 import 'car_form.dart';
 import 'station_form.dart';
 import 'company_form.dart';
+import 'statistics_screen.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   // Add this line to ensure the engine is ready for the database!
@@ -50,13 +52,13 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return HomeScreen(key: _homeKey);
       case 1:
-        return const Center(child: Text('Detailed Statistics & Charts'));
+        return const StatisticsScreen();
       case 2:
         return ManageDataScreen(key: _manageDataKey); // Your tabbed screen!
       case 3:
         return const Center(child: Text('App Settings & Preferences'));
       default:
-        return const Center(child: Text('Dashboard'));
+        return HomeScreen(key: _homeKey);
     }
   }
 
@@ -69,6 +71,7 @@ class _MainScreenState extends State<MainScreen> {
       foregroundColor: Colors.white,
       label: 'Add Fuel Stop',
       onTap: () async {
+        HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
         final result = await showModalBottomSheet(
           context: context,
           isScrollControlled: true,
@@ -88,6 +91,7 @@ class _MainScreenState extends State<MainScreen> {
       foregroundColor: Colors.white,
       label: 'Add Maintenance',
       onTap: () async {
+        HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
         final result = await showModalBottomSheet(
           context: context,
           isScrollControlled: true,
@@ -112,6 +116,7 @@ class _MainScreenState extends State<MainScreen> {
           foregroundColor: Colors.white,
           label: 'Add Gas Station',
           onTap: () async {
+            HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
             final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
@@ -129,6 +134,7 @@ class _MainScreenState extends State<MainScreen> {
           foregroundColor: Colors.white,
           label: 'Add Company',
           onTap: () async {
+            HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
             final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
@@ -146,6 +152,7 @@ class _MainScreenState extends State<MainScreen> {
           foregroundColor: Colors.white,
           label: 'Add New Car',
           onTap: () async {
+            HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
             final result = await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
@@ -205,12 +212,18 @@ class _MainScreenState extends State<MainScreen> {
             IconButton(
               color: _selectedIndex == 0 ? Colors.blue : Colors.grey,
               icon: const Icon(Icons.home),
-              onPressed: () => setState(() => _selectedIndex = 0),
+              onPressed: () {
+                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+                setState(() => _selectedIndex = 0);
+              },
             ),
             IconButton(
               color: _selectedIndex == 1 ? Colors.blue : Colors.grey,
               icon: const Icon(Icons.bar_chart),
-              onPressed: () => setState(() => _selectedIndex = 1),
+              onPressed: () {
+                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+                setState(() => _selectedIndex = 1);
+              },
             ),
             
             const SizedBox(width: 48), // Space for the center FAB
@@ -219,12 +232,18 @@ class _MainScreenState extends State<MainScreen> {
             IconButton(
               color: _selectedIndex == 2 ? Colors.blue : Colors.grey,
               icon: const Icon(Icons.category), // Using your new icon!
-              onPressed: () => setState(() => _selectedIndex = 2),
+              onPressed: () {
+                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+                setState(() => _selectedIndex = 2);
+              },
             ),
             IconButton(
               color: _selectedIndex == 3 ? Colors.blue : Colors.grey,
               icon: const Icon(Icons.settings),
-              onPressed: () => setState(() => _selectedIndex = 3),
+              onPressed: () {
+                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+                setState(() => _selectedIndex = 3);
+              },
             ),
           ],
         ),

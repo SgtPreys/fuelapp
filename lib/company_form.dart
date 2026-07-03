@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
 import 'models/company.dart';
+import 'package:flutter/services.dart';
 
 class CompanyForm extends StatefulWidget {
   final Company? existingCompany; // NEW: Accepts an existing company
@@ -149,7 +150,12 @@ class _CompanyFormState extends State<CompanyForm> {
 
             Center(
               child: ElevatedButton(
-                onPressed: _saveCompany,
+                onPressed: () {
+                  // Trigger a satisfying physical tap sensation
+                  HapticFeedback.mediumImpact();
+                  // Then execute your save logic
+                  _saveCompany(); 
+                },
                 child: Text(isEditing ? 'Update Company' : 'Save Company'),
               ),
             ),
@@ -160,6 +166,7 @@ class _CompanyFormState extends State<CompanyForm> {
               Center(
                 child: TextButton(
                   onPressed: () async {
+                    HapticFeedback.heavyImpact();
                     // Tell the database to delete this ID
                     await DatabaseHelper.instance.deleteCompany(widget.existingCompany!.id!);
                     if (mounted) {
