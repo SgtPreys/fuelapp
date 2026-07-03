@@ -213,7 +213,11 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           return ListTile(
                             leading: const Icon(Icons.directions_car, color: Colors.indigo),
                             title: Text(carMap['carName']),
-                            subtitle: Text('${carMap['manufacturer'] ?? 'Unknown Manufacturer'} \nStatus: ${carMap['status'] ?? 'Unknown'}'),
+                            subtitle: Text(
+                              '${carMap['manufacturer'] ?? 'Unknown Manufacturer'} \n'
+                              'Distance: ${carMap['totalDistance'] != null ? '${(carMap['totalDistance'] as num).toStringAsFixed(0)} km' : '0 km'} \n'
+                              'Status: ${carMap['status'] ?? 'Unknown'}'
+                            ),
                             trailing: Text('Total Spent:\n${carMap['totalSpent'] != null ? '€${(carMap['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo, fontSize: 15),
                             ),

@@ -345,6 +345,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     return await db.rawQuery('''
       SELECT c.*, 
+        (SELECT SUM(f.distance) FROM fuel_stops f WHERE f.carId = c.id) as totalDistance,
         (SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c .id) as totalFuelSpent,
         (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id) as totalMaintenanceSpent,
         ((SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c.id) + (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id)) as totalSpent
@@ -353,22 +354,46 @@ class DatabaseHelper {
   }
 
   //Gets all stats per car, including total liters, total distance, total fuel cost, average price per liter, average cost per stop, average liters per stop, average distance per stop, and average consumption (L/100km)
+  // Gets all stats per car, safely using subqueries to prevent duplication
   Future<List<Map<String, dynamic>>> getStatsPerCar() async {
     Database db = await instance.database;
-    // This query gets all cars and sums/averages their fuel data
     return await db.rawQuery('''
       SELECT c.carName, 
-             SUM(f.liters) as totalLiters, 
-             SUM(f.distance) as totalDistance, 
-             SUM(f.totalPrice) as totalFuelCost,
-             AVG(f.totalPrice / f.liters) as avgPricePerLiter,
-             AVG(f.totalPrice) as avgCostPerStop,
-             AVG(f.liters) as avgLitersPerStop,
-             AVG(f.distance) as avgDistancePerStop,
-             AVG((f.liters / f.distance) * 100) as avgConsumption
+             (SELECT SUM(liters) FROM fuel_stops WHERE carId = c.id) as totalLiters, 
+             (SELECT SUM(distance) FROM fuel_stops WHERE carId = c.id) as totalDistance, 
+             (SELECT SUM(totalPrice) FROM fuel_stops WHERE carId = c.id) as totalFuelCost,
+             (SELECT SUM(totalPrice) FROM maintenance_stops WHERE carId = c.id) as totalMaintenanceCost,
+             (SELECT AVG(totalPrice / liters) FROM fuel_stops WHERE carId = c.id) as avgPricePerLiter,
+             (SELECT AVG(totalPrice) FROM fuel_stops WHERE carId = c.id) as avgCostPerStop,
+             (SELECT AVG(liters) FROM fuel_stops WHERE carId = c.id) as avgLitersPerStop,
+             (SELECT AVG(distance) FROM fuel_stops WHERE carId = c.id) as avgDistancePerStop,
+             (SELECT AVG((liters / distance) * 100) FROM fuel_stops WHERE carId = c.id) as avgConsumption
       FROM cars c
-      LEFT JOIN fuel_stops f ON c.id = f.carId
-      GROUP BY c.id
+    ''');
+  }
+  // Gets the combined total spend per month from both fuel and maintenance
+ // Gets the monthly spend, split into Fuel, Maintenance, and Total
+  Future<List<Map<String, dynamic>>> getMonthlySpend() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT 
+        monthYear, 
+        SUM(fuelSpend) as fuelSpend, 
+        SUM(maintSpend) as maintSpend, 
+        SUM(fuelSpend) + SUM(maintSpend) as totalSpend
+      FROM (
+        SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend 
+        FROM fuel_stops 
+        WHERE date IS NOT NULL AND date != ''
+        
+        UNION ALL
+        
+        SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend 
+        FROM maintenance_stops 
+        WHERE date IS NOT NULL AND date != ''
+      )
+      GROUP BY monthYear
+      ORDER BY monthYear DESC
     ''');
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'database/database_helper.dart';
-import 'package:flutter/services.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -19,7 +18,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   double _totalLiters = 0.0;
   
   List<FlSpot> _consumptionSpots = []; 
-  List<FlSpot> _priceSpots = []; // NEW: Holds the Price per Liter data
+  List<FlSpot> _priceSpots = []; 
+  
+  List<Map<String, dynamic>> _carStats = [];
+  
+  List<Map<String, dynamic>> _monthlySpendList = [];
+  double _avgMonthlySpend = 0.0;
+  double _avgFuelMonthly = 0.0;
+  double _avgMaintMonthly = 0.0;
+  double _avgTotalMonthly = 0.0;
 
   @override
   void initState() {
@@ -27,14 +34,27 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     _loadStatistics();
   }
 
-  List<Map<String, dynamic>> _carStats = [];
-
   Future<void> _loadStatistics() async {
     final fuelData = await DatabaseHelper.instance.getFuelAggregates();
     final maintCost = await DatabaseHelper.instance.getTotalMaintenanceCost();
     final chartRawData = await DatabaseHelper.instance.getFuelStopsForChart();
+    final carStats = await DatabaseHelper.instance.getStatsPerCar();
+    
+    // --- UPDATED: Calculate Averages Split by Category ---
+    final monthlyData = await DatabaseHelper.instance.getMonthlySpend();
+    
+    double totalFuelMonthly = 0.0;
+    double totalMaintMonthly = 0.0;
+    
+    for (var m in monthlyData) {
+      totalFuelMonthly += (m['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+      totalMaintMonthly += (m['maintSpend'] as num?)?.toDouble() ?? 0.0;
+    }
+    
+    double avgFuelMonthly = monthlyData.isNotEmpty ? totalFuelMonthly / monthlyData.length : 0.0;
+    double avgMaintMonthly = monthlyData.isNotEmpty ? totalMaintMonthly / monthlyData.length : 0.0;
+    double avgTotalMonthly = avgFuelMonthly + avgMaintMonthly;
 
-    // --- Process data for BOTH charts ---
     List<FlSpot> cSpots = [];
     List<FlSpot> pSpots = [];
     double xIndex = 0; 
@@ -45,19 +65,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       double p = (row['totalPrice'] as num?)?.toDouble() ?? 0;
       
       bool validEntry = false;
-
-      // 1. Calculate Consumption (L/100km)
       if (l > 0 && d > 0) {
         cSpots.add(FlSpot(xIndex, (l / d) * 100));
         validEntry = true;
       }
-      
-      // 2. Calculate Price Per Liter (€/L)
       if (l > 0 && p > 0) {
         pSpots.add(FlSpot(xIndex, p / l));
         validEntry = true;
       }
-
       if (validEntry) xIndex++;
     }
 
@@ -67,14 +82,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       _totalLiters = (fuelData['totalLiters'] as num?)?.toDouble() ?? 0.0;
       _totalMaintenanceCost = maintCost;
       _consumptionSpots = cSpots;
-      _priceSpots = pSpots; // Save the price data to state
+      _priceSpots = pSpots;
+      _carStats = carStats;
+      _monthlySpendList = monthlyData;
+      _avgFuelMonthly = avgFuelMonthly;
+      _avgMaintMonthly = avgMaintMonthly;
+      _avgTotalMonthly = avgTotalMonthly;
       _isLoading = false;
-      _carStats = _carStats;
-    _isLoading = false;
     });
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +99,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     }
 
     final totalRunningCost = _totalFuelCost + _totalMaintenanceCost;
-    
-    double avgConsumption = 0.0;
-    if (_totalDistance > 0 && _totalLiters > 0) {
-      avgConsumption = (_totalLiters / _totalDistance) * 100;
-    }
-
-    double costPerKm = 0.0;
-    if (_totalDistance > 0) {
-      costPerKm = totalRunningCost / _totalDistance;
-    }
+    double avgConsumption = _totalDistance > 0 && _totalLiters > 0 ? (_totalLiters / _totalDistance) * 100 : 0.0;
+    double costPerKm = _totalDistance > 0 ? totalRunningCost / _totalDistance : 0.0;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -123,7 +131,55 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
           const SizedBox(height: 30),
 
-          // --- EFFICIENCY METRICS ---
+          // --- UPDATED: MONTHLY SPEND HORIZONTAL LIST ---
+          const Text('Monthly Spend', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+          const SizedBox(height: 10),
+          if (_monthlySpendList.isEmpty)
+            const Text('No data yet.', style: TextStyle(color: Colors.grey))
+          else
+            SizedBox(
+              height: 130, // Increased height to fit three lines
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _monthlySpendList.length,
+                itemBuilder: (context, index) {
+                  final item = _monthlySpendList[index];
+                  final monthYear = item['monthYear'] ?? 'Unknown';
+                  final fuel = (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+                  final maint = (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+                  final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
+                  
+                  return SizedBox(
+                    width: 160, // Made it slightly wider
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(monthYear, style: const TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 6),
+                            // New Breakdown Rows
+                            Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
+                            const SizedBox(height: 2),
+                            Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
+                            const Divider(height: 8),
+                            Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+          const SizedBox(height: 30),
+
+         // --- UPDATED: Efficiency Grid ---
           const Text('Efficiency & Averages', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           const SizedBox(height: 10),
           Row(
@@ -133,52 +189,67 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               Expanded(child: _buildStatCard('Cost per km', '€${costPerKm.toStringAsFixed(2)}', Icons.query_stats, Colors.purple)),
             ],
           ),
+          const SizedBox(height: 10),
+          // New Split Average Cards
+          Row(
+            children: [
+              Expanded(child: _buildStatCard('Avg. Monthly Fuel', '€${_avgFuelMonthly.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
+              const SizedBox(width: 10),
+              Expanded(child: _buildStatCard('Avg. Monthly Maint.', '€${_avgMaintMonthly.toStringAsFixed(2)}', Icons.build, Colors.orange)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(child: _buildStatCard('Avg. Total Monthly', '€${_avgTotalMonthly.toStringAsFixed(2)}', Icons.calendar_month, Colors.teal)),
+              const SizedBox(width: 10),
+              Expanded(child: Container()), 
+            ],
+          ),
 
           const SizedBox(height: 30),
 
-          // --- CHART 1: CONSUMPTION ---
+          // --- CHARTS ---
           const Text('Consumption Trend (L/100km)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           const SizedBox(height: 10),
           _buildChartCard(_consumptionSpots, Colors.green),
 
           const SizedBox(height: 30),
 
-          // --- CHART 2: PRICE PER LITER ---
           const Text('Price per Liter Trend (€/L)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           const SizedBox(height: 10),
-          _buildChartCard(_priceSpots, Colors.blue), // We pass the blue color here!
+          _buildChartCard(_priceSpots, Colors.blue),
 
-          const SizedBox(height: 80), 
+          const SizedBox(height: 30),
 
+          // --- PER-CAR STATISTICS ---
           const Text('Performance per Vehicle', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           const SizedBox(height: 10),
-          ..._carStats.map((car) => Card(
-            child: ExpansionTile(
-              title: Text(car['carName']),
-              children: [
-                _buildListTile('Total Fuel Consumed', '${(car['totalLiters'] ?? 0).toStringAsFixed(1)} L'),
-                _buildListTile('Total Distance', '${(car['totalDistance'] ?? 0).toStringAsFixed(0)} km'),
-                _buildListTile('Total Fuel Spent', '€${(car['totalFuelCost'] ?? 0).toStringAsFixed(2)}'),
-                const Divider(),
-                _buildListTile('Avg. Price/L', '€${(car['avgPricePerLiter'] ?? 0).toStringAsFixed(2)}'),
-                _buildListTile('Avg. Cost/Stop', '€${(car['avgCostPerStop'] ?? 0).toStringAsFixed(2)}'),
-                _buildListTile('Avg. Liters/Stop', '${(car['avgLitersPerStop'] ?? 0).toStringAsFixed(1)} L'),
-                _buildListTile('Avg. Dist./Stop', '${(car['avgDistancePerStop'] ?? 0).toStringAsFixed(0)} km'),
-                _buildListTile('Avg. Consumption', '${(car['avgConsumption'] ?? 0).toStringAsFixed(2)} L/100km'),
-              ],
-            ),
-          )),
-          const SizedBox(height: 80),
+          if (_carStats.isEmpty)
+            const Card(child: Padding(padding: EdgeInsets.all(16.0), child: Text('No car data available yet.')))
+          else
+            ..._carStats.map((car) => Card(
+              child: ExpansionTile(
+                title: Text(car['carName'] ?? 'Unknown Car', style: const TextStyle(fontWeight: FontWeight.bold)),
+                children: [
+                  _buildListTile('Total Fuel Consumed', '${(car['totalLiters'] ?? 0).toStringAsFixed(1)} L'),
+                  _buildListTile('Total Distance', '${(car['totalDistance'] ?? 0).toStringAsFixed(0)} km'),
+                  _buildListTile('Total Fuel Spent', '€${(car['totalFuelCost'] ?? 0).toStringAsFixed(2)}'),
+                  _buildListTile('Total Maint. Spent', '€${(car['totalMaintenanceCost'] ?? 0).toStringAsFixed(2)}'),
+                  _buildListTile('Total Running Cost', '€${((car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0)).toStringAsFixed(2)}'),
+                  const Divider(),
+                  _buildListTile('Avg. Price/L', '€${(car['avgPricePerLiter'] ?? 0).toStringAsFixed(2)}'),
+                  _buildListTile('Avg. Cost/Stop', '€${(car['avgCostPerStop'] ?? 0).toStringAsFixed(2)}'),
+                  _buildListTile('Avg. Liters/Stop', '${(car['avgLitersPerStop'] ?? 0).toStringAsFixed(1)} L'),
+                  _buildListTile('Avg. Dist./Stop', '${(car['avgDistancePerStop'] ?? 0).toStringAsFixed(0)} km'),
+                  _buildListTile('Avg. Consumption', '${(car['avgConsumption'] ?? 0).toStringAsFixed(2)} L/100km'),
+                ],
+              ),
+            )),
+
+          const SizedBox(height: 80), 
         ],
       ),
-    );
-  }
-
-  Widget _buildListTile(String title, String value) {
-    return ListTile(
-      title: Text(title, style: const TextStyle(fontSize: 14)),
-      trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-      visualDensity: VisualDensity.compact,
     );
   }
 
@@ -202,7 +273,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  // --- UPDATED: REUSABLE CHART WIDGET ---
   Widget _buildChartCard(List<FlSpot> spots, Color lineColor) {
     if (spots.isEmpty || spots.length < 2) {
       return const Card(
@@ -234,7 +304,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 LineChartBarData(
                   spots: spots,
                   isCurved: true, 
-                  color: lineColor, // Uses the color we pass in
+                  color: lineColor, 
                   barWidth: 3,
                   dotData: const FlDotData(show: true),
                   belowBarData: BarAreaData(show: true, color: lineColor.withOpacity(0.2)),
@@ -244,6 +314,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildListTile(String title, String value) {
+    return ListTile(
+      title: Text(title, style: const TextStyle(fontSize: 14)),
+      trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+      visualDensity: VisualDensity.compact,
     );
   }
 }
