@@ -71,7 +71,7 @@ class HomeScreenState extends State<HomeScreen> {
                   elevation: 2,
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   child: ListTile(
-                    title: Text('${stop['carName']} @ ${stop['stationName']}'),
+                    title: Text('${stop['carName']} at ${stop['stationName']}'),
                     // NEW: Multi-line subtitle using our calculations
                     subtitle: Builder(
                       builder: (context) {
@@ -86,7 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
                             : '- €/L';
 
                         return Text(
-                          'Date: ${stop['date']} • Distance: ${stop['distance'] ?? '-'} km\n$consumptionStr • $priceLStr'
+                          'Date: ${stop['date']} ${stop['distance'] != null ? '• Distance: ${stop['distance']} km' : ''} ${stop['liters'] != null ? '• Liters: ${stop['liters']}' : ''}\n$consumptionStr • $priceLStr'
                         );
                       }
                     ),

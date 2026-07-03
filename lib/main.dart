@@ -170,7 +170,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // Dynamic App Bar Title
-    List<String> titles = ['Home', 'Statistics', 'Manage Data', 'Settings'];
+    List<String> titles = ['Home', 'Statistics', 'Manage Data', 'Settings & More'];
 
     return Scaffold(
       appBar: AppBar(

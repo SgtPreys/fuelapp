@@ -67,11 +67,11 @@ class ManageDataScreenState extends State<ManageDataScreen> {
             indicatorColor: Colors.blue,
             // --- NEW ORDER: Fuel, Maintenance, Stations, Companies, Cars ---
             tabs: [
-              Tab(icon: Icon(Icons.ev_station), text: 'Fuel'),
-              Tab(icon: Icon(Icons.build), text: 'Maintenance'),
-              Tab(icon: Icon(Icons.local_gas_station), text: 'Stations'),
-              Tab(icon: Icon(Icons.store), text: 'Companies'),
-              Tab(icon: Icon(Icons.directions_car), text: 'Cars'),
+              Tab(icon: Icon(Icons.ev_station, color: Colors.blue), text: 'Fuel'),
+              Tab(icon: Icon(Icons.build, color: Colors.orange), text: 'Maintenance'),
+              Tab(icon: Icon(Icons.local_gas_station, color: Colors.teal), text: 'Stations'),
+              Tab(icon: Icon(Icons.store, color: Colors.purple), text: 'Companies'),
+              Tab(icon: Icon(Icons.directions_car, color: Colors.indigo), text: 'Cars'),
             ],
           ),
           Expanded(
@@ -87,7 +87,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           final fuelStop = _fuel[index];
                           return ListTile(
                             leading: const Icon(Icons.ev_station, color: Colors.blue),
-                            title: Text('${fuelStop['carName']} @ ${fuelStop['stationName']}'),
+                            title: Text('${fuelStop['carName']} at ${fuelStop['stationName']}'),
                             subtitle: Builder(
                               builder: (context) {
                                 final fuelObj = FuelStop.fromMap(fuelStop);
@@ -97,7 +97,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                                 String priceLStr = fuelObj.pricePerLiter != null 
                                     ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
                                     : '-';
-                                return Text('Date: ${fuelStop['date']}\n$consumptionStr • $priceLStr');
+                                return Text('Date: ${fuelStop['date']} ${fuelStop['distance'] != null ? '• Distance: ${fuelStop['distance']} km' : ''} ${fuelStop['liters'] != null ? '• Liters: ${fuelStop['liters']}' : ''}\n$consumptionStr • $priceLStr');
                               }
                             ),
                             isThreeLine: true,
@@ -125,7 +125,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           return ListTile(
                             leading: const Icon(Icons.build, color: Colors.orange),
                             title: Text('${maintStop['occurrence']}'),
-                            subtitle: Text('${maintStop['carName']} @ ${maintStop['companyName']}\nDate: ${maintStop['date']}'),
+                            subtitle: Text('${maintStop['carName']} at ${maintStop['companyName']}\nDate: ${maintStop['date']}'),
                             isThreeLine: true,
                             trailing: Text(maintStop['totalPrice'] != null ? '€${maintStop['totalPrice']}' : ''),
                             onTap: () async {
@@ -149,7 +149,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemBuilder: (context, index) {
                           final station = _stations[index];
                           return ListTile(
-                            leading: const Icon(Icons.local_gas_station),
+                            leading: const Icon(Icons.local_gas_station, color: Colors.teal),
                             title: Text(station['name']),
                             subtitle: Text(station['type'] ?? 'Unknown Type'),
                             onTap: () async {
@@ -173,7 +173,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemBuilder: (context, index) {
                           final company = _companies[index];
                           return ListTile(
-                            leading: const Icon(Icons.store),
+                            leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
                             subtitle: Text(company['contactPerson'] ?? 'No contact person'),
                             onTap: () async {
@@ -197,9 +197,9 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemBuilder: (context, index) {
                           final carMap = _cars[index];
                           return ListTile(
-                            leading: const Icon(Icons.directions_car),
+                            leading: const Icon(Icons.directions_car, color: Colors.indigo),
                             title: Text(carMap['carName']),
-                            subtitle: Text(carMap['manufacturer'] ?? 'Unknown Manufacturer'),
+                            subtitle: Text('${carMap['manufacturer'] ?? 'Unknown Manufacturer'} \nStatus: ${carMap['status'] ?? 'Unknown'}'),
                             onTap: () async {
                               final selectedCar = Car.fromMap(carMap);
                               final result = await showModalBottomSheet(
