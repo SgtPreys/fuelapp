@@ -157,7 +157,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           return ListTile(
                             leading: const Icon(Icons.local_gas_station, color: Colors.teal),
                             title: Text(station['name']),
-                            subtitle: Text(station['type'] ?? 'Unknown Type'),
+                            subtitle: Text(station['location'] ?? 'Unknown Location'),
                             trailing: Text('Total Spent:\n${station['totalSpent'] != null ? '€${(station['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal, fontSize: 15),
                             ),
@@ -185,7 +185,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           return ListTile(
                             leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
-                            subtitle: Text(company['contactPerson'] ?? 'No contact person'),
+                            subtitle: Text('${company['address'] ?? 'No address'}\n ${company['contactPerson'] ?? 'No contact person'}\n ${company['telephone'] ?? 'No Phonenumber'}'),
                             trailing: Text('Total Spent:\n${company['totalSpent'] != null ? '€${(company['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 15),
                             ),
