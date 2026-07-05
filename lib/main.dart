@@ -9,6 +9,7 @@ import 'station_form.dart';
 import 'company_form.dart';
 import 'statistics_screen.dart';
 import 'package:flutter/services.dart';
+import 'settings_screen.dart';
 
 void main() {
   // Add this line to ensure the engine is ready for the database!
@@ -56,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
       case 2:
         return ManageDataScreen(key: _manageDataKey); // Your tabbed screen!
       case 3:
-        return const Center(child: Text('App Settings & Preferences'));
+        return SettingsScreen(); // Your settings screen!
       default:
         return HomeScreen(key: _homeKey);
     }
@@ -220,6 +221,12 @@ class _MainScreenState extends State<MainScreen> {
         renderOverlay: false,
         spacing: 10,
         spaceBetweenChildren: 10,
+        onOpen: (){
+          HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+        },
+        onClose: (){
+          HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+        },
         tooltip: 'Add Data',
         elevation: 8.0,
         // The children now load dynamically from our helper function!

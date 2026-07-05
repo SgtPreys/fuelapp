@@ -145,12 +145,42 @@ class _StationFormState extends State<StationForm> {
               const SizedBox(height: 10),
               Center(
                 child: TextButton(
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
                   onPressed: () async {
-                    HapticFeedback.heavyImpact();
-                    // Tell the database to delete this ID
-                    await DatabaseHelper.instance.deleteStation(widget.existingStation!.id!);
-                    if (mounted) {
-                      Navigator.pop(context, true); // Close form and trigger refresh
+                    // Show confirmation dialog
+                    bool? confirmDelete = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Delete Gas Station'),
+                        content: const Text('Are you sure you want to delete this gas station? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              HapticFeedback.mediumImpact();
+                              Navigator.pop(context, false); // Cancel
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(foregroundColor: Colors.red),
+                            onPressed: () {
+                              HapticFeedback.mediumImpact();
+                              Navigator.pop(context, true);
+                            }, // Confirm
+                            child: const Text('Delete')
+                          ),
+                        ],
+                      ),
+                    );
+
+                    // Check if user confirmed
+                    if (confirmDelete == true) {
+                      HapticFeedback.heavyImpact();
+                      // Tell the database to delete this ID
+                      await DatabaseHelper.instance.deleteStation(widget.existingStation!.id!);
+                      if (mounted) {
+                        Navigator.pop(context, true); // Close form and trigger refresh
+                      }
                     }
                   },
                   child: const Text('Delete Gas Station', style: TextStyle(color: Colors.red)),
