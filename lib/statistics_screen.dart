@@ -23,7 +23,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   List<Map<String, dynamic>> _carStats = [];
   
   List<Map<String, dynamic>> _monthlySpendList = [];
-  double _avgMonthlySpend = 0.0;
   double _avgFuelMonthly = 0.0;
   double _avgMaintMonthly = 0.0;
   double _avgTotalMonthly = 0.0;
@@ -307,7 +306,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   color: lineColor, 
                   barWidth: 3,
                   dotData: const FlDotData(show: true),
-                  belowBarData: BarAreaData(show: true, color: lineColor.withOpacity(0.2)),
+                  belowBarData: BarAreaData(show: true, color: lineColor.withValues(alpha: 0.2)),
                 ),
               ],
             ),

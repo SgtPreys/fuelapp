@@ -174,6 +174,32 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
+// --- NEW: Helper widget for navigation icons with text ---
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    final isSelected = _selectedIndex == index;
+    final color = isSelected ? Colors.blue : Colors.grey;
+    
+    return InkWell(
+      onTap: () {
+        HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+        setState(() => _selectedIndex = index);
+      },
+      borderRadius: BorderRadius.circular(50),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color),
+            const SizedBox(height: 2),
+            Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Dynamic App Bar Title
@@ -202,48 +228,27 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       
       // --- UPDATED: The 4-Icon Balanced Navigation Bar ---
+      // --- UPDATED: Navigation Bar with Labels ---
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
+        clipBehavior: Clip.antiAlias,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Left Side
-            IconButton(
-              color: _selectedIndex == 0 ? Colors.blue : Colors.grey,
-              icon: const Icon(Icons.home),
-              onPressed: () {
-                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
-                setState(() => _selectedIndex = 0);
-              },
+            // Left Side Group
+            Row(
+              children: [
+                _buildNavItem(Icons.home, 'Home', 0),
+                _buildNavItem(Icons.bar_chart, 'Stats', 1),
+              ],
             ),
-            IconButton(
-              color: _selectedIndex == 1 ? Colors.blue : Colors.grey,
-              icon: const Icon(Icons.bar_chart),
-              onPressed: () {
-                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
-                setState(() => _selectedIndex = 1);
-              },
-            ),
-            
-            const SizedBox(width: 48), // Space for the center FAB
-            
-            // Right Side
-            IconButton(
-              color: _selectedIndex == 2 ? Colors.blue : Colors.grey,
-              icon: const Icon(Icons.category), // Using your new icon!
-              onPressed: () {
-                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
-                setState(() => _selectedIndex = 2);
-              },
-            ),
-            IconButton(
-              color: _selectedIndex == 3 ? Colors.blue : Colors.grey,
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
-                setState(() => _selectedIndex = 3);
-              },
+            // Right Side Group
+            Row(
+              children: [
+                _buildNavItem(Icons.category, 'Data', 2),
+                _buildNavItem(Icons.settings, 'Settings', 3),
+              ],
             ),
           ],
         ),
