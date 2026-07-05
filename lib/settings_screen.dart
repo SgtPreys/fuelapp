@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fuelapp/database/database_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -92,7 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text("Confirm Deletion"),
+                    title: const Text("⚠️Confirm Deletion"),
                     content: const Text("Are you sure you want to delete all data? This action cannot be undone."),
                     actions: [
                       TextButton(
@@ -103,13 +104,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: const Text("Cancel"),
                       ),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
-                          // Placeholder for future logic
+                          await DatabaseHelper.instance.clearAllData();
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!")));
                         },
-                        child: const Text("Delete"),
+                        child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   );

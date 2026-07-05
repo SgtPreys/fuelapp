@@ -25,6 +25,21 @@ class DatabaseHelper {
     );
   }
 
+  Future<void> clearAllData() async {
+  final db = await instance.database;
+  
+  // Use a transaction to ensure all tables are cleared successfully
+  await db.transaction((txn) async {
+    await txn.delete('cars');      // Replace with your table name
+    await txn.delete('stations');
+    await txn.delete('companies');
+    await txn.delete('fuel_stops');
+    await txn.delete('maintenance_stops');
+  });
+  
+  print("All data records have been deleted, but the database file remains.");
+}
+
   // --- THE COMPLETE DATABASE SCHEMA ---
   Future _onCreate(Database db, int version) async {
     // 1. Vehicles Table
