@@ -20,24 +20,53 @@ class DatabaseHelper {
     return _database!;
   }
 
-  Future<void> importDatabaseFromJson() async {
-  // 1. Let user pick a file
-  FilePickerResult? result = await FilePicker.pickFiles(
-    type: FileType.custom,
-    allowedExtensions: ['json'],
-  );
+  Future<bool> importDatabaseFromJson() async {
+  try {
+    // 1. Let user pick a file
+    FilePickerResult? result = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
 
-  if (result != null) {
+    if (result == null) return false; // User canceled the picker
+
+    // Read the file once
     File file = File(result.files.single.path!);
     String jsonString = await file.readAsString();
-    Map<String, dynamic> jsonData = jsonDecode(jsonString);
 
-    // 2. Clear current data before importing (Crucial to avoid conflicts)
+    // 2. Decode the JSON (Catches format errors automatically)
+    dynamic decodedData = jsonDecode(jsonString);
+
+    // 3. VALIDATION: Check the overarching structure
+    if (decodedData is! Map<String, dynamic>) {
+      throw Exception("Invalid backup file: Root is not an object.");
+    }
+
+    // Validate that ALL your specific tables exist in the backup file
+    final expectedTables = [
+      'cars', 
+      'fuel_stops', 
+      'maintenance_stops', 
+      'stations', 
+      'companies'
+    ];
+    
+    for (String table in expectedTables) {
+      if (!decodedData.containsKey(table) || decodedData[table] is! List) {
+         throw Exception("Invalid backup file: Missing '$table' data.");
+      }
+    }
+
+    // If it passes validation, we proceed
+    Map<String, dynamic> jsonData = decodedData;
+
+    // 4. Clear current data before importing (Crucial to avoid conflicts)
     await clearAllData(); 
 
-    // 3. Insert the data
+    // 5. Insert the data safely using a transaction
     final db = await instance.database;
     await db.transaction((txn) async {
+      
       for (var car in jsonData['cars']) {
         await txn.insert('cars', car);
       }
@@ -53,10 +82,18 @@ class DatabaseHelper {
       for (var company in jsonData['companies']) {
         await txn.insert('companies', company);
       }
+      
     });
+
     print("Import successful!");
+    return true; // Success!
+
+  } catch (e) {
+    // Catches any file reading errors, JSON decoding errors, or validation errors
+    print("Import Error: $e");
+    return false; // Failed!
   }
-  }
+}
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);

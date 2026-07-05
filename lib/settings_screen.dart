@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:fuelapp/database/database_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -92,9 +90,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: Text("Henri R. Maertins"),
           ),
           const ListTile(
-            leading: Icon(Icons.person),
+            leading: Icon(Icons.people),
             title: Text("Tested by"),
-            subtitle: Text("Daniel Kaffenberger"),
+            subtitle: Text("Daniel Kaffenberger, David S. Zang"),
           ),
           const SizedBox(height: 30),
 
@@ -104,19 +102,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Text("Database Management", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           ListTile(
-            leading: const Icon(Icons.upload_file, color: Colors.blue),
+            leading: const Icon(Icons.file_upload, color: Colors.blue),
             title: const Text("Import Database"),
             onTap: () async {
+              
               HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("⚠️Confirm Import"),
-                    content: const Text("Are you sure you want to import the database? This will overwrite existing data."),
+                    content: const Text("Are you sure you want to import the database? This will overwrite existing data.\n\nMake sure you have a backup before proceeding. \n\nOnly import JSON files that were exported from this app!"),
                     actions: [
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                         },
@@ -124,13 +123,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
+                          bool success = await DatabaseHelper.instance.importDatabaseFromJson();
                           HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
-                          Navigator.of(context).pop();
                           await DatabaseHelper.instance.importDatabaseFromJson();
                           if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Import complete! Refreshing...')),
-                            );
+                            if (success) {
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Import complete! Refreshing...'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              Navigator.of(context).pop();
+                            } else {
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Failed to import. Invalid file format.'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              Navigator.of(context).pop();
+                            }
                           }
                         },
                         child: const Text("Import", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
@@ -176,7 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                           await DatabaseHelper.instance.clearAllData();
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!")));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!"), backgroundColor: Colors.red));
                         },
                         child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                       ),
