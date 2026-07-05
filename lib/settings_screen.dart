@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fuelapp/database/database_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -25,6 +29,40 @@ void _sendFeedback() async {
   } else {
     // Handle error (e.g., show a Snackbar)
     print('Could not launch email');
+  }
+}
+
+Future<File> exportDatabaseToJson() async {
+  final db = await DatabaseHelper.instance.database;
+
+  // 1. Fetch all data from your tables
+  final List<Map<String, dynamic>> cars = await db.query('cars');
+  final List<Map<String, dynamic>> fuelStops = await db.query('fuel_stops');
+  final List<Map<String, dynamic>> maintenanceStops = await db.query('maintenance_stops');
+  final List<Map<String, dynamic>> stations = await db.query('stations');
+  final List<Map<String, dynamic>> companies = await db.query('companies');
+
+  // 2. Structure the data as a Map
+  final Map<String, dynamic> dataToExport = {
+    'cars': cars,
+    'fuel_stops': fuelStops,
+    'maintenance_stops': maintenanceStops,
+    'stations': stations,
+    'companies': companies,
+    'exported_at': DateTime.now().toIso8601String(),
+  };
+
+  // 3. Convert to JSON string
+  final String jsonString = jsonEncode(dataToExport);
+
+  // 4. Save to a local file
+  try {
+    final directory = Directory('/storage/emulated/0/Download');
+    final file = File('${directory.path}/fuel_backup.json');
+    return await file.writeAsString(jsonString);
+  } catch (e) {
+    print("Error saving backup: $e");
+    rethrow;
   }
 }
 
@@ -68,19 +106,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.upload_file, color: Colors.blue),
             title: const Text("Import Database"),
-            onTap: () {
+            onTap: () async {
               HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
-              // Placeholder for future logic
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Import feature coming soon!")));
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("⚠️Confirm Import"),
+                    content: const Text("Are you sure you want to import the database? This will overwrite existing data."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Cancel"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
+                          Navigator.of(context).pop();
+                          await DatabaseHelper.instance.importDatabaseFromJson();
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Import complete! Refreshing...')),
+                            );
+                          }
+                        },
+                        child: const Text("Import", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  );
+                },
+              );
+              
             },
           ),
           ListTile(
             leading: const Icon(Icons.download, color: Colors.green),
             title: const Text("Export Database"),
-            onTap: () {
+            onTap: () async {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
-              // Placeholder for future logic
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Export feature coming soon!")));
+              File file = await exportDatabaseToJson();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Database exported to: ${file.path}")));
             },
           ),
           ListTile(
@@ -136,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text("App Version"),
-            trailing: const Text("1.1.0"), // Read-only
+            trailing: const Text("1.1.1"), // Read-only
           ),
           ListTile(
             leading: const Icon(Icons.email),

@@ -1,5 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 class DatabaseHelper {
   static const _databaseName = "FuelAppDatabase.db";
@@ -14,6 +18,44 @@ class DatabaseHelper {
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
+  }
+
+  Future<void> importDatabaseFromJson() async {
+  // 1. Let user pick a file
+  FilePickerResult? result = await FilePicker.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: ['json'],
+  );
+
+  if (result != null) {
+    File file = File(result.files.single.path!);
+    String jsonString = await file.readAsString();
+    Map<String, dynamic> jsonData = jsonDecode(jsonString);
+
+    // 2. Clear current data before importing (Crucial to avoid conflicts)
+    await clearAllData(); 
+
+    // 3. Insert the data
+    final db = await instance.database;
+    await db.transaction((txn) async {
+      for (var car in jsonData['cars']) {
+        await txn.insert('cars', car);
+      }
+      for (var fuelStop in jsonData['fuel_stops']) {
+        await txn.insert('fuel_stops', fuelStop);
+      }
+      for (var maintenanceStop in jsonData['maintenance_stops']) {
+        await txn.insert('maintenance_stops', maintenanceStop);
+      }
+      for (var station in jsonData['stations']) {
+        await txn.insert('stations', station);
+      }
+      for (var company in jsonData['companies']) {
+        await txn.insert('companies', company);
+      }
+    });
+    print("Import successful!");
+  }
   }
 
   Future<Database> _initDatabase() async {
@@ -411,4 +453,5 @@ class DatabaseHelper {
       ORDER BY monthYear DESC
     ''');
   }
+  
 }
