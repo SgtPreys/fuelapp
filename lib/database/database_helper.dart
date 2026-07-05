@@ -334,7 +334,7 @@ class DatabaseHelper {
       JOIN cars c ON f.carId = c.id
       JOIN stations s ON f.stationId = s.id
       ORDER BY f.date DESC
-      LIMIT 5
+      LIMIT 3
     ''');
   }
 
@@ -347,7 +347,7 @@ class DatabaseHelper {
       JOIN cars c ON m.carId = c.id
       JOIN companies comp ON m.companyId = comp.id
       ORDER BY m.date DESC
-      LIMIT 5
+      LIMIT 3
     ''');
   }
 
