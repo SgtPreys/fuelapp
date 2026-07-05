@@ -102,7 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Text("Database Management", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           ListTile(
-            leading: const Icon(Icons.file_upload, color: Colors.blue),
+            leading: const Icon(Icons.file_download, color: Colors.blue),
             title: const Text("Import Database"),
             onTap: () async {
               
@@ -158,7 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.download, color: Colors.green),
+            leading: const Icon(Icons.upload, color: Colors.green),
             title: const Text("Export Database"),
             onTap: () async {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
