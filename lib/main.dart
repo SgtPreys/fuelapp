@@ -234,19 +234,24 @@ class _MainScreenState extends State<MainScreen> {
         notchMargin: 8.0,
         clipBehavior: Clip.antiAlias,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // Left Side Group
             Row(
               children: [
                 _buildNavItem(Icons.home, 'Home', 0),
+                const SizedBox(width: 24), // Space between Home and Stats
                 _buildNavItem(Icons.bar_chart, 'Stats', 1),
               ],
             ),
+
+            const SizedBox(width: 48), // Space for the center FAB
+
             // Right Side Group
             Row(
               children: [
                 _buildNavItem(Icons.category, 'Data', 2),
+                const SizedBox(width: 24), // Space between Data and Settings
                 _buildNavItem(Icons.settings, 'Settings', 3),
               ],
             ),
