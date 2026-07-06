@@ -321,7 +321,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     eventLoader: _getEventsForDay, // This puts the dots under the days
                     startingDayOfWeek: StartingDayOfWeek.monday, // Optional: Starts week on Monday
                     calendarStyle: const CalendarStyle(
-                      markerDecoration: BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
                       todayDecoration: BoxDecoration(color: Colors.blueGrey, shape: BoxShape.circle),
                       selectedDecoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
                     ),
@@ -335,6 +334,40 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         _focusedDay = focusedDay; // update focused day as well
                       });
                     },
+                    calendarBuilders: CalendarBuilders(
+                      markerBuilder: (context, date, events) {
+                        if (events.isEmpty) return const SizedBox(); // No events, no dots
+
+                        // Check the list of events for this specific day
+                        bool hasFuel = events.any((event) => (event as Map)['type'] == 'Fuel');
+                        bool hasMaint = events.any((event) => (event as Map)['type'] == 'Maintenance');
+
+                        // Draw a row of colored dots at the bottom of the date cell
+                        return Positioned(
+                          bottom: 4, // Push it slightly up from the absolute bottom
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (hasFuel)
+                                Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                                  width: 7,
+                                  height: 7,
+                                  decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
+                                ),
+                              if (hasMaint)
+                                Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                                  width: 7,
+                                  height: 7,
+                                  decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.orange),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    // ---------------------------------------------
                   ),
                   
                   // --- LIST OF EVENTS FOR SELECTED DAY ---
@@ -349,8 +382,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         ),
                         title: Text(isFuel ? 'Fuel Stop' : 'Maintenance'),
                         subtitle: Text(isFuel 
-                            ? '${(event['liters'] ?? 0).toStringAsFixed(1)} L at ${(event['distance'] ?? 0).toStringAsFixed(0)} km'
-                            : '${event['title'] ?? 'Service'}'),
+                            ? '${(event['liters'] ?? 0).toStringAsFixed(1)} L at ${(event['distance'] ?? 0).toStringAsFixed(0)} km\n${event['stationName'] ?? 'Station Unknown'}'
+                            : '${event['title'] ?? 'Service'}\n${event['companyName'] ?? 'Company Unknown'}'),
                         trailing: Text(
                           '€${(event['totalPrice'] ?? 0).toStringAsFixed(2)}',
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
