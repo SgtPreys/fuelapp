@@ -105,7 +105,9 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                               }
                             ),
                             isThreeLine: true,
-                            trailing: Text(fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}' : ''),
+                            trailing: Text(fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}' : '',
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
+                            ),
                             onTap: () async {
                               HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                               final selectedFuel = FuelStop.fromMap(fuelStop);
@@ -132,7 +134,9 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             title: Text('${maintStop['occurrence']}'),
                             subtitle: Text('${maintStop['carName']} at ${maintStop['companyName']}\nDate: ${maintStop['date']}'),
                             isThreeLine: true,
-                            trailing: Text(maintStop['totalPrice'] != null ? '€${maintStop['totalPrice']}' : ''),
+                            trailing: Text(maintStop['totalPrice'] != null ? '€${maintStop['totalPrice']}' : '',
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.orange),
+                            ),
                             onTap: () async {
                               HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
                               final selectedMaint = MaintenanceStop.fromMap(maintStop);

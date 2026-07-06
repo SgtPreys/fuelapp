@@ -57,8 +57,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final monthlyData = await DatabaseHelper.instance.getMonthlySpend();
 
     final db = await DatabaseHelper.instance.database;
-    final allFuelStops = await db.query('fuel_stops', orderBy: 'date ASC');
-    final allMaintStops = await db.query('maintenance_stops');
+    //final allFuelStops = await db.query('fuel_stops', orderBy: 'date ASC');
+    final allFuelStops = await db.rawQuery('''
+      SELECT f.*, s.name as stationName 
+      FROM fuel_stops f 
+      LEFT JOIN stations s ON f.stationId = s.id
+    ''');
+    final allMaintStops = await db.rawQuery('''
+      SELECT m.*, c.name as companyName 
+      FROM maintenance_stops m 
+      LEFT JOIN companies c ON m.companyId = c.id
+    ''');
 
     Map<int, List<FlSpot>> tempCarCSpots = {};
     Map<int, List<FlSpot>> tempCarPSpots = {};
@@ -284,7 +293,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(monthYear, style: const TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.bold)),
+                            Text(monthYear, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
                             const SizedBox(height: 6),
                             // New Breakdown Rows
                             Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
@@ -382,8 +391,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         ),
                         title: Text(isFuel ? 'Fuel Stop' : 'Maintenance'),
                         subtitle: Text(isFuel 
-                            ? '${(event['liters'] ?? 0).toStringAsFixed(1)} L at ${(event['distance'] ?? 0).toStringAsFixed(0)} km\n${event['stationName'] ?? 'Station Unknown'}'
-                            : '${event['title'] ?? 'Service'}\n${event['companyName'] ?? 'Company Unknown'}'),
+                            ? 'Liters: ${(event['liters'] ?? 0).toStringAsFixed(1)} Distance: ${(event['distance'] ?? 0).toStringAsFixed(0)} km\nat ${event['stationName'] ?? 'Station Unknown'}'
+                            : '${event['occurrence'] ?? 'Other'}\nat ${event['companyName'] ?? 'Company Unknown'}'),
                         trailing: Text(
                           '€${(event['totalPrice'] ?? 0).toStringAsFixed(2)}',
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -520,7 +529,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildListTile(String title, String value) {
     return ListTile(
       title: Text(title, style: const TextStyle(fontSize: 14)),
-      trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+      trailing: Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       visualDensity: VisualDensity.compact,
     );
   }
@@ -539,7 +548,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             child: LineChart(
               LineChartData(
                 gridData: const FlGridData(show: false),
-                titlesData: const FlTitlesData(show: false), // Hide axes for a clean look
+                titlesData: const FlTitlesData(
+                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)), 
+              ), // Hide axes for a clean look
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
                   LineChartBarData(
