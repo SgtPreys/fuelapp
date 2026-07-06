@@ -452,7 +452,8 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getStatsPerCar() async {
     Database db = await instance.database;
     return await db.rawQuery('''
-      SELECT c.carName, 
+      SELECT  c.id,
+              c.carName, 
              (SELECT SUM(liters) FROM fuel_stops WHERE carId = c.id) as totalLiters, 
              (SELECT SUM(distance) FROM fuel_stops WHERE carId = c.id) as totalDistance, 
              (SELECT SUM(totalPrice) FROM fuel_stops WHERE carId = c.id) as totalFuelCost,

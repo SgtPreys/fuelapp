@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'database/database_helper.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -8,7 +9,8 @@ class StatisticsScreen extends StatefulWidget {
   @override
   State<StatisticsScreen> createState() => _StatisticsScreenState();
 }
-
+  
+  
 class _StatisticsScreenState extends State<StatisticsScreen> {
   bool _isLoading = true;
   
@@ -19,6 +21,20 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   
   List<FlSpot> _consumptionSpots = []; 
   List<FlSpot> _priceSpots = []; 
+
+  Map<int, List<FlSpot>> _carConsumptionSpots = {};
+  Map<int, List<FlSpot>> _carPriceSpots = {};
+
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  Map<DateTime, List<Map<String, dynamic>>> _calendarEvents = {};
+
+  List<Map<String, dynamic>> _getEventsForDay(DateTime day) {
+      // Convert the day being checked to our UTC format
+      final normalizedDay = DateTime.utc(day.year, day.month, day.day);
+      return _calendarEvents[normalizedDay] ?? [];
+    }
+
   
   List<Map<String, dynamic>> _carStats = [];
   
@@ -38,9 +54,39 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final maintCost = await DatabaseHelper.instance.getTotalMaintenanceCost();
     final chartRawData = await DatabaseHelper.instance.getFuelStopsForChart();
     final carStats = await DatabaseHelper.instance.getStatsPerCar();
-    
-    // --- UPDATED: Calculate Averages Split by Category ---
     final monthlyData = await DatabaseHelper.instance.getMonthlySpend();
+
+    final db = await DatabaseHelper.instance.database;
+    final allFuelStops = await db.query('fuel_stops', orderBy: 'date ASC');
+    final allMaintStops = await db.query('maintenance_stops');
+
+    Map<int, List<FlSpot>> tempCarCSpots = {};
+    Map<int, List<FlSpot>> tempCarPSpots = {};
+    Map<int, double> xIndexes = {};
+
+    for (var row in allFuelStops) {
+      int carId = row['carId'] as int;
+      double l = (row['liters'] as num?)?.toDouble() ?? 0;
+      double d = (row['distance'] as num?)?.toDouble() ?? 0;
+      double p = (row['totalPrice'] as num?)?.toDouble() ?? 0;
+
+      tempCarCSpots.putIfAbsent(carId, () => []);
+      tempCarPSpots.putIfAbsent(carId, () => []);
+      xIndexes.putIfAbsent(carId, () => 0.0);
+
+      bool validEntry = false;
+      if (l > 0 && d > 0) {
+        tempCarCSpots[carId]!.add(FlSpot(xIndexes[carId]!, (l / d) * 100));
+        validEntry = true;
+      }
+      if (l > 0 && p > 0) {
+        tempCarPSpots[carId]!.add(FlSpot(xIndexes[carId]!, p / l));
+        validEntry = true;
+      }
+      if (validEntry) {
+        xIndexes[carId] = xIndexes[carId]! + 1;
+      }
+    }
     
     double totalFuelMonthly = 0.0;
     double totalMaintMonthly = 0.0;
@@ -75,6 +121,37 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       if (validEntry) xIndex++;
     }
 
+    // ADD THIS TO FETCH CALENDAR EVENTS:
+    
+
+    Map<DateTime, List<Map<String, dynamic>>> tempEvents = {};
+
+    // Helper function to convert SQLite date strings into pure 'Year-Month-Day' DateTimes
+    DateTime normalizeDate(String dateStr) {
+      final parsed = DateTime.parse(dateStr);
+      // table_calendar works best with UTC dates for matching
+      return DateTime.utc(parsed.year, parsed.month, parsed.day); 
+    }
+
+    // Add Fuel Stops
+    for (var f in allFuelStops) {
+      if (f['date'] != null) {
+        final date = normalizeDate(f['date'].toString());
+        tempEvents.putIfAbsent(date, () => []);
+        // Copy the map and add a 'type' flag so we know what kind of stop it is
+        tempEvents[date]!.add({...f, 'type': 'Fuel'}); 
+      }
+    }
+    
+    // Add Maintenance Stops
+    for (var m in allMaintStops) {
+      if (m['date'] != null) {
+        final date = normalizeDate(m['date'].toString());
+        tempEvents.putIfAbsent(date, () => []);
+        tempEvents[date]!.add({...m, 'type': 'Maintenance'});
+      }
+    }
+
     setState(() {
       _totalFuelCost = (fuelData['totalFuelCost'] as num?)?.toDouble() ?? 0.0;
       _totalDistance = (fuelData['totalDistance'] as num?)?.toDouble() ?? 0.0;
@@ -87,6 +164,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       _avgFuelMonthly = avgFuelMonthly;
       _avgMaintMonthly = avgMaintMonthly;
       _avgTotalMonthly = avgTotalMonthly;
+      _carStats = carStats;
+      _carConsumptionSpots = tempCarCSpots;
+      _carPriceSpots = tempCarPSpots;
+      _calendarEvents = tempEvents;
       _isLoading = false;
     });
   }
@@ -106,11 +187,55 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Statistics', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
 
+
+          // --- PER-CAR STATISTICS ---
+          const Text("Performance per Vehicle", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          const SizedBox(height: 10),
+          if (_carStats.isEmpty)
+            const Card(child: Padding(padding: EdgeInsets.all(16.0), child: Text('No car data available yet.')))
+          else
+            ..._carStats.map((car) {
+              // 1. Grab the specific ID for this car
+              int carId = car['id'] ?? car['carId'] ?? 0; // Fallback to 0 if neither is available
+
+              return Card(
+                child: ExpansionTile(
+                  title: Text(car['carName'] ?? 'Unknown Car', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  children: [
+                    _buildListTile('Total Fuel Consumed', '${(car['totalLiters'] ?? 0).toStringAsFixed(1)} L'),
+                    _buildListTile('Total Distance', '${(car['totalDistance'] ?? 0).toStringAsFixed(0)} km'),
+                    _buildListTile('Total Fuel Spent', '€${(car['totalFuelCost'] ?? 0).toStringAsFixed(2)}'),
+                    _buildListTile('Total Maint. Spent', '€${(car['totalMaintenanceCost'] ?? 0).toStringAsFixed(2)}'),
+                    _buildListTile('Total Running Cost', '€${((car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0)).toStringAsFixed(2)}'),
+                    const Divider(),
+                    _buildListTile('Avg. Price/L', '€${(car['avgPricePerLiter'] ?? 0).toStringAsFixed(2)}'),
+                    _buildListTile('Avg. Cost/Stop', '€${(car['avgCostPerStop'] ?? 0).toStringAsFixed(2)}'),
+                    _buildListTile('Avg. Liters/Stop', '${(car['avgLitersPerStop'] ?? 0).toStringAsFixed(1)} L'),
+                    _buildListTile('Avg. Dist./Stop', '${(car['avgDistancePerStop'] ?? 0).toStringAsFixed(0)} km'),
+                    _buildListTile('Avg. Consumption', '${(car['avgConsumption'] ?? 0).toStringAsFixed(2)} L/100km'),
+                    const Divider(),
+                    
+                    // 2. Use carId instead of car here!
+                    _buildMiniChart(
+                      'Consumption (L/100km)', 
+                      _carConsumptionSpots[carId] ?? [], 
+                      Colors.blue
+                    ),
+                    _buildMiniChart(
+                      'Price per Liter (€)', 
+                      _carPriceSpots[carId] ?? [], 
+                      Colors.green
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              );
+            }), // Replaced the => with {} and a return statement
+          const SizedBox(height: 10),
           // --- HIGH LEVEL AGGREGATES ---
-          const Text('Total Costs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+          const Text('Total Costs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -131,7 +256,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           const SizedBox(height: 30),
 
           // --- UPDATED: MONTHLY SPEND HORIZONTAL LIST ---
-          const Text('Monthly Spend', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+          const Text('Monthly Spend', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           if (_monthlySpendList.isEmpty)
             const Text('No data yet.', style: TextStyle(color: Colors.grey))
@@ -178,8 +303,74 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
           const SizedBox(height: 30),
 
+          // --- NEW CALENDAR SECTION ---
+          const Padding(
+            padding: EdgeInsets.only(top: 24.0, bottom: 8.0),
+            child: Text('Expense Calendar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TableCalendar(
+                    firstDay: DateTime.utc(2000, 1, 1), // Earliest possible date
+                    lastDay: DateTime.utc(2050, 12, 31), // Latest possible date
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    eventLoader: _getEventsForDay, // This puts the dots under the days
+                    startingDayOfWeek: StartingDayOfWeek.monday, // Optional: Starts week on Monday
+                    calendarStyle: const CalendarStyle(
+                      markerDecoration: BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
+                      todayDecoration: BoxDecoration(color: Colors.blueGrey, shape: BoxShape.circle),
+                      selectedDecoration: BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
+                    ),
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false, // Hides the "2 weeks" / "month" toggle button
+                      titleCentered: true,
+                    ),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _focusedDay = focusedDay; // update focused day as well
+                      });
+                    },
+                  ),
+                  
+                  // --- LIST OF EVENTS FOR SELECTED DAY ---
+                  if (_selectedDay != null && _getEventsForDay(_selectedDay!).isNotEmpty) ...[
+                    const Divider(),
+                    ..._getEventsForDay(_selectedDay!).map((event) {
+                      bool isFuel = event['type'] == 'Fuel';
+                      return ListTile(
+                        leading: Icon(
+                          isFuel ? Icons.local_gas_station : Icons.build,
+                          color: isFuel ? Colors.blue : Colors.orange,
+                        ),
+                        title: Text(isFuel ? 'Fuel Stop' : 'Maintenance'),
+                        subtitle: Text(isFuel 
+                            ? '${(event['liters'] ?? 0).toStringAsFixed(1)} L at ${(event['distance'] ?? 0).toStringAsFixed(0)} km'
+                            : '${event['title'] ?? 'Service'}'),
+                        trailing: Text(
+                          '€${(event['totalPrice'] ?? 0).toStringAsFixed(2)}',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      );
+                    }).toList(),
+                  ] else if (_selectedDay != null) ...[
+                     const Padding(
+                       padding: EdgeInsets.all(16.0),
+                       child: Text('No expenses recorded on this day.', style: TextStyle(color: Colors.grey)),
+                     )
+                  ]
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
          // --- UPDATED: Efficiency Grid ---
-          const Text('Efficiency & Averages', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+          const Text('Efficiency & Averages', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -209,42 +400,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           const SizedBox(height: 30),
 
           // --- CHARTS ---
-          const Text('Consumption Trend (L/100km)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+          const Text('Consumption Trend (L/100km)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           _buildChartCard(_consumptionSpots, Colors.green),
 
           const SizedBox(height: 30),
 
-          const Text('Price per Liter Trend (€/L)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
+          const Text('Price per Liter Trend (€/L)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           _buildChartCard(_priceSpots, Colors.blue),
 
           const SizedBox(height: 30),
 
-          // --- PER-CAR STATISTICS ---
-          const Text('Performance per Vehicle', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey)),
-          const SizedBox(height: 10),
-          if (_carStats.isEmpty)
-            const Card(child: Padding(padding: EdgeInsets.all(16.0), child: Text('No car data available yet.')))
-          else
-            ..._carStats.map((car) => Card(
-              child: ExpansionTile(
-                title: Text(car['carName'] ?? 'Unknown Car', style: const TextStyle(fontWeight: FontWeight.bold)),
-                children: [
-                  _buildListTile('Total Fuel Consumed', '${(car['totalLiters'] ?? 0).toStringAsFixed(1)} L'),
-                  _buildListTile('Total Distance', '${(car['totalDistance'] ?? 0).toStringAsFixed(0)} km'),
-                  _buildListTile('Total Fuel Spent', '€${(car['totalFuelCost'] ?? 0).toStringAsFixed(2)}'),
-                  _buildListTile('Total Maint. Spent', '€${(car['totalMaintenanceCost'] ?? 0).toStringAsFixed(2)}'),
-                  _buildListTile('Total Running Cost', '€${((car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0)).toStringAsFixed(2)}'),
-                  const Divider(),
-                  _buildListTile('Avg. Price/L', '€${(car['avgPricePerLiter'] ?? 0).toStringAsFixed(2)}'),
-                  _buildListTile('Avg. Cost/Stop', '€${(car['avgCostPerStop'] ?? 0).toStringAsFixed(2)}'),
-                  _buildListTile('Avg. Liters/Stop', '${(car['avgLitersPerStop'] ?? 0).toStringAsFixed(1)} L'),
-                  _buildListTile('Avg. Dist./Stop', '${(car['avgDistancePerStop'] ?? 0).toStringAsFixed(0)} km'),
-                  _buildListTile('Avg. Consumption', '${(car['avgConsumption'] ?? 0).toStringAsFixed(2)} L/100km'),
-                ],
-              ),
-            )),
+          
 
           const SizedBox(height: 80), 
         ],
@@ -321,6 +489,41 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       title: Text(title, style: const TextStyle(fontSize: 14)),
       trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
       visualDensity: VisualDensity.compact,
+    );
+  }
+  Widget _buildMiniChart(String title, List<FlSpot> spots, Color color) {
+    if (spots.isEmpty) return const SizedBox();
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 120, // Smaller height for the card
+            child: LineChart(
+              LineChartData(
+                gridData: const FlGridData(show: false),
+                titlesData: const FlTitlesData(show: false), // Hide axes for a clean look
+                borderData: FlBorderData(show: false),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: true,
+                    color: color,
+                    barWidth: 3,
+                    isStrokeCapRound: true,
+                    dotData: const FlDotData(show: false),
+                    belowBarData: BarAreaData(show: true, color: color.withOpacity(0.2)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
