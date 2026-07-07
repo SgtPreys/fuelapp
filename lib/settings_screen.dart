@@ -90,7 +90,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.all(16.0),
         children: [
           // --- App Info Section ---
-          const Text("App Info", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
+          const Text("App Info", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 2000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           const ListTile(
             leading: Icon(Icons.person),
@@ -108,7 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
 
           // --- DATABASE OPTIONS ---
-          const Text("Database Management", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
+          const Text("Database Management", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 2000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           ListTile(
             leading: const Icon(Icons.file_download, color: Colors.blue),
@@ -211,7 +211,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           const Divider(),
-          const Text("Preferences", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
+          const Text("Preferences", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 2000.ms, color: Colors.orange),
           //const Padding(
           //  padding: EdgeInsets.all(16.0),
           //  //child: Text("PREFERENCES", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
@@ -226,7 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           const Divider(),
-          const Text("System", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
+          const Text("System", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 2000.ms, color: Colors.orange),
           //const Padding(
           //  padding: EdgeInsets.all(16.0),
           //  child: Text("SYSTEM", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),

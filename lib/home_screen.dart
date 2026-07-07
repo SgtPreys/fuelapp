@@ -56,7 +56,7 @@ class HomeScreenState extends State<HomeScreen> {
               Text('Recent Fuel Stops', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue))
                // <-- NEW SHIMMER EFFECT
             ],
-          ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
+          ).animate().shimmer(duration: 2000.ms, color: Colors.orange),
           const Divider(),
           if (_recentFuel.isEmpty) 
             const Padding(
@@ -112,7 +112,7 @@ class HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 8),
               Text('Recent Maintenance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
             ],
-          ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.blue),
+          ).animate().shimmer(duration: 2000.ms, color: Colors.blue),
           const Divider(),
           if (_recentMaintenance.isEmpty)
             const Padding(
