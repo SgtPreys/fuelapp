@@ -10,12 +10,19 @@ import 'company_form.dart';
 import 'statistics_screen.dart';
 import 'package:flutter/services.dart';
 import 'settings_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/theme_provider.dart';
 
 void main() {
   // Add this line to ensure the engine is ready for the database!
   WidgetsFlutterBinding.ensureInitialized(); 
   
-  runApp(const FuelApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const FuelApp(),
+    ),
+  );
 }
 
 class FuelApp extends StatelessWidget {
@@ -23,12 +30,12 @@ class FuelApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       title: 'FuelApp',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true, 
-      ),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.themeMode,
       home: const MainScreen(),
     );
   }

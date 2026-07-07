@@ -444,13 +444,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           // --- CHARTS ---
           const Text('Consumption Trend (L/100km)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
-          _buildChartCard(_consumptionSpots, Colors.green),
+          _buildChartCard(_consumptionSpots, Colors.blue),
 
           const SizedBox(height: 30),
 
           const Text('Price per Liter Trend (€/L)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
-          _buildChartCard(_priceSpots, Colors.blue),
+          _buildChartCard(_priceSpots, Colors.green),
 
           const SizedBox(height: 30),
 

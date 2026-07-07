@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:fuelapp/database/database_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'providers/theme_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -77,6 +79,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Get access to the provider
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
+    // 2. Check if the current mode is dark
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -206,10 +213,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: EdgeInsets.all(16.0),
             child: Text("PREFERENCES", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
-          ListTile(
-            title: const Text("Dark Mode"),
-            trailing: const Text("Coming soon"),
-            onTap: () { /* Open selection dialog */ },
+          SwitchListTile(
+            title: const Text('Enable Dark Mode'),
+            secondary: const Icon(Icons.dark_mode),
+            value: isDarkMode,
+            onChanged: (bool value) {
+              // Tell the provider to flip the switch and save it!
+              themeProvider.toggleTheme(value);
+            },
           ),
           const Divider(),
           const Padding(
