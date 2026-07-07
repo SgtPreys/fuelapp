@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'database/database_helper.dart';
 import 'models/fuel_stop.dart';
 import 'package:flutter/services.dart';
@@ -52,9 +53,10 @@ class HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(Icons.ev_station, color: Colors.blue),
               SizedBox(width: 8),
-              Text('Recent Fuel Stops', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Recent Fuel Stops', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue))
+               // <-- NEW SHIMMER EFFECT
             ],
-          ),
+          ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
           const Divider(),
           if (_recentFuel.isEmpty) 
             const Padding(
@@ -108,9 +110,9 @@ class HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(Icons.build, color: Colors.orange),
               SizedBox(width: 8),
-              Text('Recent Maintenance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Recent Maintenance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
             ],
-          ),
+          ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.blue),
           const Divider(),
           if (_recentMaintenance.isEmpty)
             const Padding(

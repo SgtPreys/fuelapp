@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'database/database_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -200,7 +201,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
 
           // --- PER-CAR STATISTICS ---
-          const Text("Performance per Vehicle", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          const Text("Performance per Vehicle", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           if (_carStats.isEmpty)
             const Card(child: Padding(padding: EdgeInsets.all(16.0), child: Text('No car data available yet.')))
@@ -244,7 +245,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             }), // Replaced the => with {} and a return statement
           const SizedBox(height: 10),
           // --- HIGH LEVEL AGGREGATES ---
-          const Text('Total Costs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          const Text('Total Costs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -265,7 +266,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           const SizedBox(height: 30),
 
           // --- UPDATED: MONTHLY SPEND HORIZONTAL LIST ---
-          const Text('Monthly Spend', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          const Text('Monthly Spend', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           if (_monthlySpendList.isEmpty)
             const Text('No data yet.', style: TextStyle(color: Colors.grey))
@@ -412,7 +413,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           const SizedBox(height: 20),
 
          // --- UPDATED: Efficiency Grid ---
-          const Text('Efficiency & Averages', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          const Text('Efficiency & Averages', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -479,7 +480,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ],
         ),
       ),
-    );
+    ); // <-- NEW ANIMATION
   }
 
   Widget _buildChartCard(List<FlSpot> spots, Color lineColor) {
