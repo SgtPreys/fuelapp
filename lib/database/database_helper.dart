@@ -117,7 +117,25 @@ class DatabaseHelper {
   });
   
   print("All data records have been deleted, but the database file remains.");
-}
+  }
+
+  Future<void> clearAllDataFuelstops() async {
+  final db = await instance.database;
+  // Use a transaction to ensure all tables are cleared successfully
+  await db.transaction((txn) async {
+    await txn.delete('fuel_stops');
+  });
+  print("All data records in fuel_stops have been deleted, but the database file remains.");
+  }
+
+  Future<void> clearAllDataMaintenanceStops() async {
+  final db = await instance.database;
+  // Use a transaction to ensure all tables are cleared successfully
+  await db.transaction((txn) async {
+    await txn.delete('maintenance_stops');
+  });
+  print("All data records in maintenance_stops have been deleted, but the database file remains.");
+  }
 
   // --- THE COMPLETE DATABASE SCHEMA ---
   Future _onCreate(Database db, int version) async {

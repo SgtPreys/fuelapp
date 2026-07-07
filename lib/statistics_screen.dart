@@ -63,11 +63,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       SELECT f.*, s.name as stationName 
       FROM fuel_stops f 
       LEFT JOIN stations s ON f.stationId = s.id
+      ORDER BY f.date ASC
     ''');
     final allMaintStops = await db.rawQuery('''
       SELECT m.*, c.name as companyName 
       FROM maintenance_stops m 
       LEFT JOIN companies c ON m.companyId = c.id
+      ORDER BY m.date ASC
     ''');
 
     Map<int, List<FlSpot>> tempCarCSpots = {};
@@ -507,13 +509,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               titlesData: const FlTitlesData(
                 topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)), 
+                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)), 
               ),
               borderData: FlBorderData(show: false),
               lineBarsData: [
                 LineChartBarData(
                   spots: spots,
-                  isCurved: true, 
+                  isCurved: false, 
                   color: lineColor, 
                   barWidth: 3,
                   dotData: const FlDotData(show: true),
@@ -552,18 +554,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 titlesData: const FlTitlesData(
                 topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)), 
+                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)), 
               ), // Hide axes for a clean look
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
                   LineChartBarData(
                     spots: spots,
-                    isCurved: true,
+                    isCurved: false,
                     color: color,
                     barWidth: 3,
                     isStrokeCapRound: true,
-                    dotData: const FlDotData(show: false),
-                    belowBarData: BarAreaData(show: true, color: color.withOpacity(0.2)),
+                    dotData: const FlDotData(show: true),
+                    belowBarData: BarAreaData(show: true, color: color.withValues(alpha:0.2)),
                   ),
                 ],
               ),

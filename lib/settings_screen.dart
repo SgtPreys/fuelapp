@@ -175,7 +175,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Database exported to: ${file.path}")));
             },
           ),
-          ListTile(
+          Card(
+            child: ExpansionTile(
+              leading: const Icon(Icons.delete_forever, color: Colors.red),
+              title: const Text("Delete Data"),
+            children: [
+              ListTile(
             leading: const Icon(Icons.delete_forever, color: Colors.red),
             title: const Text("Delete All Data"),
             onTap: () {
@@ -210,6 +215,78 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.ev_station, color: Colors.red),
+            title: const Text("Delete All Fuel Data"),
+            onTap: () {
+              HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+              // Confirmation dialog before deletion
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("⚠️Confirm Deletion"),
+                    content: const Text("Are you sure you want to delete all data? This action cannot be undone."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Cancel"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
+                          Navigator.of(context).pop();
+                          await DatabaseHelper.instance.clearAllDataFuelstops();
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!"), backgroundColor: Colors.red));
+                        },
+                        child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.build, color: Colors.red),
+            title: const Text("Delete All Maintenance Data"),
+            onTap: () {
+              HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+              // Confirmation dialog before deletion
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("⚠️Confirm Deletion"),
+                    content: const Text("Are you sure you want to delete all data? This action cannot be undone."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Cancel"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
+                          Navigator.of(context).pop();
+                          await DatabaseHelper.instance.clearAllDataMaintenanceStops();
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!"), backgroundColor: Colors.red));
+                        },
+                        child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+            ],),),
+          
           const Divider(),
           const Text("Preferences", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 2000.ms, color: Colors.orange),
           //const Padding(
