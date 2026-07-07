@@ -88,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // --- VERSION SECTION ---
+          // --- App Info Section ---
           const Text("App Info", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           const ListTile(
@@ -230,7 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text("App Version"),
-            trailing: const Text("1.1.2"), // Read-only
+            trailing: const Text("1.1.3"), // Read-only
           ),
           ListTile(
             leading: const Icon(Icons.email),
