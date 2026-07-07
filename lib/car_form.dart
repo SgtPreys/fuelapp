@@ -25,8 +25,8 @@ class _CarFormState extends State<CarForm> {
   final TextEditingController _soldPriceController = TextEditingController();
 
   final List<String> _statusOptions = ['Active', 'Sold', 'Retired'];
-  final List<String> _fuelOptions = ['Gasoline', 'Diesel', 'Electric', 'Hybrid', 'Other'];
-  final List<String> _tireOptions = ['Summer', 'Winter', 'All-Season', 'Track/Semi-Slick'];
+  final List<String> _fuelOptions = ['Gasoline E5','Gasoline E10', 'Diesel', 'Electric', 'Hybrid', 'Other'];
+  final List<String> _tireOptions = ['Summer', 'Winter', 'All-Season'];
 
   String? _selectedStatus = 'Active';
   String? _selectedFuel;
