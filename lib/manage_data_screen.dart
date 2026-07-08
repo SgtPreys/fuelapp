@@ -11,6 +11,7 @@ import 'models/fuel_stop.dart'; // NEW
 import 'maintenance_form.dart'; // NEW
 import 'models/maintenance_stop.dart'; // NEW
 import 'package:flutter/services.dart';
+import 'package:simple_rich_text/simple_rich_text.dart';
 
 class ManageDataScreen extends StatefulWidget {
   const ManageDataScreen({super.key});
@@ -101,11 +102,14 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                                 String priceLStr = fuelObj.pricePerLiter != null 
                                     ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
                                     : '-';
-                                return Text('Date: ${fuelStop['date']} ${fuelStop['distance'] != null ? '• Distance: ${fuelStop['distance']} km' : ''} ${fuelStop['liters'] != null ? '• Liters: ${fuelStop['liters']}' : ''}\n$consumptionStr • $priceLStr');
+                                return Text(
+                                  'Date: ${fuelStop['date']} ${fuelStop['distance'] != null ? '\nDistance: ${fuelStop['distance']} km' : ''} ${fuelStop['liters'] != null ? '• Liters: ${fuelStop['liters']}' : ''}\n$consumptionStr • $priceLStr'
+                                );
                               }
                             ),
                             isThreeLine: true,
-                            trailing: Text(fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}' : '',
+                            trailing: Text(
+                              fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}' : '',
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
                             ),
                             onTap: () async {
@@ -189,7 +193,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           return ListTile(
                             leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
-                            subtitle: Text('${company['address'] ?? 'No address'}\n ${company['contactPerson'] ?? 'No contact person'}\n ${company['telephone'] ?? 'No Phonenumber'}'),
+                            subtitle: Text('${company['address'] ?? 'No address'}\n${company['contactPerson'] ?? 'No contact person'}\n${company['telephone'] ?? 'No Phonenumber'}'),
                             trailing: Text('Total Spent:\n${company['totalSpent'] != null ? '€${(company['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 15),
                             ),

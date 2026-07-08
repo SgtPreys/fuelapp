@@ -56,7 +56,7 @@ class HomeScreenState extends State<HomeScreen> {
               Text('Recent Fuel Stops', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue))
                // <-- NEW SHIMMER EFFECT
             ],
-          ).animate().shimmer(duration: 2000.ms, color: Colors.orange),
+          ).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const Divider(),
           if (_recentFuel.isEmpty) 
             const Padding(
@@ -89,13 +89,13 @@ class HomeScreenState extends State<HomeScreen> {
                             : '- €/L';
 
                         return Text(
-                          'Date: ${stop['date']} ${stop['distance'] != null ? '• Distance: ${stop['distance']} km' : ''} ${stop['liters'] != null ? '• Liters: ${stop['liters']}' : ''}\n$consumptionStr • $priceLStr'
+                          'Date: ${stop['date']} ${stop['distance'] != null ? '\nDistance: ${stop['distance']} km' : ''} ${stop['liters'] != null ? '• Liters: ${stop['liters']}' : ''}\n$consumptionStr • $priceLStr'
                         );
                       }
                     ),
                     isThreeLine: true, // Gives the text more room to breathe
                     trailing: Text(
-                      stop['totalPrice'] != null ? '€${stop['totalPrice'].toStringAsFixed(2)}' : '-',
+                      stop['totalPrice'] != null ? '\n€${stop['totalPrice'].toStringAsFixed(2)}' : '-',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
                     ),
                   ),
@@ -112,7 +112,7 @@ class HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 8),
               Text('Recent Maintenance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
             ],
-          ).animate().shimmer(duration: 2000.ms, color: Colors.blue),
+          ).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const Divider(),
           if (_recentMaintenance.isEmpty)
             const Padding(
@@ -134,7 +134,7 @@ class HomeScreenState extends State<HomeScreen> {
                     subtitle: Text('${stop['carName']} at ${stop['companyName']}\nDate: ${stop['date']}'),
                     isThreeLine: true,
                     trailing: Text(
-                      stop['totalPrice'] != null ? '€${stop['totalPrice'].toStringAsFixed(2)}' : '-',
+                      stop['totalPrice'] != null ? '\n€${stop['totalPrice'].toStringAsFixed(2)}' : '-',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.orange),
                     ),
                   ),
