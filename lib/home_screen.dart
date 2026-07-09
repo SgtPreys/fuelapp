@@ -70,6 +70,14 @@ class HomeScreenState extends State<HomeScreen> {
               itemCount: _recentFuel.length,
               itemBuilder: (context, index) {
                 final stop = _recentFuel[index];
+                final fuelObj = FuelStop.fromMap(stop); // Use our model!
+                        String consumptionStr = fuelObj.consumption != null 
+                            ? '${fuelObj.consumption!.toStringAsFixed(2)} L/100km' 
+                            : '- L/100km';
+                            
+                        String priceLStr = fuelObj.pricePerLiter != null 
+                            ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
+                            : '- €/L';
                 return Card(
                   elevation: 2,
                   margin: const EdgeInsets.symmetric(vertical: 6),
@@ -78,16 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
                     // NEW: Multi-line subtitle using our calculations
                     subtitle: Builder(
                       builder: (context) {
-                        final fuelObj = FuelStop.fromMap(stop); // Use our model!
                         
-                        String consumptionStr = fuelObj.consumption != null 
-                            ? '${fuelObj.consumption!.toStringAsFixed(2)} L/100km' 
-                            : '- L/100km';
-                            
-                        String priceLStr = fuelObj.pricePerLiter != null 
-                            ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
-                            : '- €/L';
-
                         return Text(
                           'Date: ${stop['date']} ${stop['distance'] != null ? '\nDistance: ${stop['distance']} km' : ''} ${stop['liters'] != null ? '• Liters: ${stop['liters']}' : ''}\n$consumptionStr • $priceLStr'
                         );
@@ -95,7 +94,7 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     isThreeLine: true, // Gives the text more room to breathe
                     trailing: Text(
-                      stop['totalPrice'] != null ? '\n€${stop['totalPrice'].toStringAsFixed(2)}' : '-',
+                      stop['totalPrice'] != null ? '\n€${stop['totalPrice'].toStringAsFixed(2)}\n$consumptionStr' : '-',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
                     ),
                   ),
@@ -112,7 +111,7 @@ class HomeScreenState extends State<HomeScreen> {
               SizedBox(width: 8),
               Text('Recent Maintenance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
             ],
-          ).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          ).animate().shimmer(duration: 1000.ms, color: Colors.blue),
           const Divider(),
           if (_recentMaintenance.isEmpty)
             const Padding(

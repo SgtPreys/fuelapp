@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'database/database_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'dart:math' as math;
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -21,7 +22,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   double _totalLiters = 0.0;
   
   List<FlSpot> _consumptionSpots = []; 
+  List<String> _consumptionDates = [];
   List<FlSpot> _priceSpots = []; 
+  List<String> _priceDates = [];
 
   Map<int, List<FlSpot>> _carConsumptionSpots = {};
   Map<int, List<FlSpot>> _carPriceSpots = {};
@@ -163,6 +166,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         tempEvents[date]!.add({...m, 'type': 'Maintenance'});
       }
     }
+
+_consumptionSpots.clear();
+_consumptionDates.clear();
+
+for (var stop in allFuelStops) {
+  // Add the spot
+  _consumptionSpots.add(FlSpot(xIndex, stop['liters'] as double? ?? 0.0 / (stop['distance'] as double? ?? 1.0) * 100));
+  
+  // Create a short date label (e.g. "12.04" or "Oct 12")
+  // Assuming stop.date is a DateTime or easily parsed String:
+  DateTime date = DateTime.parse(stop['date'].toString());
+  String formattedDate = "${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}";
+  _consumptionDates.add(formattedDate);
+  _priceDates.add(formattedDate);
+  xIndex++;
+}
 
     setState(() {
       _totalFuelCost = (fuelData['totalFuelCost'] as num?)?.toDouble() ?? 0.0;
@@ -447,13 +466,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           // --- CHARTS ---
           const Text('Consumption Trend (L/100km)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
-          _buildChartCard(_consumptionSpots, Colors.blue),
+          _buildChartCard(_consumptionSpots, _consumptionDates, Colors.blue),
 
           const SizedBox(height: 30),
 
           const Text('Price per Liter Trend (€/L)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
-          _buildChartCard(_priceSpots, Colors.green),
+          _buildChartCard(_priceSpots, _priceDates, Colors.green),
 
           const SizedBox(height: 30),
 
@@ -485,47 +504,76 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     ); // <-- NEW ANIMATION
   }
 
-  Widget _buildChartCard(List<FlSpot> spots, Color lineColor) {
-    if (spots.isEmpty || spots.length < 2) {
-      return const Card(
-        elevation: 2,
-        child: Padding(
-          padding: EdgeInsets.all(32.0),
-          child: Center(child: Text('Not enough data to draw chart yet. Log at least two stops!', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
-        ),
-      );
-    }
-
-    return Card(
+  Widget _buildChartCard(List<FlSpot> spots, List<String> bottomLabels, Color lineColor) {
+  if (spots.isEmpty || spots.length < 2) {
+    return const Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.only(right: 24.0, left: 10.0, top: 24.0, bottom: 10.0),
-        child: SizedBox(
-          height: 200,
-          child: LineChart(
-            LineChartData(
-              gridData: const FlGridData(show: true, drawVerticalLine: false),
-              titlesData: const FlTitlesData(
-                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)), 
-              ),
-              borderData: FlBorderData(show: false),
-              lineBarsData: [
-                LineChartBarData(
-                  spots: spots,
-                  isCurved: false, 
-                  color: lineColor, 
-                  barWidth: 3,
-                  dotData: const FlDotData(show: true),
-                  belowBarData: BarAreaData(show: true, color: lineColor.withValues(alpha: 0.2)),
-                ),
-              ],
-            ),
+        padding: EdgeInsets.all(32.0),
+        child: Center(
+          child: Text(
+            'Not enough data to draw chart yet. Log at least two stops!',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey),
           ),
         ),
       ),
+    );
+  }
+
+  return Card(
+    elevation: 4,
+    child: Padding(
+      padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0, bottom: 8.0),
+      child: SizedBox(
+        height: 200,
+        child: LineChart(
+          LineChartData(
+            gridData: const FlGridData(show: false),
+            titlesData: FlTitlesData(
+              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              // This is the new bottom axis logic:
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 42, // Gives the text room to breathe 
+                  getTitlesWidget: (value, meta) {
+                    final int index = value.toInt();
+                    // Grab the date string that matches the spot's X index 
+                    if (index >= 0 && index < bottomLabels.length) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          bottomLabels[index],
+                          style: const TextStyle(fontSize: 10, color: Colors.grey),
+                        ),
+                      );
+                    }
+                    return const Text('');
+                  },
+                ),
+              ),
+            ),
+            borderData: FlBorderData(show: false),
+            lineBarsData: [
+              LineChartBarData(
+                spots: spots,
+                isCurved: true,
+                color: lineColor,
+                barWidth: 3,
+                isStrokeCapRound: true,
+                dotData: const FlDotData(show: true),
+                belowBarData: BarAreaData(
+                  show: true,
+                  color: lineColor.withOpacity(0.2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    )
     );
   }
 

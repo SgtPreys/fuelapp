@@ -90,18 +90,18 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemCount: _fuel.length,
                         itemBuilder: (context, index) {
                           final fuelStop = _fuel[index];
-                          return ListTile(
-                            leading: const Icon(Icons.ev_station, color: Colors.blue),
-                            title: Text('${fuelStop['carName']} at ${fuelStop['stationName']}'),
-                            subtitle: Builder(
-                              builder: (context) {
-                                final fuelObj = FuelStop.fromMap(fuelStop);
+                          final fuelObj = FuelStop.fromMap(fuelStop);
                                 String consumptionStr = fuelObj.consumption != null 
                                     ? '${fuelObj.consumption!.toStringAsFixed(2)} L/100km' 
                                     : '-';
                                 String priceLStr = fuelObj.pricePerLiter != null 
                                     ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
                                     : '-';
+                          return ListTile(
+                            leading: const Icon(Icons.ev_station, color: Colors.blue),
+                            title: Text('${fuelStop['carName']} at ${fuelStop['stationName']}'),
+                            subtitle: Builder(
+                              builder: (context) {
                                 return Text(
                                   'Date: ${fuelStop['date']} ${fuelStop['distance'] != null ? '\nDistance: ${fuelStop['distance']} km' : ''} ${fuelStop['liters'] != null ? '• Liters: ${fuelStop['liters']}' : ''}\n$consumptionStr • $priceLStr'
                                 );
@@ -109,7 +109,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             ),
                             isThreeLine: true,
                             trailing: Text(
-                              fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}' : '',
+                              fuelStop['totalPrice'] != null ? '€${fuelStop['totalPrice']}\n$consumptionStr' : '',
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
                             ),
                             onTap: () async {
@@ -193,7 +193,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           return ListTile(
                             leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
-                            subtitle: Text('${company['address'] ?? 'No address'}\n${company['contactPerson'] ?? 'No contact person'}\n${company['telephone'] ?? 'No Phonenumber'}'),
+                            subtitle: Text('${company['location'] ?? 'Unknown location'}\n${company['contactPerson'] ?? 'Unknown contact person'}\n${company['telephone'] ?? 'Unknown phone number'}'),
                             trailing: Text('Total Spent:\n${company['totalSpent'] != null ? '€${(company['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 15),
                             ),

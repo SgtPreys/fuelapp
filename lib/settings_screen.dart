@@ -100,7 +100,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const ListTile(
             leading: Icon(Icons.people),
             title: Text("Tested by"),
-            subtitle: Text("Daniel Kaffenberger, David S. Zang, Max Gruner, Eric Harder, and others"),
+            subtitle: Text("Daniel Kaffenberger, David S. Zang, Max Gruner, Eric Harder, Rebecca Reinhart and others"),
           ),
           
           const SizedBox(height: 30),

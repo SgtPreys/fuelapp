@@ -15,7 +15,7 @@ class MaintenanceForm extends StatefulWidget {
 
 class _MaintenanceFormState extends State<MaintenanceForm> {
   // --- NEW: Dropdown options and variable ---
-  final List<String> _occurrenceOptions = ['Repair', 'Parts', 'Check', 'Insurance', 'Tax', 'TÜV', 'Other'];
+  final List<String> _occurrenceOptions = ['Repair', 'Parts', 'Check/Service', 'Insurance', 'Tax', 'TÜV', 'Other'];
   String? _selectedOccurrence;
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
