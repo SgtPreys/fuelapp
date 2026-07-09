@@ -29,19 +29,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Map<int, List<FlSpot>> _carConsumptionSpots = {};
   Map<int, List<FlSpot>> _carPriceSpots = {};
 
+
+
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   Map<DateTime, List<Map<String, dynamic>>> _calendarEvents = {};
 
   List<Map<String, dynamic>> _getEventsForDay(DateTime day) {
-      // Convert the day being checked to our UTC format
-      final normalizedDay = DateTime.utc(day.year, day.month, day.day);
-      return _calendarEvents[normalizedDay] ?? [];
-    }
+    // Convert the day being checked to our UTC format
+    final normalizedDay = DateTime.utc(day.year, day.month, day.day);
+    return _calendarEvents[normalizedDay] ?? [];
+  }
 
-  
   List<Map<String, dynamic>> _carStats = [];
-  
+  Map<int, double> _carTotalDistance = {};
+  Map<int, double> _carTotalCost = {};
+    
   List<Map<String, dynamic>> _monthlySpendList = [];
   double _avgFuelMonthly = 0.0;
   double _avgMaintMonthly = 0.0;
@@ -56,18 +59,20 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Future<void> _loadStatistics() async {
     final fuelData = await DatabaseHelper.instance.getFuelAggregates();
     final maintCost = await DatabaseHelper.instance.getTotalMaintenanceCost();
-    final chartRawData = await DatabaseHelper.instance.getFuelStopsForChart();
+    // We will use allFuelStops directly for the chart so we don't need chartRawData anymore
     final carStats = await DatabaseHelper.instance.getStatsPerCar();
     final monthlyData = await DatabaseHelper.instance.getMonthlySpend();
 
     final db = await DatabaseHelper.instance.database;
-    //final allFuelStops = await db.query('fuel_stops', orderBy: 'date ASC');
+    
+    // Fetching Data with Names for the Calendar
     final allFuelStops = await db.rawQuery('''
       SELECT f.*, s.name as stationName 
       FROM fuel_stops f 
       LEFT JOIN stations s ON f.stationId = s.id
       ORDER BY f.date ASC
     ''');
+    
     final allMaintStops = await db.rawQuery('''
       SELECT m.*, c.name as companyName 
       FROM maintenance_stops m 
@@ -75,6 +80,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ORDER BY m.date ASC
     ''');
 
+    // 1. --- PER-CAR CHARTS LOGIC ---
     Map<int, List<FlSpot>> tempCarCSpots = {};
     Map<int, List<FlSpot>> tempCarPSpots = {};
     Map<int, double> xIndexes = {};
@@ -103,6 +109,43 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       }
     }
     
+
+    // 2. --- GLOBAL CHARTS & DATES LOGIC ---
+    List<FlSpot> cSpots = [];
+    List<FlSpot> pSpots = [];
+    List<String> tempConsumptionDates = [];
+    List<String> tempPriceDates = [];
+    double globalXIndex = 0; 
+    
+    for (var row in allFuelStops) {
+      double l = (row['liters'] as num?)?.toDouble() ?? 0;
+      double d = (row['distance'] as num?)?.toDouble() ?? 0;
+      double p = (row['totalPrice'] as num?)?.toDouble() ?? 0;
+      
+      // Extract and format the date for the X-Axis (e.g., "12.04" or "05.11")
+      String formattedDate = "";
+      if (row['date'] != null) {
+        DateTime date = DateTime.parse(row['date'].toString());
+        formattedDate = "${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}";
+      }
+
+      bool validGlobalEntry = false;
+      if (l > 0 && d > 0) {
+        cSpots.add(FlSpot(globalXIndex, (l / d) * 100));
+        tempConsumptionDates.add(formattedDate);
+        validGlobalEntry = true;
+      }
+      if (l > 0 && p > 0) {
+        pSpots.add(FlSpot(globalXIndex, p / l));
+        tempPriceDates.add(formattedDate);
+        validGlobalEntry = true;
+      }
+      if (validGlobalEntry) {
+        globalXIndex++;
+      }
+    }
+
+    // 3. --- MONTHLY AVERAGES LOGIC ---
     double totalFuelMonthly = 0.0;
     double totalMaintMonthly = 0.0;
     
@@ -115,50 +158,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     double avgMaintMonthly = monthlyData.isNotEmpty ? totalMaintMonthly / monthlyData.length : 0.0;
     double avgTotalMonthly = avgFuelMonthly + avgMaintMonthly;
 
-    List<FlSpot> cSpots = [];
-    List<FlSpot> pSpots = [];
-    double xIndex = 0; 
-    
-    for (var row in chartRawData) {
-      double l = (row['liters'] as num?)?.toDouble() ?? 0;
-      double d = (row['distance'] as num?)?.toDouble() ?? 0;
-      double p = (row['totalPrice'] as num?)?.toDouble() ?? 0;
-      
-      bool validEntry = false;
-      if (l > 0 && d > 0) {
-        cSpots.add(FlSpot(xIndex, (l / d) * 100));
-        validEntry = true;
-      }
-      if (l > 0 && p > 0) {
-        pSpots.add(FlSpot(xIndex, p / l));
-        validEntry = true;
-      }
-      if (validEntry) xIndex++;
-    }
-
-    // ADD THIS TO FETCH CALENDAR EVENTS:
-    
-
+    // 4. --- CALENDAR EVENTS LOGIC ---
     Map<DateTime, List<Map<String, dynamic>>> tempEvents = {};
 
-    // Helper function to convert SQLite date strings into pure 'Year-Month-Day' DateTimes
     DateTime normalizeDate(String dateStr) {
       final parsed = DateTime.parse(dateStr);
-      // table_calendar works best with UTC dates for matching
       return DateTime.utc(parsed.year, parsed.month, parsed.day); 
     }
 
-    // Add Fuel Stops
     for (var f in allFuelStops) {
       if (f['date'] != null) {
         final date = normalizeDate(f['date'].toString());
         tempEvents.putIfAbsent(date, () => []);
-        // Copy the map and add a 'type' flag so we know what kind of stop it is
         tempEvents[date]!.add({...f, 'type': 'Fuel'}); 
       }
     }
     
-    // Add Maintenance Stops
     for (var m in allMaintStops) {
       if (m['date'] != null) {
         final date = normalizeDate(m['date'].toString());
@@ -167,37 +182,29 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       }
     }
 
-_consumptionSpots.clear();
-_consumptionDates.clear();
-
-for (var stop in allFuelStops) {
-  // Add the spot
-  _consumptionSpots.add(FlSpot(xIndex, stop['liters'] as double? ?? 0.0 / (stop['distance'] as double? ?? 1.0) * 100));
-  
-  // Create a short date label (e.g. "12.04" or "Oct 12")
-  // Assuming stop.date is a DateTime or easily parsed String:
-  DateTime date = DateTime.parse(stop['date'].toString());
-  String formattedDate = "${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}";
-  _consumptionDates.add(formattedDate);
-  _priceDates.add(formattedDate);
-  xIndex++;
-}
-
+    // 5. --- UPDATE THE UI STATE ---
     setState(() {
       _totalFuelCost = (fuelData['totalFuelCost'] as num?)?.toDouble() ?? 0.0;
       _totalDistance = (fuelData['totalDistance'] as num?)?.toDouble() ?? 0.0;
       _totalLiters = (fuelData['totalLiters'] as num?)?.toDouble() ?? 0.0;
       _totalMaintenanceCost = maintCost;
+      
       _consumptionSpots = cSpots;
       _priceSpots = pSpots;
+      
+      // Save our safely extracted dates!
+      _consumptionDates = tempConsumptionDates;
+      _priceDates = tempPriceDates;
+      
       _carStats = carStats;
       _monthlySpendList = monthlyData;
       _avgFuelMonthly = avgFuelMonthly;
       _avgMaintMonthly = avgMaintMonthly;
       _avgTotalMonthly = avgTotalMonthly;
-      _carStats = carStats;
+      
       _carConsumptionSpots = tempCarCSpots;
       _carPriceSpots = tempCarPSpots;
+      
       _calendarEvents = tempEvents;
       _isLoading = false;
     });
@@ -230,7 +237,7 @@ for (var stop in allFuelStops) {
             ..._carStats.map((car) {
               // 1. Grab the specific ID for this car
               int carId = car['id'] ?? car['carId'] ?? 0; // Fallback to 0 if neither is available
-
+              
               return Card(
                 child: ExpansionTile(
                   title: Text(car['carName'] ?? 'Unknown Car', style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -240,6 +247,17 @@ for (var stop in allFuelStops) {
                     _buildListTile('Total Fuel Spent', '€${(car['totalFuelCost'] ?? 0).toStringAsFixed(2)}'),
                     _buildListTile('Total Maint. Spent', '€${(car['totalMaintenanceCost'] ?? 0).toStringAsFixed(2)}'),
                     _buildListTile('Total Running Cost', '€${((car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0)).toStringAsFixed(2)}'),
+                    const Divider(),
+                    
+                    // ADD THIS NEW LINE:
+                    Builder(builder: (context) {
+                      double totalCost = (car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0);
+                      double totalDist = (car['totalDistance'] ?? 0);
+                      double costPerKm = totalDist > 0 ? (totalCost / totalDist) : 0.0;
+                      
+                      return _buildListTile('Cost per KM', '€${costPerKm.toStringAsFixed(2)} / km');
+                    }),
+
                     const Divider(),
                     _buildListTile('Avg. Price/L', '€${(car['avgPricePerLiter'] ?? 0).toStringAsFixed(2)}'),
                     _buildListTile('Avg. Cost/Stop', '€${(car['avgCostPerStop'] ?? 0).toStringAsFixed(2)}'),
@@ -252,11 +270,13 @@ for (var stop in allFuelStops) {
                     _buildMiniChart(
                       'Consumption (L/100km)', 
                       _carConsumptionSpots[carId] ?? [], 
+                      _consumptionDates,
                       Colors.blue
                     ),
                     _buildMiniChart(
                       'Price per Liter (€)', 
                       _carPriceSpots[carId] ?? [], 
+                      _consumptionDates,
                       Colors.green
                     ),
                     const SizedBox(height: 10),
@@ -520,6 +540,11 @@ for (var stop in allFuelStops) {
       ),
     );
   }
+  // DYNAMIC INTERVAL: 
+  // We divide the total spots by 5. 
+  // This forces the chart to show a maximum of ~5 date labels evenly spaced,
+  // whether you have 10 data points or 200!
+  double labelInterval = spots.length > 20 ? (spots.length / 5).ceilToDouble() : 1.0;
 
   return Card(
     elevation: 4,
@@ -537,16 +562,20 @@ for (var stop in allFuelStops) {
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
+                  interval: labelInterval,
                   reservedSize: 42, // Gives the text room to breathe 
                   getTitlesWidget: (value, meta) {
                     final int index = value.toInt();
                     // Grab the date string that matches the spot's X index 
                     if (index >= 0 && index < bottomLabels.length) {
                       return Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          bottomLabels[index],
-                          style: const TextStyle(fontSize: 10, color: Colors.grey),
+                        padding: const EdgeInsets.only(top: 8.0), // Adds the offset/space
+                        child: Transform.rotate(
+                          angle: -math.pi / 4, // -45 degrees
+                          child: Text(
+                            bottomLabels[index],
+                            style: const TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
                         ),
                       );
                     }
@@ -559,7 +588,7 @@ for (var stop in allFuelStops) {
             lineBarsData: [
               LineChartBarData(
                 spots: spots,
-                isCurved: true,
+                isCurved: false,
                 color: lineColor,
                 barWidth: 3,
                 isStrokeCapRound: true,
@@ -584,43 +613,75 @@ for (var stop in allFuelStops) {
       visualDensity: VisualDensity.compact,
     );
   }
-  Widget _buildMiniChart(String title, List<FlSpot> spots, Color color) {
-    if (spots.isEmpty) return const SizedBox();
-    
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 120, // Smaller height for the card
-            child: LineChart(
-              LineChartData(
-                gridData: const FlGridData(show: false),
-                titlesData: const FlTitlesData(
-                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)), 
-              ), // Hide axes for a clean look
-                borderData: FlBorderData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: spots,
-                    isCurved: false,
-                    color: color,
-                    barWidth: 3,
-                    isStrokeCapRound: true,
-                    dotData: const FlDotData(show: true),
-                    belowBarData: BarAreaData(show: true, color: color.withValues(alpha:0.2)),
+  Widget _buildMiniChart(String title, List<FlSpot> spots, List<String> bottomLabels, Color color) {
+  if (spots.isEmpty) return const SizedBox();
+
+  // DYNAMIC INTERVAL: 
+  // We divide the total spots by 5. 
+  // This forces the chart to show a maximum of ~5 date labels evenly spaced,
+  // whether you have 10 data points or 200!
+  double labelInterval = spots.length > 20 ? (spots.length / 5).ceilToDouble() : 1.0;
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 140, // Increased slightly from 120 to fit the dates
+          child: LineChart(
+            LineChartData(
+              gridData: const FlGridData(show: false),
+              titlesData: FlTitlesData(
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                
+                // --- The New Bottom Axis ---
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 36, 
+                    interval: labelInterval, // This is the magic property!
+                    getTitlesWidget: (value, meta) {
+                      final int index = value.toInt();
+                      
+                      if (index >= 0 && index < bottomLabels.length) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Transform.rotate(
+                            angle: -0.5, // Slight angle to fit better
+                            child: Text(
+                              bottomLabels[index],
+                              style: const TextStyle(fontSize: 9, color: Colors.grey),
+                            ),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
                   ),
-                ],
-              ),
+                ),
+              ), 
+              borderData: FlBorderData(show: false),
+              lineBarsData: [
+                LineChartBarData(
+                  spots: spots,
+                  isCurved: false,
+                  color: color,
+                  barWidth: 3,
+                  isStrokeCapRound: true,
+                  dotData: const FlDotData(show: true), // Set this to false if 200 dots look too messy
+                  belowBarData: BarAreaData(show: true, color: color.withOpacity(0.2)),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 }
