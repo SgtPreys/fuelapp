@@ -94,9 +94,9 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     isThreeLine: true, // Gives the text more room to breathe
                     trailing: Text(
-                      stop['totalPrice'] != null ? '\n€${stop['totalPrice'].toStringAsFixed(2)}\n$consumptionStr' : '-',
+                      stop['totalPrice'] != null ? '€${stop['totalPrice'].toStringAsFixed(2)}\n$consumptionStr' : '-',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
-                    ),
+                    ).animate().shimmer(duration: 1000.ms, color: Colors.orange),
                   ),
                 );
               },
@@ -135,7 +135,7 @@ class HomeScreenState extends State<HomeScreen> {
                     trailing: Text(
                       stop['totalPrice'] != null ? '\n€${stop['totalPrice'].toStringAsFixed(2)}' : '-',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.orange),
-                    ),
+                    ).animate().shimmer(duration: 1000.ms, color: Colors.blue),
                   ),
                 );
               },

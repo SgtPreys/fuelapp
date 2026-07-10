@@ -126,7 +126,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       String formattedDate = "";
       if (row['date'] != null) {
         DateTime date = DateTime.parse(row['date'].toString());
-        formattedDate = "${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}";
+        formattedDate = "${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year.toString().padLeft(2, '0')}";
       }
 
       bool validGlobalEntry = false;
