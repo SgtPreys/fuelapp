@@ -72,9 +72,9 @@ class _FuelFormState extends State<FuelForm> {
 
   Future<void> _saveFuelStop() async {
     // Validation
-    if (_selectedCarId == null || _selectedStationId == null) {
+    if (_selectedCarId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select both a Car and a Gas Station!')),
+        const SnackBar(content: Text('Please select a Car!')),
       );
       return;
     }
