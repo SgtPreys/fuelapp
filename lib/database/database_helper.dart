@@ -7,7 +7,7 @@ import 'package:file_picker/file_picker.dart';
 
 class DatabaseHelper {
   static const _databaseName = "FuelAppDatabase.db";
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 3;
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -101,6 +101,7 @@ class DatabaseHelper {
       path,
       version: _databaseVersion,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -154,7 +155,9 @@ class DatabaseHelper {
         boughtDate TEXT,
         boughtPrice REAL,
         soldDate TEXT,
-        soldPrice REAL
+        soldPrice REAL,
+        imagePath TEXT,
+        additionalInfo TEXT
       )
     ''');
 
@@ -165,6 +168,7 @@ class DatabaseHelper {
         name TEXT NOT NULL,
         location TEXT,
         type TEXT,
+        imagePath TEXT,
         additionalInfo TEXT
       )
     ''');
@@ -179,6 +183,7 @@ class DatabaseHelper {
         email TEXT,
         telephone TEXT,
         website TEXT,
+        imagePath TEXT,
         additionalInfo TEXT
       )
     ''');
@@ -188,10 +193,12 @@ class DatabaseHelper {
       CREATE TABLE fuel_stops (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         carId INTEGER NOT NULL,
-        stationId INTEGER NOT NULL,
+        stationId INTEGER,
         distance REAL,
         liters REAL,
         totalPrice REAL,
+        imagePath TEXT,
+        additionalInfo TEXT,
         date TEXT NOT NULL,
         FOREIGN KEY (carId) REFERENCES cars (id),
         FOREIGN KEY (stationId) REFERENCES stations (id)
@@ -206,6 +213,7 @@ class DatabaseHelper {
         companyId INTEGER NOT NULL,
         occurrence TEXT NOT NULL,
         totalPrice REAL,
+        imagePath TEXT,
         additionalInfo TEXT,
         date TEXT NOT NULL,
         FOREIGN KEY (carId) REFERENCES cars (id),
@@ -213,6 +221,58 @@ class DatabaseHelper {
       )
     ''');
   }
+
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  if (oldVersion < 2) {
+    // 1. Update Cars Table
+    await db.execute("ALTER TABLE cars ADD COLUMN imagePath TEXT;");
+    await db.execute("ALTER TABLE cars ADD COLUMN additionalInfo TEXT;");
+
+    // 2. Update Fuel Stops Table
+    await db.execute("ALTER TABLE fuel_stops ADD COLUMN imagePath TEXT;");
+    await db.execute("ALTER TABLE fuel_stops ADD COLUMN additionalInfo TEXT;");
+
+    // 3. Update Maintenance Stops Table (if you have one)
+    await db.execute("ALTER TABLE maintenance_stops ADD COLUMN imagePath TEXT;");
+
+    // 4. Update Stations Table
+    await db.execute("ALTER TABLE stations ADD COLUMN imagePath TEXT;");
+    // (Note: If your stations table already had 'additionalInfo', skip adding it again here to avoid a crash!)
+
+    // 5. Update Companies Table (if you have one)
+    await db.execute("ALTER TABLE companies ADD COLUMN imagePath TEXT;");
+  }
+  if (oldVersion < 3) {
+  // 1. Create a temporary table that allows stationId to be NULL
+  await db.execute('''
+    CREATE TABLE fuel_stops_new (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      carId INTEGER NOT NULL,
+      stationId INTEGER, -- <-- Look! No "NOT NULL" here!
+      distance REAL,
+      liters REAL,
+      totalPrice REAL,
+      date TEXT,
+      imagePath TEXT,
+      additionalInfo TEXT
+      -- (If you added 'isBusinessTrip' or anything else, add it here too!)
+    )
+  ''');
+
+  // 2. Copy ALL the existing data from the old table into the new one
+  await db.execute('''
+    INSERT INTO fuel_stops_new (id, carId, stationId, distance, liters, totalPrice, date, imagePath, additionalInfo)
+    SELECT id, carId, stationId, distance, liters, totalPrice, date, imagePath, additionalInfo 
+    FROM fuel_stops;
+  ''');
+
+  // 3. Destroy the old, stubborn table
+  await db.execute('DROP TABLE fuel_stops;');
+
+  // 4. Rename the new table to match the old one
+  await db.execute('ALTER TABLE fuel_stops_new RENAME TO fuel_stops;');
+}
+}
   // --- CAR OPERATIONS ---
 
   // 1. Insert a new Car

@@ -3,6 +3,7 @@ class Station {
   final String name;
   final String? location;
   final String? type;
+  final String? imagePath;
   final String? additionalInfo;
 
   Station({
@@ -10,6 +11,7 @@ class Station {
     required this.name,
     this.location,
     this.type,
+    this.imagePath,
     this.additionalInfo,
   });
 
@@ -19,6 +21,7 @@ class Station {
       'name': name,
       'location': location,
       'type': type,
+      'imagePath': imagePath,
       'additionalInfo': additionalInfo,
     };
   }
@@ -29,6 +32,7 @@ class Station {
       name: map['name'],
       location: map['location'],
       type: map['type'],
+      imagePath: map['imagePath'],
       additionalInfo: map['additionalInfo'],
     );
   }

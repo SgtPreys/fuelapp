@@ -12,6 +12,8 @@ class Car {
   final double? boughtPrice;
   final String? soldDate;
   final double? soldPrice;
+  final String? imagePath;
+  final String? additionalInfo;
 
   Car({
     this.id,
@@ -27,6 +29,8 @@ class Car {
     this.boughtPrice,
     this.soldDate,
     this.soldPrice,
+    this.imagePath,
+    this.additionalInfo,
   });
 
   // This function translates our Dart object into a Map (which the database understands)
@@ -45,6 +49,8 @@ class Car {
       'boughtPrice': boughtPrice,
       'soldDate': soldDate,
       'soldPrice': soldPrice,
+      'imagePath': imagePath,
+      'additionalInfo': additionalInfo,
     };
   }
 
@@ -64,6 +70,8 @@ class Car {
       boughtPrice: map['boughtPrice'],
       soldDate: map['soldDate'],
       soldPrice: map['soldPrice'],
+      imagePath: map['imagePath'],
+      additionalInfo: map['additionalInfo']
     );
   }
 }

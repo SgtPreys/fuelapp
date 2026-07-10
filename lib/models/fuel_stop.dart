@@ -1,20 +1,24 @@
 class FuelStop {
   final int? id;
   final int carId;
-  final int stationId;
+  final int? stationId;
   final double? distance;
   final double? liters;
   final double? totalPrice;
   final String date;
+  final String? imagePath;
+  final String? additionalInfo;
 
   FuelStop({
     this.id,
     required this.carId,
-    required this.stationId,
+    this.stationId,
     this.distance,
     this.liters,
     this.totalPrice,
     required this.date,
+    this.imagePath,
+    this.additionalInfo,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +30,8 @@ class FuelStop {
       'liters': liters,
       'totalPrice': totalPrice,
       'date': date,
+      'imagePath': imagePath,
+      'additionalInfo': additionalInfo,
     };
   }
 
@@ -38,6 +44,8 @@ class FuelStop {
       liters: map['liters'],
       totalPrice: map['totalPrice'],
       date: map['date'],
+      imagePath: map['imagePath'],
+      additionalInfo: map['additionalInfo'],
     );
   }
 

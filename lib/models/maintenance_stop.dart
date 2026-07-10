@@ -4,8 +4,10 @@ class MaintenanceStop {
   final int companyId; // Links to the Company table
   final String occurrence;
   final double? totalPrice;
+  final String? imagePath;
   final String? additionalInfo;
   final String date;
+  
 
   MaintenanceStop({
     this.id,
@@ -13,6 +15,7 @@ class MaintenanceStop {
     required this.companyId,
     required this.occurrence,
     this.totalPrice,
+    this.imagePath,
     this.additionalInfo,
     required this.date,
   });
@@ -24,6 +27,7 @@ class MaintenanceStop {
       'companyId': companyId,
       'occurrence': occurrence,
       'totalPrice': totalPrice,
+      'imagePath': imagePath,
       'additionalInfo': additionalInfo,
       'date': date,
     };
@@ -36,6 +40,7 @@ class MaintenanceStop {
       companyId: map['companyId'],
       occurrence: map['occurrence'],
       totalPrice: map['totalPrice'],
+      imagePath: map['imagePath'],
       additionalInfo: map['additionalInfo'],
       date: map['date'],
     );

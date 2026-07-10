@@ -6,6 +6,7 @@ class Company {
   final String? email;
   final String? telephone;
   final String? website;
+  final String? imagePath;
   final String? additionalInfo;
 
   Company({
@@ -16,6 +17,7 @@ class Company {
     this.email,
     this.telephone,
     this.website,
+    this.imagePath,
     this.additionalInfo,
   });
 
@@ -28,6 +30,7 @@ class Company {
       'email': email,
       'telephone': telephone,
       'website': website,
+      'imagePath': imagePath,
       'additionalInfo': additionalInfo,
     };
   }
@@ -41,6 +44,7 @@ class Company {
       email: map['email'],
       telephone: map['telephone'],
       website: map['website'],
+      imagePath: map['imagePath'],
       additionalInfo: map['additionalInfo'],
     );
   }

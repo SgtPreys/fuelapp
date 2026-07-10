@@ -72,9 +72,9 @@ class _FuelFormState extends State<FuelForm> {
 
   Future<void> _saveFuelStop() async {
     // Validation
-    if (_selectedCarId == null) {
+    if (_selectedCarId == null || _selectedStationId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a Car!')),
+        const SnackBar(content: Text('Please select a Car and a Station!')),
       );
       return;
     }
@@ -82,7 +82,7 @@ class _FuelFormState extends State<FuelForm> {
     final fuelData = FuelStop(
       id: widget.existingFuelStop?.id,
       carId: _selectedCarId!,
-      stationId: _selectedStationId!,
+      stationId: _selectedStationId,
       distance: double.tryParse(_distanceController.text),
       liters: double.tryParse(_litersController.text),
       totalPrice: double.tryParse(_priceController.text),
