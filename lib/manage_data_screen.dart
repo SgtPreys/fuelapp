@@ -90,20 +90,28 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemCount: _fuel.length,
                         itemBuilder: (context, index) {
                           final fuelStop = _fuel[index];
+
+                          final double totalPrice = (fuelStop['totalPrice'] as num?)?.toDouble() ?? 0.0;
+                          final double distance = (fuelStop['distance'] as num?)?.toDouble() ?? 0.0;
+                          double localCostPerKm = 0.0;
+                          if (distance > 0) {
+                            localCostPerKm = totalPrice / distance;
+                          }
+
                           final fuelObj = FuelStop.fromMap(fuelStop);
                                 String consumptionStr = fuelObj.consumption != null 
                                     ? '${fuelObj.consumption!.toStringAsFixed(2)} L/100km' 
-                                    : '-';
+                                    : '0.00 L/100km';
                                 String priceLStr = fuelObj.pricePerLiter != null 
                                     ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
-                                    : '-';
+                                    : '0.00 €/L';
                           return ListTile(
                             leading: const Icon(Icons.ev_station, color: Colors.blue),
                             title: Text('${fuelStop['carName']} at ${fuelStop['stationName']}'),
                             subtitle: Builder(
                               builder: (context) {
                                 return Text(
-                                  'Date: ${fuelStop['date']} ${fuelStop['distance'] != null ? '\nDistance: ${fuelStop['distance']} km' : ''} ${fuelStop['liters'] != null ? '• Liters: ${fuelStop['liters']}' : ''}\n$consumptionStr • $priceLStr'
+                                  'Date: ${fuelStop['date']} ${fuelStop['distance'] != null ? '\nDistance: ${fuelStop['distance']} km' : ''} ${fuelStop['liters'] != null ? '• Liters: ${fuelStop['liters']}' : ''}\n$consumptionStr • $priceLStr• ${localCostPerKm.toStringAsFixed(2)} €/km'
                                 );
                               }
                             ),

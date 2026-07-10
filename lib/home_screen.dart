@@ -70,14 +70,22 @@ class HomeScreenState extends State<HomeScreen> {
               itemCount: _recentFuel.length,
               itemBuilder: (context, index) {
                 final stop = _recentFuel[index];
+
+                final double totalPrice = (stop['totalPrice'] as num?)?.toDouble() ?? 0.0;
+                final double distance = (stop['distance'] as num?)?.toDouble() ?? 0.0;
+                double localCostPerKm = 0.0;
+                if (distance > 0) {
+                  localCostPerKm = totalPrice / distance;
+                }
+
                 final fuelObj = FuelStop.fromMap(stop); // Use our model!
                         String consumptionStr = fuelObj.consumption != null 
                             ? '${fuelObj.consumption!.toStringAsFixed(2)} L/100km' 
-                            : '- L/100km';
+                            : '0.00 L/100km';
                             
                         String priceLStr = fuelObj.pricePerLiter != null 
                             ? '${fuelObj.pricePerLiter!.toStringAsFixed(2)} €/L' 
-                            : '- €/L';
+                            : '0.00 €/L';
                 return Card(
                   elevation: 2,
                   margin: const EdgeInsets.symmetric(vertical: 6),
@@ -86,9 +94,8 @@ class HomeScreenState extends State<HomeScreen> {
                     // NEW: Multi-line subtitle using our calculations
                     subtitle: Builder(
                       builder: (context) {
-                        
                         return Text(
-                          'Date: ${stop['date']} ${stop['distance'] != null ? '\nDistance: ${stop['distance']} km' : ''} ${stop['liters'] != null ? '• Liters: ${stop['liters']}' : ''}\n$consumptionStr • $priceLStr'
+                          'Date: ${stop['date']} ${stop['distance'] != null ? '\nDistance: ${stop['distance']} km' : ''} ${stop['liters'] != null ? '• Liters: ${stop['liters']}' : ''}\n$consumptionStr • $priceLStr • ${localCostPerKm.toStringAsFixed(2)} €/km'
                         );
                       }
                     ),
