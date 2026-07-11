@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 import 'database/database_helper.dart';
 import 'models/maintenance_stop.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class MaintenanceForm extends StatefulWidget {
   final MaintenanceStop? existingMaintenanceStop;
@@ -20,6 +24,9 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _additionalInfoController = TextEditingController();
+  String? _imagePath;
+  final ImagePicker _picker = ImagePicker();
 
   List<Map<String, dynamic>> _cars = [];
   List<Map<String, dynamic>> _companies = [];
@@ -33,7 +40,62 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
     super.initState();
     _dateController.text = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
     _loadDropdownData();
+    if (widget.existingMaintenanceStop != null) {
+      _additionalInfoController.text = widget.existingMaintenanceStop!.additionalInfo ?? '';
+      _imagePath = widget.existingMaintenanceStop!.imagePath;
+    }
   }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      // Get the app's local directory
+      final directory = await getApplicationDocumentsDirectory();
+      
+      // Create a unique file name
+      final String fileName = path.basename(pickedFile.path);
+      final String savedImagePath = '${directory.path}/$fileName';
+      
+      // Copy the image to the new secure location
+      File(pickedFile.path).copySync(savedImagePath);
+
+      setState(() {
+        _imagePath = savedImagePath;
+      });
+    }
+  }
+
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Photo Library'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
 
   Future<void> _loadDropdownData() async {
     final allCars = await DatabaseHelper.instance.getAllCars();
@@ -84,6 +146,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
       companyId: _selectedCompanyId!,
       occurrence: _selectedOccurrence!,
       totalPrice: double.tryParse(_priceController.text),
+      imagePath: _imagePath,
       additionalInfo: _infoController.text,
       date: _dateController.text,
     );
@@ -203,12 +266,54 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
               },
             ),
             const SizedBox(height: 10),
+            
+            
 
+            
             TextField(
               controller: _infoController,
-              decoration: const InputDecoration(labelText: 'Additional Info (e.g. Part Numbers)', border: OutlineInputBorder()),
+              decoration: const InputDecoration(labelText: 'Additional Info', border: OutlineInputBorder()),
               maxLines: 2,
             ),
+            const SizedBox(height: 10),
+            // Image Picker Section
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _showImagePickerOptions,
+                    icon: const Icon(Icons.camera_alt),
+                    label: Text(_imagePath == null ? 'Add Receipt/Photo' : 'Change Photo'),
+                  ),
+                ),
+                if (_imagePath != null) ...[
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      setState(() {
+                        _imagePath = null;
+                      });
+                    },
+                  ),
+                ],
+              ],
+            ),
+            
+            // Image Preview (if image exists)
+            if (_imagePath != null) ...[
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.file(
+                  File(_imagePath!),
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
+            
             const SizedBox(height: 20),
 
             Center(
