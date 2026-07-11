@@ -45,7 +45,7 @@ class HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Dashboard', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          const Text('Dashboard', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const SizedBox(height: 20),
 
           // --- RECENT FUEL LOGS ---

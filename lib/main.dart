@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart'; // NEW: We imported the package!
 import 'package:fuelapp/home_screen.dart';
 import 'fuel_form.dart';
@@ -215,7 +216,7 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(titles[_selectedIndex]),
+        title: Text(titles[_selectedIndex], style: TextStyle(fontWeight: FontWeight.bold,fontSize: 28,color: Colors.blue),).animate().shimmer(duration: 1000.ms, color: Colors.orange),
         centerTitle: true,
       ),
       
