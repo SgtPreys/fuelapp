@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
-import 'services/notification_service.dart';
 
 class CarForm extends StatefulWidget {
   // NEW: This allows the form to accept an existing car when we want to edit!
@@ -189,35 +188,7 @@ class _CarFormState extends State<CarForm> {
     } else {
       await DatabaseHelper.instance.updateCar(carData.toMap()); // It's an existing car
     }
-    // --- NEW: SCHEDULE TÜV NOTIFICATION ---
-      // 1. Check if a TÜV date was actually entered
-      if (_tuevController.text.isNotEmpty) {
-        try {
-          // Assuming your date is saved in a format like 'yyyy-MM' or 'yyyy-MM-dd'
-          // We need to parse it. If it's just a month/year like "07/2027", we might need to format it to a DateTime first.
-          // Let's assume you convert your input to a valid DateTime object called 'tuevDate'
-          
-          // For example, if it's "2027-07-01":
-          DateTime tuevDate = DateTime.parse(_tuevController.text); 
-          
-          // Calculate the reminder date (90 days prior at 10:00 AM)
-          DateTime reminderDate = tuevDate.subtract(const Duration(days: 90));
-          reminderDate = DateTime(reminderDate.year, reminderDate.month, reminderDate.day, 10, 0);
-
-          // Only schedule if the reminder date is actually in the future!
-          if (reminderDate.isAfter(DateTime.now())) {
-            await NotificationService.instance.scheduleNotification(
-              id: widget.existingCar?.id ?? 999, // Use the car ID as the notification ID so they don't overlap
-              title: 'TÜV Reminder: ${_nameController.text}',
-              body: 'The TÜV for your ${_nameController.text} is due in 3 months!',
-              scheduledDate: reminderDate,
-            );
-          }
-        } catch (e) {
-          print("Could not parse TÜV date to schedule notification: $e");
-        }
-      }
-
+    
     if (mounted) {
       Navigator.pop(context, true); // We pass 'true' back so the previous screen knows to refresh!
     }
