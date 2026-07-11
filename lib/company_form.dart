@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'database/database_helper.dart';
 import 'models/company.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class CompanyForm extends StatefulWidget {
   final Company? existingCompany; // NEW: Accepts an existing company
@@ -20,6 +24,8 @@ class _CompanyFormState extends State<CompanyForm> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
+  String? _imagePath;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -33,7 +39,90 @@ class _CompanyFormState extends State<CompanyForm> {
       _phoneController.text = widget.existingCompany!.telephone ?? '';
       _websiteController.text = widget.existingCompany!.website ?? '';
       _infoController.text = widget.existingCompany!.additionalInfo ?? '';
+      _imagePath = widget.existingCompany!.imagePath;
     }
+  }
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      // Get the app's local directory
+      final directory = await getApplicationDocumentsDirectory();
+      
+      // Create a unique file name
+      final String fileName = path.basename(pickedFile.path);
+      final String savedImagePath = '${directory.path}/$fileName';
+      
+      // Copy the image to the new secure location
+      File(pickedFile.path).copySync(savedImagePath);
+
+      setState(() {
+        _imagePath = savedImagePath;
+      });
+    }
+  }
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Photo Library'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  void _showFullScreenImage(BuildContext context, String path) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.black,
+          insetPadding: EdgeInsets.zero, // Makes it edge-to-edge
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // InteractiveViewer gives you pinch-to-zoom for free!
+              InteractiveViewer(
+                panEnabled: true,
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: Image.file(
+                  File(path),
+                  fit: BoxFit.contain,
+                ),
+              ),
+              // A close button in the top right corner
+              Positioned(
+                top: 40,
+                right: 20,
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -146,6 +235,69 @@ class _CompanyFormState extends State<CompanyForm> {
               decoration: const InputDecoration(labelText: 'Additional Info / Notes', border: OutlineInputBorder()),
               maxLines: 3,
             ),
+            const SizedBox(height: 10),
+            // Image Picker Section
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _showImagePickerOptions,
+                    icon: const Icon(Icons.camera_alt),
+                    label: Text(_imagePath == null ? 'Add Receipt/Photo' : 'Change Photo'),
+                  ),
+                ),
+                if (_imagePath != null) ...[
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      setState(() {
+                        _imagePath = null;
+                      });
+                    },
+                  ),
+                ],
+              ],
+            ),
+            
+            // Image Preview (if image exists)
+            if (_imagePath != null) ...[
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact(); // Nice physical touch
+                  _showFullScreenImage(context, _imagePath!);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // The Thumbnail
+                      Image.file(
+                        File(_imagePath!),
+                        height: 200, // Increased slightly for a better preview
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      // A semi-transparent overlay icon indicating it can be enlarged
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.zoom_in,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 20),
 
             Center(

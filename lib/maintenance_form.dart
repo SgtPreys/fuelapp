@@ -94,6 +94,41 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
       },
     );
   }
+  void _showFullScreenImage(BuildContext context, String path) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.black,
+          insetPadding: EdgeInsets.zero, // Makes it edge-to-edge
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // InteractiveViewer gives you pinch-to-zoom for free!
+              InteractiveViewer(
+                panEnabled: true,
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: Image.file(
+                  File(path),
+                  fit: BoxFit.contain,
+                ),
+              ),
+              // A close button in the top right corner
+              Positioned(
+                top: 40,
+                right: 20,
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
 
 
@@ -303,13 +338,38 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             // Image Preview (if image exists)
             if (_imagePath != null) ...[
               const SizedBox(height: 10),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.file(
-                  File(_imagePath!),
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact(); // Nice physical touch
+                  _showFullScreenImage(context, _imagePath!);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // The Thumbnail
+                      Image.file(
+                        File(_imagePath!),
+                        height: 200, // Increased slightly for a better preview
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      // A semi-transparent overlay icon indicating it can be enlarged
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.zoom_in,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
