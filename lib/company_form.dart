@@ -243,7 +243,7 @@ class _CompanyFormState extends State<CompanyForm> {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? 'Add Receipt/Photo' : 'Change Photo'),
+                    label: Text(_imagePath == null ? 'Add Photo' : 'Change Photo'),
                   ),
                 ),
                 if (_imagePath != null) ...[

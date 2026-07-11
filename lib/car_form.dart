@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'services/notification_service.dart';
 
 class CarForm extends StatefulWidget {
   // NEW: This allows the form to accept an existing car when we want to edit!
@@ -188,6 +189,34 @@ class _CarFormState extends State<CarForm> {
     } else {
       await DatabaseHelper.instance.updateCar(carData.toMap()); // It's an existing car
     }
+    // --- NEW: SCHEDULE TÜV NOTIFICATION ---
+      // 1. Check if a TÜV date was actually entered
+      if (_tuevController.text.isNotEmpty) {
+        try {
+          // Assuming your date is saved in a format like 'yyyy-MM' or 'yyyy-MM-dd'
+          // We need to parse it. If it's just a month/year like "07/2027", we might need to format it to a DateTime first.
+          // Let's assume you convert your input to a valid DateTime object called 'tuevDate'
+          
+          // For example, if it's "2027-07-01":
+          DateTime tuevDate = DateTime.parse(_tuevController.text); 
+          
+          // Calculate the reminder date (90 days prior at 10:00 AM)
+          DateTime reminderDate = tuevDate.subtract(const Duration(days: 90));
+          reminderDate = DateTime(reminderDate.year, reminderDate.month, reminderDate.day, 10, 0);
+
+          // Only schedule if the reminder date is actually in the future!
+          if (reminderDate.isAfter(DateTime.now())) {
+            await NotificationService.instance.scheduleNotification(
+              id: widget.existingCar?.id ?? 999, // Use the car ID as the notification ID so they don't overlap
+              title: 'TÜV Reminder: ${_nameController.text}',
+              body: 'The TÜV for your ${_nameController.text} is due in 3 months!',
+              scheduledDate: reminderDate,
+            );
+          }
+        } catch (e) {
+          print("Could not parse TÜV date to schedule notification: $e");
+        }
+      }
 
     if (mounted) {
       Navigator.pop(context, true); // We pass 'true' back so the previous screen knows to refresh!
@@ -246,6 +275,80 @@ class _CarFormState extends State<CarForm> {
               }).toList(),
               onChanged: (String? newValue) => setState(() => _selectedStatus = newValue),
             ),
+            const SizedBox(height: 10),
+            // Additional Info TextField
+            TextField(
+              controller: _additionalInfoController,
+              decoration: const InputDecoration(
+                labelText: 'Additional Info',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 2,
+            ),
+            const SizedBox(height: 10),
+            
+            // Image Picker Section
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _showImagePickerOptions,
+                    icon: const Icon(Icons.camera_alt),
+                    label: Text(_imagePath == null ? 'Add Photo' : 'Change Photo'),
+                  ),
+                ),
+                if (_imagePath != null) ...[
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      setState(() {
+                        _imagePath = null;
+                      });
+                    },
+                  ),
+                ],
+              ],
+            ),
+            
+            // Image Preview (if image exists)
+            if (_imagePath != null) ...[
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact(); // Nice physical touch
+                  _showFullScreenImage(context, _imagePath!);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // The Thumbnail
+                      Image.file(
+                        File(_imagePath!),
+                        height: 200, // Increased slightly for a better preview
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      // A semi-transparent overlay icon indicating it can be enlarged
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.zoom_in,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 20),
 
             const Text('Specifications & Details', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
@@ -304,80 +407,7 @@ class _CarFormState extends State<CarForm> {
               decoration: const InputDecoration(labelText: 'Sold Price', border: OutlineInputBorder()), 
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 10),
-            // Additional Info TextField
-            TextField(
-              controller: _additionalInfoController,
-              decoration: const InputDecoration(
-                labelText: 'Additional Info',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 10),
             
-            // Image Picker Section
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _showImagePickerOptions,
-                    icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? 'Add Receipt/Photo' : 'Change Photo'),
-                  ),
-                ),
-                if (_imagePath != null) ...[
-                  const SizedBox(width: 10),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      setState(() {
-                        _imagePath = null;
-                      });
-                    },
-                  ),
-                ],
-              ],
-            ),
-            
-            // Image Preview (if image exists)
-            if (_imagePath != null) ...[
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.lightImpact(); // Nice physical touch
-                  _showFullScreenImage(context, _imagePath!);
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // The Thumbnail
-                      Image.file(
-                        File(_imagePath!),
-                        height: 200, // Increased slightly for a better preview
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                      // A semi-transparent overlay icon indicating it can be enlarged
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.zoom_in,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
             const SizedBox(height: 20),
             
             Center(

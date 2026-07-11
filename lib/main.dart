@@ -13,10 +13,12 @@ import 'package:flutter/services.dart';
 import 'settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
+import 'services/notification_service.dart';
 
-void main() {
+Future<void> main() async {
   // Add this line to ensure the engine is ready for the database!
   WidgetsFlutterBinding.ensureInitialized(); 
+  await NotificationService.instance.initialize();
   
   runApp(
     ChangeNotifierProvider(
