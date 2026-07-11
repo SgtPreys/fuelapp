@@ -170,10 +170,13 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemCount: _stations.length,
                         itemBuilder: (context, index) {
                           final station = _stations[index];
+                          String displayLocation = (station['location'] != null && station['location'].toString().trim().isNotEmpty) 
+                              ? station['location'] 
+                              : 'Unknown location';
                           return ListTile(
                             leading: const Icon(Icons.local_gas_station, color: Colors.teal),
                             title: Text(station['name']),
-                            subtitle: Text(station['location'] ?? 'Unknown Location'),
+                            subtitle: Text('$displayLocation'),
                             trailing: Text('Total Spent:\n${station['totalSpent'] != null ? '€${(station['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal, fontSize: 15),
                             ),
@@ -198,10 +201,22 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemCount: _companies.length,
                         itemBuilder: (context, index) {
                           final company = _companies[index];
+                          String displayLocation = (company['location'] != null && company['location'].toString().trim().isNotEmpty) 
+                              ? company['location'] 
+                              : 'Unknown location';
+
+                          String displayContact = (company['contactPerson'] != null && company['contactPerson'].toString().trim().isNotEmpty) 
+                              ? company['contactPerson'] 
+                              : 'Unknown contact person';
+                          
+                          String displayTelephone = (company['telephone'] != null && company['telephone'].toString().trim().isNotEmpty) 
+                              ? company['telephone'] 
+                              : 'Unknown telephone number';
+
                           return ListTile(
                             leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
-                            subtitle: Text('${company['location'] ?? 'Unknown location'}\n${company['contactPerson'] ?? 'Unknown contact person'}\n${company['telephone'] ?? 'Unknown phone number'}'),
+                            subtitle: Text('$displayLocation\n$displayContact\n$displayTelephone'),
                             trailing: Text('Total Spent:\n${company['totalSpent'] != null ? '€${(company['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 15),
                             ),
@@ -226,11 +241,14 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemCount: _cars.length,
                         itemBuilder: (context, index) {
                           final carMap = _cars[index];
+                          String displayManufacturer = (carMap['manufacturer'] != null && carMap['manufacturer'].toString().trim().isNotEmpty) 
+                              ? carMap['manufacturer'] 
+                              : 'Unknown manufacturer';
                           return ListTile(
                             leading: const Icon(Icons.directions_car, color: Colors.indigo),
                             title: Text(carMap['carName']),
                             subtitle: Text(
-                              '${carMap['manufacturer'] ?? 'Unknown Manufacturer'} \n'
+                              '$displayManufacturer\n'
                               'Distance: ${carMap['totalDistance'] != null ? '${(carMap['totalDistance'] as num).toStringAsFixed(0)} km' : '0 km'} \n'
                               'Status: ${carMap['status'] ?? 'Unknown'}'
                             ),
