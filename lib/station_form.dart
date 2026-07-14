@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'l10n/app_localizations.dart';
 
 class StationForm extends StatefulWidget {
   final Station? existingStation; // NEW: Accepts an existing station

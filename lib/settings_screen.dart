@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fuelapp/database/database_helper.dart';
+import 'package:fuelapp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'l10n/app_localizations.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -90,16 +92,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.all(16.0),
         children: [
           // --- App Info Section ---
-          const Text("App Info", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          Text(AppLocalizations.of(context)!.appinfo, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const SizedBox(height: 10),
-          const ListTile(
+          ListTile(
             leading: Icon(Icons.person),
-            title: Text("Created by"),
+            title: Text(AppLocalizations.of(context)!.createdby),
             subtitle: Text("Henri R. Maertins"),
           ),
-          const ListTile(
+          ListTile(
             leading: Icon(Icons.people),
-            title: Text("Tested by"),
+            title: Text(AppLocalizations.of(context)!.testedby),
             subtitle: Text("Daniel Kaffenberger, David S. Zang, Max Gruner, Eric Harder, Rebecca Reinhart and others"),
           ),
           
@@ -108,11 +110,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
 
           // --- DATABASE OPTIONS ---
-          const Text("Database Management", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          Text(AppLocalizations.of(context)!.databasemanagement, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           ListTile(
             leading: const Icon(Icons.file_download, color: Colors.blue),
-            title: const Text("Import Database"),
+            title: Text(AppLocalizations.of(context)!.importdatabase),
             onTap: () async {
               
               HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
@@ -120,15 +122,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text("⚠️Confirm Import"),
-                    content: const Text("Are you sure you want to import the database? This will overwrite existing data.\n\nMake sure you have a backup before proceeding. \n\nOnly import JSON files that were exported from this app!"),
+                    title: Text(AppLocalizations.of(context)!.confirmimport),
+                    content: Text(AppLocalizations.of(context)!.confirmimporttext),
                     actions: [
                       TextButton(
                         onPressed: () async {
                           HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                         },
-                        child: const Text("Cancel"),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -139,8 +141,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             if (success) {
                               // ignore: use_build_context_synchronously
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Import complete! Refreshing...'),
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.importcomplete),
                                   backgroundColor: Colors.green,
                                 ),
                               );
@@ -148,8 +150,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             } else {
                               // ignore: use_build_context_synchronously
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Failed to import. Invalid file format.'),
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.importincomplete),
                                   backgroundColor: Colors.red,
                                 ),
                               );
@@ -157,7 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             }
                           }
                         },
-                        child: const Text("Import", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        child: Text(AppLocalizations.of(context)!.import, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   );
@@ -168,21 +170,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.upload, color: Colors.green),
-            title: const Text("Export Database"),
+            title: Text(AppLocalizations.of(context)!.exportdatabase),
             onTap: () async {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
               File file = await exportDatabaseToJson();
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Database exported to: ${file.path}")));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.databaseexported(file.path))));
             },
           ),
           Card(
             child: ExpansionTile(
               leading: const Icon(Icons.delete_forever, color: Colors.red),
-              title: const Text("Delete Data"),
+              title: Text(AppLocalizations.of(context)!.deletedata),
             children: [
               ListTile(
             leading: const Icon(Icons.delete_forever, color: Colors.red),
-            title: const Text("Delete All Data"),
+            title: Text(AppLocalizations.of(context)!.deletealldata),
             onTap: () {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
               // Confirmation dialog before deletion
@@ -190,24 +192,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text("⚠️Confirm Deletion"),
-                    content: const Text("Are you sure you want to delete all data? This action cannot be undone."),
+                    title: Text(AppLocalizations.of(context)!.confirmdeletion),
+                    content: Text(AppLocalizations.of(context)!.confirmdeletiontext),
                     actions: [
                       TextButton(
                         onPressed: () {
                           HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                         },
-                        child: const Text("Cancel"),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                       ElevatedButton(
                         onPressed: () async {
                           HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                           await DatabaseHelper.instance.clearAllData();
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!"), backgroundColor: Colors.red));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.databasecleared), backgroundColor: Colors.red));
                         },
-                        child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        child: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   );
@@ -217,7 +219,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.ev_station, color: Colors.red),
-            title: const Text("Delete All Fuel Data"),
+            title: Text(AppLocalizations.of(context)!.deleteallfueldata),
             onTap: () {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
               // Confirmation dialog before deletion
@@ -225,24 +227,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text("⚠️Confirm Deletion"),
-                    content: const Text("Are you sure you want to delete all data? This action cannot be undone."),
+                    title: Text(AppLocalizations.of(context)!.confirmdeletion),
+                    content: Text(AppLocalizations.of(context)!.confirmdeletiontext),
                     actions: [
                       TextButton(
                         onPressed: () {
                           HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                         },
-                        child: const Text("Cancel"),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                       ElevatedButton(
                         onPressed: () async {
                           HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                           await DatabaseHelper.instance.clearAllDataFuelstops();
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!"), backgroundColor: Colors.red));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.databasecleared), backgroundColor: Colors.red));
                         },
-                        child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        child: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   );
@@ -252,7 +254,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.build, color: Colors.red),
-            title: const Text("Delete All Maintenance Data"),
+            title: Text(AppLocalizations.of(context)!.deleteallmaintenancedata),
             onTap: () {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
               // Confirmation dialog before deletion
@@ -260,24 +262,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text("⚠️Confirm Deletion"),
-                    content: const Text("Are you sure you want to delete all data? This action cannot be undone."),
+                    title: Text(AppLocalizations.of(context)!.confirmdeletion),
+                    content: Text(AppLocalizations.of(context)!.confirmdeletiontext),
                     actions: [
                       TextButton(
                         onPressed: () {
                           HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                         },
-                        child: const Text("Cancel"),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                       ElevatedButton(
                         onPressed: () async {
                           HapticFeedback.heavyImpact(); // <-- NEW HAPTIC BUMP
                           Navigator.of(context).pop();
                           await DatabaseHelper.instance.clearAllDataMaintenanceStops();
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Database cleared!"), backgroundColor: Colors.red));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.databasecleared), backgroundColor: Colors.red));
                         },
-                        child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        child: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   );
@@ -288,13 +290,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],),),
           
           const Divider(),
-          const Text("Preferences", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          Text(AppLocalizations.of(context)!.preferences, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           //const Padding(
           //  padding: EdgeInsets.all(16.0),
           //  //child: Text("PREFERENCES", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
           //),
           SwitchListTile(
-            title: const Text('Enable Dark Mode'),
+            title: Text(AppLocalizations.of(context)!.enabledarkmode),
             secondary: const Icon(Icons.dark_mode),
             value: isDarkMode,
             onChanged: (bool value) {
@@ -302,8 +304,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
               themeProvider.toggleTheme(value);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.language),
+            // If you already added "settingsLanguage" to your app_en.arb, 
+            // you can use AppLocalizations.of(context)!.settingsLanguage here!
+            title: Text(AppLocalizations.of(context)!.languagesettings), 
+            trailing: DropdownButton<String>(
+              // We check the current locale to display the correct starting value
+              value: Localizations.localeOf(context).languageCode,
+              underline: const SizedBox(), // Removes the default messy line under the dropdown
+              items: [
+                DropdownMenuItem(
+                  value: 'en',
+                  child: Text(AppLocalizations.of(context)!.english),
+                ),
+                DropdownMenuItem(
+                  value: 'de',
+                  child: Text(AppLocalizations.of(context)!.german),
+                ),
+              ],
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  // This calls the magic function we built in main.dart!
+                  FuelApp.setLocale(context, Locale(newValue));
+                }
+              },
+            ),
+          ),
           const Divider(),
-          const Text("System", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          Text(AppLocalizations.of(context)!.system, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           //const Padding(
           //  padding: EdgeInsets.all(16.0),
           //  child: Text("SYSTEM", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
@@ -311,11 +340,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text("App Version"),
-            trailing: const Text("1.2.0"), // Read-only
+            trailing: const Text("1.3.0"), // Read-only
           ),
           ListTile(
             leading: const Icon(Icons.email),
-            title: const Text("Send Feedback"),
+            title: Text(AppLocalizations.of(context)!.sendfeedback),
             onTap: () { 
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
               _sendFeedback(); },

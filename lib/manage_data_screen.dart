@@ -12,6 +12,7 @@ import 'maintenance_form.dart'; // NEW
 import 'models/maintenance_stop.dart'; // NEW
 import 'package:flutter/services.dart';
 //import 'package:simple_rich_text/simple_rich_text.dart';
+import 'l10n/app_localizations.dart';
 
 class ManageDataScreen extends StatefulWidget {
   const ManageDataScreen({super.key});

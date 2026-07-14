@@ -1,5 +1,46 @@
 {
   "appTitle": "Fuel Tracker",
   "addFuelStop": "Add Fuel Stop",
-  "settings": "Settings"
+
+  "settings": "Settings",
+  "appinfo": "App Info",
+  "createdby": "Created by:",
+  "testedby": "Tested by:",
+  "databasemanagement": "Database Management",
+  "importdatabase": "Import Database",
+  "confirmimport": "⚠️Confirm Import",
+  "confirmimporttext": "Are you sure you want to import the database? This will overwrite existing data.\n\nMake sure you have a backup before proceeding. \n\nOnly import JSON files that were exported from this app!",
+  "cancel": "Cancel",
+  "importcomplete": "Import complete! Refreshing...",
+  "importincomplete": "Failed to import. Invalid file format.",
+  "import": "Import",
+  "exportdatabase": "Export Database",
+  "databaseexported": "Database exported to: {filePath}",
+  "@databaseexported": {
+    "description": "The path where the file is exported to",
+    "placeholders": {
+      "filePath": {
+        "type": "String"
+      }
+    }
+  },
+  "deletedata": "Delete Data",
+  "deletealldata": "Delete All Data", 
+  "confirmdeletion": "⚠️Confirm Deletion",
+  "confirmdeletiontext": "Are you sure you want to delete all data? This action cannot be undone.",
+  "databasecleared": "Database cleared!",
+  "delete": "Delete",
+  "deleteallfueldata": "Delete All Fuel Data",
+  "deleteallmaintenancedata": "Delete All Maintenance Data",
+  "preferences": "Preferences",
+  "enabledarkmode": "Enable Dark Mode",
+  "languagesettings": "Language",
+  "english": "English",
+  "german": "Deutsch",
+  "system": "System",
+  "sendfeedback": "Send Feedback",
+  "sendfeedbacktitel": "Feedback Fuel Expense Tracker",
+  "sendfeedbacktext": "Hi, I have the following feedback for your app:\n\n"
+
+  
 }

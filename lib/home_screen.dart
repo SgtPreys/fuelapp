@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'database/database_helper.dart';
 import 'models/fuel_stop.dart';
 import 'package:flutter/services.dart';
+import 'l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

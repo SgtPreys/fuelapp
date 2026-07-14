@@ -115,6 +115,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @appinfo.
+  ///
+  /// In en, this message translates to:
+  /// **'App Info'**
+  String get appinfo;
+
+  /// No description provided for @createdby.
+  ///
+  /// In en, this message translates to:
+  /// **'Created by:'**
+  String get createdby;
+
+  /// No description provided for @testedby.
+  ///
+  /// In en, this message translates to:
+  /// **'Tested by:'**
+  String get testedby;
+
+  /// No description provided for @databasemanagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Database Management'**
+  String get databasemanagement;
+
+  /// No description provided for @importdatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Database'**
+  String get importdatabase;
+
+  /// No description provided for @confirmimport.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️Confirm Import'**
+  String get confirmimport;
+
+  /// No description provided for @confirmimporttext.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to import the database? This will overwrite existing data.\n\nMake sure you have a backup before proceeding. \n\nOnly import JSON files that were exported from this app!'**
+  String get confirmimporttext;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @importcomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Import complete! Refreshing...'**
+  String get importcomplete;
+
+  /// No description provided for @importincomplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to import. Invalid file format.'**
+  String get importincomplete;
+
+  /// No description provided for @import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get import;
+
+  /// No description provided for @exportdatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Database'**
+  String get exportdatabase;
+
+  /// The path where the file is exported to
+  ///
+  /// In en, this message translates to:
+  /// **'Database exported to: {filePath}'**
+  String databaseexported(String filePath);
+
+  /// No description provided for @deletedata.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Data'**
+  String get deletedata;
+
+  /// No description provided for @deletealldata.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Data'**
+  String get deletealldata;
+
+  /// No description provided for @confirmdeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️Confirm Deletion'**
+  String get confirmdeletion;
+
+  /// No description provided for @confirmdeletiontext.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all data? This action cannot be undone.'**
+  String get confirmdeletiontext;
+
+  /// No description provided for @databasecleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Database cleared!'**
+  String get databasecleared;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @deleteallfueldata.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Fuel Data'**
+  String get deleteallfueldata;
+
+  /// No description provided for @deleteallmaintenancedata.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All Maintenance Data'**
+  String get deleteallmaintenancedata;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @enabledarkmode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Dark Mode'**
+  String get enabledarkmode;
+
+  /// No description provided for @languagesettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languagesettings;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @german.
+  ///
+  /// In en, this message translates to:
+  /// **'Deutsch'**
+  String get german;
+
+  /// No description provided for @system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get system;
+
+  /// No description provided for @sendfeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Feedback'**
+  String get sendfeedback;
+
+  /// No description provided for @sendfeedbacktitel.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback Fuel Expense Tracker'**
+  String get sendfeedbacktitel;
+
+  /// No description provided for @sendfeedbacktext.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi, I have the following feedback for your app:\n\n'**
+  String get sendfeedbacktext;
 }
 
 class _AppLocalizationsDelegate
