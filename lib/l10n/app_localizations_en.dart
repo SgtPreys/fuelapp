@@ -43,6 +43,84 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nomaintenanceyet => 'No maintenance recorded yet.';
 
   @override
+  String get photolibrary => 'Photo Library';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get selectcarfirst => 'Please select a Car and a Station!';
+
+  @override
+  String get editfuelstop => 'Edit Fuel Stop';
+
+  @override
+  String get selectcar => 'Select Vehicle*';
+
+  @override
+  String get nocarsavailable => 'No Cars Available - Add one first!';
+
+  @override
+  String get selectstation => 'Select Gas Station*';
+
+  @override
+  String get nostationsavailable => 'No Stations Available - Add one first!';
+
+  @override
+  String get drivendistance => 'Driven Distance (km)';
+
+  @override
+  String get liters => 'Liters';
+
+  @override
+  String get price => 'Total Price (€)';
+
+  @override
+  String get dateandtime => 'Date & Time*';
+
+  @override
+  String get additionalinfo => 'Additional Info';
+
+  @override
+  String get addphoto => 'Add Photo';
+
+  @override
+  String get changephoto => 'Change Photo';
+
+  @override
+  String get updatefuelstop => 'Update Fuel Stop';
+
+  @override
+  String get savefuelstop => 'Save Fuel Stop';
+
+  @override
+  String get deletefuelstop => 'Delete Fuel Stop';
+
+  @override
+  String get pleasefillfields => 'Please fill out all required fields.';
+
+  @override
+  String get editmaintenancestop => 'Edit Maintenance';
+
+  @override
+  String get selectcompany => 'Select Shop/Company*';
+
+  @override
+  String get nocompanyavailable => 'No Shops Available - Add one first!';
+
+  @override
+  String get occurrence => 'Occurrence Type*';
+
+  @override
+  String get updatemaintenance => 'Update Maintenance';
+
+  @override
+  String get savemaintenance => 'Save Maintenance';
+
+  @override
+  String get deletemaintenance => 'Delete Maintenance';
+
+  @override
   String get settings => 'Settings';
 
   @override

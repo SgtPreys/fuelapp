@@ -12,6 +12,36 @@
   "recentmaintenancestop": "Recent Maintenance",
   "nomaintenanceyet": "No maintenance recorded yet.",
 
+  "photolibrary": "Photo Library",
+  "camera": "Camera",
+
+  "selectcarfirst": "Please select a Car and a Station!",
+  "editfuelstop": "Edit Fuel Stop",
+  
+  "selectcar": "Select Vehicle*",
+  "nocarsavailable": "No Cars Available - Add one first!",
+  "selectstation": "Select Gas Station*",
+  "nostationsavailable": "No Stations Available - Add one first!",
+  "drivendistance": "Driven Distance (km)",
+  "liters": "Liters",
+  "price": "Total Price (€)",
+  "dateandtime": "Date & Time*",
+  "additionalinfo": "Additional Info",
+  "addphoto": "Add Photo",
+  "changephoto": "Change Photo",
+  "updatefuelstop": "Update Fuel Stop",
+  "savefuelstop": "Save Fuel Stop",
+  "deletefuelstop": "Delete Fuel Stop",
+
+  "pleasefillfields": "Please fill out all required fields.",
+  "editmaintenancestop": "Edit Maintenance",
+  "selectcompany": "Select Shop/Company*",
+  "nocompanyavailable": "No Shops Available - Add one first!",
+  "occurrence": "Occurrence Type*",
+  "updatemaintenance": "Update Maintenance",
+  "savemaintenance": "Save Maintenance",
+  "deletemaintenance": "Delete Maintenance",
+
 
   "settings": "Settings",
   "appinfo": "App Info",

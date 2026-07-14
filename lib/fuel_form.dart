@@ -71,7 +71,7 @@ class _FuelFormState extends State<FuelForm> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Photo Library'),
+                title: Text(AppLocalizations.of(context)!.photolibrary),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -79,7 +79,7 @@ class _FuelFormState extends State<FuelForm> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.camera),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -170,7 +170,7 @@ class _FuelFormState extends State<FuelForm> {
     // Validation
     if (_selectedCarId == null || _selectedStationId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a Car and a Station!')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.selectcarfirst)),
       );
       return;
     }
@@ -215,14 +215,14 @@ class _FuelFormState extends State<FuelForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Text(isEditing ? 'Edit Fuel Stop' : 'Add Fuel Stop', 
+              child: Text(isEditing ? AppLocalizations.of(context)!.editfuelstop : AppLocalizations.of(context)!.addFuelStop, 
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 20),
 
             // --- DYNAMIC CAR DROPDOWN ---
             DropdownButtonFormField<int>(
-              decoration: const InputDecoration(labelText: 'Select Vehicle*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcar, border: OutlineInputBorder()),
               initialValue: _selectedCarId,
               items: _cars.map((car) {
                 return DropdownMenuItem<int>(
@@ -231,13 +231,13 @@ class _FuelFormState extends State<FuelForm> {
                 );
               }).toList(),
               onChanged: (int? newValue) => setState(() => _selectedCarId = newValue),
-              hint: _cars.isEmpty ? const Text('No Cars Available - Add one first!') : null,
+              hint: _cars.isEmpty ? Text(AppLocalizations.of(context)!.nocarsavailable) : null,
             ),
             const SizedBox(height: 10),
 
             // --- DYNAMIC STATION DROPDOWN ---
             DropdownButtonFormField<int>(
-              decoration: const InputDecoration(labelText: 'Select Gas Station*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectstation, border: OutlineInputBorder()),
               initialValue: _selectedStationId,
               items: _stations.map((station) {
                 return DropdownMenuItem<int>(
@@ -246,13 +246,13 @@ class _FuelFormState extends State<FuelForm> {
                 );
               }).toList(),
               onChanged: (int? newValue) => setState(() => _selectedStationId = newValue),
-              hint: _stations.isEmpty ? const Text('No Stations Available - Add one first!') : null,
+              hint: _stations.isEmpty ? Text(AppLocalizations.of(context)!.nostationsavailable) : null,
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _distanceController,
-              decoration: const InputDecoration(labelText: 'Driven Distance (km)', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.drivendistance, border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
@@ -262,7 +262,7 @@ class _FuelFormState extends State<FuelForm> {
                 Expanded(
                   child: TextField(
                     controller: _litersController,
-                    decoration: const InputDecoration(labelText: 'Liters', border: OutlineInputBorder()),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.liters, border: OutlineInputBorder()),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -270,7 +270,7 @@ class _FuelFormState extends State<FuelForm> {
                 Expanded(
                   child: TextField(
                     controller: _priceController,
-                    decoration: const InputDecoration(labelText: 'Total Price (€)', border: OutlineInputBorder()),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.price, border: OutlineInputBorder()),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -279,7 +279,7 @@ class _FuelFormState extends State<FuelForm> {
             const SizedBox(height: 10),
             TextField(
               controller: _dateController,
-              decoration: const InputDecoration(labelText: 'Date & Time*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.dateandtime, border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
               readOnly: true, // Prevents manual typing
               onTap: () async {
                 HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
@@ -320,8 +320,8 @@ class _FuelFormState extends State<FuelForm> {
             // Additional Info TextField
             TextField(
               controller: _additionalInfoController,
-              decoration: const InputDecoration(
-                labelText: 'Additional Info',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.additionalinfo,
                 border: OutlineInputBorder(),
               ),
               maxLines: 2,
@@ -335,7 +335,7 @@ class _FuelFormState extends State<FuelForm> {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? 'Add Receipt/Photo' : 'Change Photo'),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
                   ),
                 ),
                 if (_imagePath != null) ...[
@@ -402,7 +402,7 @@ class _FuelFormState extends State<FuelForm> {
                   // Then execute your save logic
                   _saveFuelStop(); 
                 },
-                child: Text(isEditing ? 'Update Fuel Stop' : 'Save Fuel Stop'),
+                child: Text(isEditing ? AppLocalizations.of(context)!.updatefuelstop : AppLocalizations.of(context)!.savefuelstop),
               ),
             ),
             
@@ -415,7 +415,7 @@ class _FuelFormState extends State<FuelForm> {
                     await DatabaseHelper.instance.deleteFuelStop(widget.existingFuelStop!.id!);
                     if (mounted) Navigator.pop(context, true);
                   },
-                  child: const Text('Delete Fuel Stop', style: TextStyle(color: Colors.red)),
+                  child: Text(AppLocalizations.of(context)!.deletefuelstop, style: TextStyle(color: Colors.red)),
                 ),
               ),
             ],

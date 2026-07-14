@@ -12,19 +12,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appTitle => 'Fuel Tracker';
 
   @override
-  String get addFuelStop => 'Tankfüllung Hinzufügen';
+  String get addFuelStop => 'Tankstopp Hinzufügen';
 
   @override
-  String get addMaintenanceStop => 'Wartung hinzufügen';
+  String get addMaintenanceStop => 'Wartung Hinzufügen';
 
   @override
-  String get addGasStation => 'Tankstelle hinzufügen';
+  String get addGasStation => 'Tankstelle Hinzufügen';
 
   @override
-  String get addCompany => 'Unternehmen hinzufügen';
+  String get addCompany => 'Unternehmen Hinzufügen';
 
   @override
-  String get addNewCar => 'Neues Auto hinzufügen';
+  String get addNewCar => 'Auto Hinzufügen';
 
   @override
   String get dashboard => 'Übersicht';
@@ -41,6 +41,88 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nomaintenanceyet => 'Noch keine Wartung erfasst.';
+
+  @override
+  String get photolibrary => 'Bilder Bibliothek';
+
+  @override
+  String get camera => 'Kamera';
+
+  @override
+  String get selectcarfirst =>
+      'Bitte wählen Sie ein Auto und eine Station aus!';
+
+  @override
+  String get editfuelstop => 'Tankstopp bearbeiten';
+
+  @override
+  String get selectcar => 'Fahrzeug Auswählen*';
+
+  @override
+  String get nocarsavailable =>
+      'Keine Autos verfügbar – fügen Sie zuerst eines hinzu!';
+
+  @override
+  String get selectstation => 'Tankstelle auswählen*';
+
+  @override
+  String get nostationsavailable =>
+      'Keine Tankstelle verfügbar – fügen Sie zuerst einen hinzu!';
+
+  @override
+  String get drivendistance => 'Gefahrene Strecke (km)';
+
+  @override
+  String get liters => 'Liter';
+
+  @override
+  String get price => 'Gesamtpreis (€)';
+
+  @override
+  String get dateandtime => 'Datum & Uhrzeit*';
+
+  @override
+  String get additionalinfo => 'Zusätzliche Informationen';
+
+  @override
+  String get addphoto => 'Foto hinzufügen';
+
+  @override
+  String get changephoto => 'Foto ändern';
+
+  @override
+  String get updatefuelstop => 'Tankstopp Aktualisieren';
+
+  @override
+  String get savefuelstop => 'Tankstopp Speichern';
+
+  @override
+  String get deletefuelstop => 'Tankstopp Löschen';
+
+  @override
+  String get pleasefillfields => 'Bitte füllen Sie alle Pflichtfelder aus.';
+
+  @override
+  String get editmaintenancestop => 'Wartung Bearbeiten';
+
+  @override
+  String get selectcompany => 'Geschäft/Unternehmen auswählen*';
+
+  @override
+  String get nocompanyavailable =>
+      'Keine Geschäfte verfügbar – fügen Sie zuerst eines hinzu!';
+
+  @override
+  String get occurrence => 'Art des Ereignisses*';
+
+  @override
+  String get updatemaintenance => 'Wartung Updaten';
+
+  @override
+  String get savemaintenance => 'Wartung Speichern';
+
+  @override
+  String get deletemaintenance => 'Wartung Löschen';
 
   @override
   String get settings => 'Einstellungen';

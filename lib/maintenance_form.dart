@@ -75,7 +75,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Photo Library'),
+                title: Text(AppLocalizations.of(context)!.photolibrary),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -83,7 +83,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.camera),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -172,7 +172,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
   Future<void> _saveMaintenance() async {
     if (_selectedCarId == null || _selectedCompanyId == null || _selectedOccurrence == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill out all required fields')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.pleasefillfields)));
       return;
     }
 
@@ -215,13 +215,13 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Text(isEditing ? 'Edit Maintenance' : 'Add Maintenance', 
+              child: Text(isEditing ? AppLocalizations.of(context)!.editmaintenancestop : AppLocalizations.of(context)!.addMaintenanceStop, 
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 20),
 
             DropdownButtonFormField<int>(
-              decoration: const InputDecoration(labelText: 'Select Vehicle*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcar, border: OutlineInputBorder()),
               initialValue: _selectedCarId,
               items: _cars.map((car) {
                 return DropdownMenuItem<int>(
@@ -230,12 +230,12 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                 );
               }).toList(),
               onChanged: (int? newValue) => setState(() => _selectedCarId = newValue),
-              hint: _cars.isEmpty ? const Text('No Cars Available - Add one first!') : null,
+              hint: _cars.isEmpty ? Text(AppLocalizations.of(context)!.nocarsavailable) : null,
             ),
             const SizedBox(height: 10),
 
             DropdownButtonFormField<int>(
-              decoration: const InputDecoration(labelText: 'Select Shop/Company*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcompany, border: OutlineInputBorder()),
               initialValue: _selectedCompanyId,
               items: _companies.map((company) {
                 return DropdownMenuItem<int>(
@@ -244,14 +244,14 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                 );
               }).toList(),
               onChanged: (int? newValue) => setState(() => _selectedCompanyId = newValue),
-              hint: _companies.isEmpty ? const Text('No Shops Available - Add one first!') : null,
+              hint: _companies.isEmpty ? Text(AppLocalizations.of(context)!.nocompanyavailable) : null,
             ),
             const SizedBox(height: 10),
 
             // --- NEW: Occurrence Dropdown ---
             DropdownButtonFormField<String>(
               initialValue: _selectedOccurrence,
-              decoration: const InputDecoration(labelText: 'Occurrence Type*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.occurrence, border: OutlineInputBorder()),
               items: _occurrenceOptions.map((String type) {
                 return DropdownMenuItem<String>(value: type, child: Text(type));
               }).toList(),
@@ -261,7 +261,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
             TextField(
               controller: _priceController,
-              decoration: const InputDecoration(labelText: 'Total Cost', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.price, border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
@@ -269,7 +269,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             // --- UPDATED DATE & TIME PICKER FIELD ---
             TextField(
               controller: _dateController,
-              decoration: const InputDecoration(labelText: 'Date & Time*', border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.dateandtime, border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
               readOnly: true,
               onTap: () async {
                 HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
@@ -308,7 +308,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             
             TextField(
               controller: _infoController,
-              decoration: const InputDecoration(labelText: 'Additional Info', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.additionalinfo, border: OutlineInputBorder()),
               maxLines: 2,
             ),
             const SizedBox(height: 10),
@@ -319,7 +319,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? 'Add Receipt/Photo' : 'Change Photo'),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
                   ),
                 ),
                 if (_imagePath != null) ...[
@@ -385,7 +385,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                   // Then execute your save logic
                   _saveMaintenance(); 
                 },
-                child: Text(isEditing ? 'Update Maintenance' : 'Save Maintenance'),
+                child: Text(isEditing ? AppLocalizations.of(context)!.updatemaintenance : AppLocalizations.of(context)!.savemaintenance),
               ),
             ),
 
@@ -398,7 +398,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                     await DatabaseHelper.instance.deleteMaintenanceStop(widget.existingMaintenanceStop!.id!);
                     if (mounted) Navigator.pop(context, true);
                   },
-                  child: const Text('Delete Maintenance', style: TextStyle(color: Colors.red)),
+                  child: Text(AppLocalizations.of(context)!.deletemaintenance, style: TextStyle(color: Colors.red)),
                 ),
               ),
             ],

@@ -164,6 +164,162 @@ abstract class AppLocalizations {
   /// **'No maintenance recorded yet.'**
   String get nomaintenanceyet;
 
+  /// No description provided for @photolibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo Library'**
+  String get photolibrary;
+
+  /// No description provided for @camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get camera;
+
+  /// No description provided for @selectcarfirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a Car and a Station!'**
+  String get selectcarfirst;
+
+  /// No description provided for @editfuelstop.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Fuel Stop'**
+  String get editfuelstop;
+
+  /// No description provided for @selectcar.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Vehicle*'**
+  String get selectcar;
+
+  /// No description provided for @nocarsavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No Cars Available - Add one first!'**
+  String get nocarsavailable;
+
+  /// No description provided for @selectstation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Gas Station*'**
+  String get selectstation;
+
+  /// No description provided for @nostationsavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No Stations Available - Add one first!'**
+  String get nostationsavailable;
+
+  /// No description provided for @drivendistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Driven Distance (km)'**
+  String get drivendistance;
+
+  /// No description provided for @liters.
+  ///
+  /// In en, this message translates to:
+  /// **'Liters'**
+  String get liters;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Price (€)'**
+  String get price;
+
+  /// No description provided for @dateandtime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time*'**
+  String get dateandtime;
+
+  /// No description provided for @additionalinfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Info'**
+  String get additionalinfo;
+
+  /// No description provided for @addphoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Photo'**
+  String get addphoto;
+
+  /// No description provided for @changephoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Photo'**
+  String get changephoto;
+
+  /// No description provided for @updatefuelstop.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Fuel Stop'**
+  String get updatefuelstop;
+
+  /// No description provided for @savefuelstop.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Fuel Stop'**
+  String get savefuelstop;
+
+  /// No description provided for @deletefuelstop.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Fuel Stop'**
+  String get deletefuelstop;
+
+  /// No description provided for @pleasefillfields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill out all required fields.'**
+  String get pleasefillfields;
+
+  /// No description provided for @editmaintenancestop.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Maintenance'**
+  String get editmaintenancestop;
+
+  /// No description provided for @selectcompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Shop/Company*'**
+  String get selectcompany;
+
+  /// No description provided for @nocompanyavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No Shops Available - Add one first!'**
+  String get nocompanyavailable;
+
+  /// No description provided for @occurrence.
+  ///
+  /// In en, this message translates to:
+  /// **'Occurrence Type*'**
+  String get occurrence;
+
+  /// No description provided for @updatemaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Maintenance'**
+  String get updatemaintenance;
+
+  /// No description provided for @savemaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Maintenance'**
+  String get savemaintenance;
+
+  /// No description provided for @deletemaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Maintenance'**
+  String get deletemaintenance;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
