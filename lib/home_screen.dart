@@ -46,23 +46,23 @@ class HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Dashboard', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          Text(AppLocalizations.of(context)!.dashboard, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const SizedBox(height: 20),
 
           // --- RECENT FUEL LOGS ---
-          const Row(
+          Row(
             children: [
               Icon(Icons.ev_station, color: Colors.blue),
               SizedBox(width: 8),
-              Text('Recent Fuel Stops', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue))
+              Text(AppLocalizations.of(context)!.recentfuelstop, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue))
                // <-- NEW SHIMMER EFFECT
             ],
           ).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const Divider(),
           if (_recentFuel.isEmpty) 
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text('No fuel stops recorded yet. Tap the + button to add one!', style: TextStyle(color: Colors.grey)),
+              child: Text(AppLocalizations.of(context)!.nofuelstopsyet, style: TextStyle(color: Colors.grey)),
             )
           else 
             ListView.builder(
@@ -113,18 +113,18 @@ class HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 30),
 
           // --- RECENT MAINTENANCE LOGS ---
-          const Row(
+          Row(
             children: [
               Icon(Icons.build, color: Colors.orange),
               SizedBox(width: 8),
-              Text('Recent Maintenance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
+              Text(AppLocalizations.of(context)!.recentmaintenancestop, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
             ],
           ).animate().shimmer(duration: 1000.ms, color: Colors.blue),
           const Divider(),
           if (_recentMaintenance.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text('No maintenance recorded yet.', style: TextStyle(color: Colors.grey)),
+              child: Text(AppLocalizations.of(context)!.nomaintenanceyet, style: TextStyle(color: Colors.grey)),
             )
           else
             ListView.builder(

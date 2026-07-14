@@ -1,6 +1,17 @@
 {
   "appTitle": "Fuel Tracker",
   "addFuelStop": "Add Fuel Stop",
+  "addMaintenanceStop": "Add Maintenance",
+  "addGasStation": "Add Gas Station",
+  "addCompany": "Add Company",
+  "addNewCar": "Add New Car",
+
+  "dashboard": "Dashboard",
+  "recentfuelstop": "Recent Fuel Stops",
+  "nofuelstopsyet": "No fuel stops recorded yet. Tap the + button to add one!",
+  "recentmaintenancestop": "Recent Maintenance",
+  "nomaintenanceyet": "No maintenance recorded yet.",
+
 
   "settings": "Settings",
   "appinfo": "App Info",
@@ -40,7 +51,19 @@
   "system": "System",
   "sendfeedback": "Send Feedback",
   "sendfeedbacktitel": "Feedback Fuel Expense Tracker",
-  "sendfeedbacktext": "Hi, I have the following feedback for your app:\n\n"
+  "sendfeedbacktext": "Hi, I have the following feedback for your app:\n\n",
 
   
+  "homeTitle": "Home",
+  "statsTitle": "Statistics",
+  "dataTitle": "Manage Data",
+  "settingsTitle": "Settings & More",
+
+  "homenavitem": "Home",
+  "statsnavitem": "Stats",
+  "datanavitem": "Data",
+  "settingsnavitem": "Settings"
+
+
+
 }

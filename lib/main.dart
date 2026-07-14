@@ -13,7 +13,6 @@ import 'package:flutter/services.dart';
 import 'settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/language_provider.dart';
 
@@ -97,7 +96,7 @@ class _MainScreenState extends State<MainScreen> {
       child: const Icon(Icons.ev_station),
       backgroundColor: Colors.blue,
       foregroundColor: Colors.white,
-      label: 'Add Fuel Stop',
+      label: AppLocalizations.of(context)!.addFuelStop,
       onTap: () async {
         HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
         final result = await showModalBottomSheet(
@@ -117,7 +116,7 @@ class _MainScreenState extends State<MainScreen> {
       child: const Icon(Icons.build),
       backgroundColor: Colors.orange,
       foregroundColor: Colors.white,
-      label: 'Add Maintenance',
+      label: AppLocalizations.of(context)!.addMaintenanceStop,
       onTap: () async {
         HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
         final result = await showModalBottomSheet(
@@ -134,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     // 2. If we are on the other tab than home we give all 5 options
-    if (_selectedIndex == 1 & 2 & 3) {
+    if (_selectedIndex == 1 || _selectedIndex == 2 || _selectedIndex == 3) {
       return [
         fuelOption,
         maintenanceOption,
@@ -142,7 +141,7 @@ class _MainScreenState extends State<MainScreen> {
           child: const Icon(Icons.local_gas_station),
           backgroundColor: Colors.teal,
           foregroundColor: Colors.white,
-          label: 'Add Gas Station',
+          label: AppLocalizations.of(context)!.addGasStation,
           onTap: () async {
             HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
             final result = await showModalBottomSheet(
@@ -160,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
           child: const Icon(Icons.store),
           backgroundColor: Colors.purple,
           foregroundColor: Colors.white,
-          label: 'Add Company',
+          label: AppLocalizations.of(context)!.addGasStation,
           onTap: () async {
             HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
             final result = await showModalBottomSheet(
@@ -178,7 +177,7 @@ class _MainScreenState extends State<MainScreen> {
           child: const Icon(Icons.directions_car),
           backgroundColor: Colors.indigo,
           foregroundColor: Colors.white,
-          label: 'Add New Car',
+          label: AppLocalizations.of(context)!.addNewCar,
           onTap: () async {
             HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
             final result = await showModalBottomSheet(
@@ -231,7 +230,12 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // Dynamic App Bar Title
-    List<String> titles = ['Home', 'Statistics', 'Manage Data', 'Settings & More'];
+    List<String> titles = [
+      AppLocalizations.of(context)!.homeTitle, 
+      AppLocalizations.of(context)!.statsTitle, 
+      AppLocalizations.of(context)!.dataTitle,
+      AppLocalizations.of(context)!.settingsTitle,
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -273,9 +277,9 @@ class _MainScreenState extends State<MainScreen> {
             // Left Side Group
             Row(
               children: [
-                _buildNavItem(Icons.home, 'Home', 0),
+                _buildNavItem(Icons.home, AppLocalizations.of(context)!.homenavitem, 0),
                 const SizedBox(width: 24), // Space between Home and Stats
-                _buildNavItem(Icons.bar_chart, 'Stats', 1),
+                _buildNavItem(Icons.bar_chart, AppLocalizations.of(context)!.statsnavitem, 1),
               ],
             ),
 
@@ -284,9 +288,9 @@ class _MainScreenState extends State<MainScreen> {
             // Right Side Group
             Row(
               children: [
-                _buildNavItem(Icons.category, 'Data', 2),
+                _buildNavItem(Icons.category, AppLocalizations.of(context)!.datanavitem, 2),
                 const SizedBox(width: 24), // Space between Data and Settings
-                _buildNavItem(Icons.settings, 'Settings', 3),
+                _buildNavItem(Icons.settings, AppLocalizations.of(context)!.settingsnavitem, 3),
               ],
             ),
           ],

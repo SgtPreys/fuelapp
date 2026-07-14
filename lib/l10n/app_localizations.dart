@@ -110,6 +110,60 @@ abstract class AppLocalizations {
   /// **'Add Fuel Stop'**
   String get addFuelStop;
 
+  /// No description provided for @addMaintenanceStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Maintenance'**
+  String get addMaintenanceStop;
+
+  /// No description provided for @addGasStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Gas Station'**
+  String get addGasStation;
+
+  /// No description provided for @addCompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Company'**
+  String get addCompany;
+
+  /// No description provided for @addNewCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Car'**
+  String get addNewCar;
+
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// No description provided for @recentfuelstop.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Fuel Stops'**
+  String get recentfuelstop;
+
+  /// No description provided for @nofuelstopsyet.
+  ///
+  /// In en, this message translates to:
+  /// **'No fuel stops recorded yet. Tap the + button to add one!'**
+  String get nofuelstopsyet;
+
+  /// No description provided for @recentmaintenancestop.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Maintenance'**
+  String get recentmaintenancestop;
+
+  /// No description provided for @nomaintenanceyet.
+  ///
+  /// In en, this message translates to:
+  /// **'No maintenance recorded yet.'**
+  String get nomaintenanceyet;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -295,6 +349,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hi, I have the following feedback for your app:\n\n'**
   String get sendfeedbacktext;
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTitle;
+
+  /// No description provided for @statsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statsTitle;
+
+  /// No description provided for @dataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Data'**
+  String get dataTitle;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings & More'**
+  String get settingsTitle;
+
+  /// No description provided for @homenavitem.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homenavitem;
+
+  /// No description provided for @statsnavitem.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get statsnavitem;
+
+  /// No description provided for @datanavitem.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get datanavitem;
+
+  /// No description provided for @settingsnavitem.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsnavitem;
 }
 
 class _AppLocalizationsDelegate

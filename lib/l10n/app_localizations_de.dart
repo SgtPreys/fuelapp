@@ -9,10 +9,38 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get appTitle => 'Tank-Tracker';
+  String get appTitle => 'Fuel Tracker';
 
   @override
-  String get addFuelStop => 'Tankfüllung hinzufügen';
+  String get addFuelStop => 'Tankfüllung Hinzufügen';
+
+  @override
+  String get addMaintenanceStop => 'Wartung hinzufügen';
+
+  @override
+  String get addGasStation => 'Tankstelle hinzufügen';
+
+  @override
+  String get addCompany => 'Unternehmen hinzufügen';
+
+  @override
+  String get addNewCar => 'Neues Auto hinzufügen';
+
+  @override
+  String get dashboard => 'Übersicht';
+
+  @override
+  String get recentfuelstop => 'Kürzliche Tankstopps';
+
+  @override
+  String get nofuelstopsyet =>
+      'Noch keine Tankstopps erfasst. Tippe auf die +-Taste, um einen hinzuzufügen!';
+
+  @override
+  String get recentmaintenancestop => 'Kürzliche Wartungen';
+
+  @override
+  String get nomaintenanceyet => 'Noch keine Wartung erfasst.';
 
   @override
   String get settings => 'Einstellungen';
@@ -112,4 +140,28 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get sendfeedbacktext =>
       'Hallo, ich habe folgendes Feedback zu Ihrer App:';
+
+  @override
+  String get homeTitle => 'Startseite';
+
+  @override
+  String get statsTitle => 'Statistiken';
+
+  @override
+  String get dataTitle => 'Daten verwalten';
+
+  @override
+  String get settingsTitle => 'Einstellungen & Mehr';
+
+  @override
+  String get homenavitem => 'Start';
+
+  @override
+  String get statsnavitem => 'Statistik';
+
+  @override
+  String get datanavitem => 'Daten';
+
+  @override
+  String get settingsnavitem => 'Einstellungen';
 }

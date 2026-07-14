@@ -1,6 +1,16 @@
 {
-  "appTitle": "Tank-Tracker",
-  "addFuelStop": "Tankfüllung hinzufügen",
+  "appTitle": "Fuel Tracker",
+  "addFuelStop": "Tankfüllung Hinzufügen",
+  "addMaintenanceStop": "Wartung hinzufügen",
+  "addGasStation": "Tankstelle hinzufügen",
+  "addCompany": "Unternehmen hinzufügen",
+  "addNewCar": "Neues Auto hinzufügen",
+
+  "dashboard": "Übersicht",
+  "recentfuelstop": "Kürzliche Tankstopps",
+  "nofuelstopsyet": "Noch keine Tankstopps erfasst. Tippe auf die +-Taste, um einen hinzuzufügen!",
+  "recentmaintenancestop": "Kürzliche Wartungen",
+  "nomaintenanceyet": "Noch keine Wartung erfasst.",
 
   "settings": "Einstellungen",
   "appinfo": "App Info",
@@ -32,5 +42,15 @@
   "system": "System",
   "sendfeedback": "Feedback senden",
   "sendfeedbacktitel": "Feedback zum Kraftstoffkosten-Tracker",
-  "sendfeedbacktext": "Hallo, ich habe folgendes Feedback zu Ihrer App:"
+  "sendfeedbacktext": "Hallo, ich habe folgendes Feedback zu Ihrer App:",
+
+  "homeTitle": "Startseite",
+  "statsTitle": "Statistiken",
+  "dataTitle": "Daten verwalten",
+  "settingsTitle": "Einstellungen & Mehr",
+
+  "homenavitem": "Start",
+  "statsnavitem": "Statistik",
+  "datanavitem": "Daten",
+  "settingsnavitem": "Einstellungen"
 }

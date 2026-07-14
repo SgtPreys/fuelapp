@@ -15,6 +15,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addFuelStop => 'Add Fuel Stop';
 
   @override
+  String get addMaintenanceStop => 'Add Maintenance';
+
+  @override
+  String get addGasStation => 'Add Gas Station';
+
+  @override
+  String get addCompany => 'Add Company';
+
+  @override
+  String get addNewCar => 'Add New Car';
+
+  @override
+  String get dashboard => 'Dashboard';
+
+  @override
+  String get recentfuelstop => 'Recent Fuel Stops';
+
+  @override
+  String get nofuelstopsyet =>
+      'No fuel stops recorded yet. Tap the + button to add one!';
+
+  @override
+  String get recentmaintenancestop => 'Recent Maintenance';
+
+  @override
+  String get nomaintenanceyet => 'No maintenance recorded yet.';
+
+  @override
   String get settings => 'Settings';
 
   @override
@@ -111,4 +139,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sendfeedbacktext =>
       'Hi, I have the following feedback for your app:\n\n';
+
+  @override
+  String get homeTitle => 'Home';
+
+  @override
+  String get statsTitle => 'Statistics';
+
+  @override
+  String get dataTitle => 'Manage Data';
+
+  @override
+  String get settingsTitle => 'Settings & More';
+
+  @override
+  String get homenavitem => 'Home';
+
+  @override
+  String get statsnavitem => 'Stats';
+
+  @override
+  String get datanavitem => 'Data';
+
+  @override
+  String get settingsnavitem => 'Settings';
 }
