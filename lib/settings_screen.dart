@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'l10n/app_localizations.dart';
+import 'providers/language_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -324,11 +325,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
               onChanged: (String? newValue) {
-                if (newValue != null) {
-                  // This calls the magic function we built in main.dart!
-                  FuelApp.setLocale(context, Locale(newValue));
-                }
-              },
+              if (newValue != null) {
+                // Talk to the provider directly
+                Provider.of<LanguageProvider>(context, listen: false)
+                    .setLocale(Locale(newValue));
+              }
+              }
             ),
           ),
           const Divider(),

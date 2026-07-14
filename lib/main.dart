@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
+import 'providers/language_provider.dart';
 
 Future<void> main() async {
   // Add this line to ensure the engine is ready for the database!
@@ -22,8 +23,11 @@ Future<void> main() async {
   //await NotificationService.instance.initialize();
   
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => LanguageProvider()), // Add this!
+      ],
       child: const FuelApp(),
     ),
   );
@@ -32,33 +36,21 @@ Future<void> main() async {
 class FuelApp extends StatefulWidget {
   const FuelApp({super.key});
 
-  // 1. The magic function goes HERE, in the root app widget!
-  static void setLocale(BuildContext context, Locale newLocale) {
-    _FuelAppState? state = context.findAncestorStateOfType<_FuelAppState>();
-    state?.setLocale(newLocale);
-  }
-
   @override
   State<FuelApp> createState() => _FuelAppState();
 }
 
 class _FuelAppState extends State<FuelApp> {
-  Locale? _locale;
-
-  // 2. The setState function lives here where the state actually is
-  void setLocale(Locale locale) {
-    setState(() {
-      _locale = locale;
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
     
     return MaterialApp(
       title: 'FuelApp',
-      locale: _locale, // 3. Feeds the current locale to MaterialApp
+      locale: languageProvider.locale, // 3. Feeds the current locale to MaterialApp
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData.light(),
