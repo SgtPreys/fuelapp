@@ -13,6 +13,8 @@ import 'package:flutter/services.dart';
 import 'settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   // Add this line to ensure the engine is ready for the database!
@@ -35,6 +37,8 @@ class FuelApp extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       title: 'FuelApp',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: themeProvider.themeMode,
@@ -115,8 +119,8 @@ class _MainScreenState extends State<MainScreen> {
       },
     );
 
-    // 2. If we are on the "Manage Data" tab (Index 2), return all 5 options!
-    if (_selectedIndex == 2) {
+    // 2. If we are on the other tab than home we give all 5 options
+    if (_selectedIndex == 1 & 2 & 3) {
       return [
         fuelOption,
         maintenanceOption,
