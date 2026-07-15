@@ -159,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
           child: const Icon(Icons.store),
           backgroundColor: Colors.purple,
           foregroundColor: Colors.white,
-          label: AppLocalizations.of(context)!.addGasStation,
+          label: AppLocalizations.of(context)!.addCompany,
           onTap: () async {
             HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
             final result = await showModalBottomSheet(

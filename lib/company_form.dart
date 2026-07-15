@@ -70,7 +70,7 @@ class _CompanyFormState extends State<CompanyForm> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Photo Library'),
+                title: Text(AppLocalizations.of(context)!.photolibrary),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -78,7 +78,7 @@ class _CompanyFormState extends State<CompanyForm> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.camera),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -141,7 +141,7 @@ class _CompanyFormState extends State<CompanyForm> {
   Future<void> _saveCompany() async {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a Company Name!')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseentercompany)),
       );
       return;
     }
@@ -186,7 +186,7 @@ class _CompanyFormState extends State<CompanyForm> {
           children: [
             Center(
               child: Text(
-                isEditing ? 'Edit Company / Shop' : 'Add Company / Shop', 
+                isEditing ? AppLocalizations.of(context)!.editcompany : AppLocalizations.of(context)!.addCompany, 
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
               ),
             ),
@@ -194,46 +194,46 @@ class _CompanyFormState extends State<CompanyForm> {
 
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Company Name*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.companyname, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _locationController,
-              decoration: const InputDecoration(labelText: 'Location / Address', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _contactController,
-              decoration: const InputDecoration(labelText: 'Contact Person', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.contactperson, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email Address', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.emailaddress, border: OutlineInputBorder()),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _phoneController,
-              decoration: const InputDecoration(labelText: 'Telephone Number', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.telephonenumber, border: OutlineInputBorder()),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _websiteController,
-              decoration: const InputDecoration(labelText: 'Website', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.website, border: OutlineInputBorder()),
               keyboardType: TextInputType.url,
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _infoController,
-              decoration: const InputDecoration(labelText: 'Additional Info / Notes', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.additionalinfo, border: OutlineInputBorder()),
               maxLines: 3,
             ),
             const SizedBox(height: 10),
@@ -244,7 +244,7 @@ class _CompanyFormState extends State<CompanyForm> {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? 'Add Photo' : 'Change Photo'),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
                   ),
                 ),
                 if (_imagePath != null) ...[
@@ -309,7 +309,7 @@ class _CompanyFormState extends State<CompanyForm> {
                   // Then execute your save logic
                   _saveCompany(); 
                 },
-                child: Text(isEditing ? 'Update Company' : 'Save Company'),
+                child: Text(isEditing ? AppLocalizations.of(context)!.updatecompany : AppLocalizations.of(context)!.savecompany),
               ),
             ),
             
@@ -324,15 +324,15 @@ class _CompanyFormState extends State<CompanyForm> {
                     bool? confirmDelete = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Delete Company'),
-                        content: const Text('Are you sure you want to delete this company? This action cannot be undone. In doing so you also delete all related data!'),
+                        title: Text(AppLocalizations.of(context)!.deletecompany),
+                        content: Text(AppLocalizations.of(context)!.deletecompanytext),
                         actions: [
                           TextButton(
                             onPressed: () {
                               HapticFeedback.mediumImpact();
                               Navigator.pop(context, false); // Cancel
                             },
-                            child: const Text('Cancel'),
+                            child: Text(AppLocalizations.of(context)!.cancel),
                           ),
                           TextButton(
                             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -340,7 +340,7 @@ class _CompanyFormState extends State<CompanyForm> {
                               HapticFeedback.mediumImpact();
                               Navigator.pop(context, true);
                             }, // Confirm
-                            child: const Text('Delete')
+                            child: Text(AppLocalizations.of(context)!.delete)
                           ),
                         ],
                       ),
@@ -356,7 +356,7 @@ class _CompanyFormState extends State<CompanyForm> {
                       }
                     }
                   },
-                  child: const Text('Delete Company', style: TextStyle(color: Colors.red)),
+                  child: Text(AppLocalizations.of(context)!.deletecompany, style: TextStyle(color: Colors.red)),
                 ),
               ),
             ],

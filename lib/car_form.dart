@@ -88,7 +88,7 @@ class _CarFormState extends State<CarForm> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Photo Library'),
+                title: Text(AppLocalizations.of(context)!.photolibrary),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -96,7 +96,7 @@ class _CarFormState extends State<CarForm> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.camera),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -161,7 +161,7 @@ class _CarFormState extends State<CarForm> {
   Future<void> _saveCar() async {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a Car Name!')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseentercarname)),
       );
       return;
     }
@@ -214,33 +214,33 @@ class _CarFormState extends State<CarForm> {
           children: [
             Center(
               child: Text(
-                isEditing ? 'Edit Vehicle' : 'Add New Vehicle', 
+                isEditing ? AppLocalizations.of(context)!.editcar : AppLocalizations.of(context)!.addNewCar, 
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
               ),
             ),
             const SizedBox(height: 20),
 
-            const Text('Basic Information', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.basicinfo, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Car Name (e.g. Daily Driver)*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.carname, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _manufacturerController,
-              decoration: const InputDecoration(labelText: 'Manufacturer', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.manufacturer, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _yearController,
-              decoration: const InputDecoration(labelText: 'Year of Manufacture', border: OutlineInputBorder()), 
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.yearofmanufacture, border: OutlineInputBorder()), 
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
             
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Status', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.status, border: OutlineInputBorder()),
               initialValue: _selectedStatus,
               items: _statusOptions.map((String status) {
                 return DropdownMenuItem<String>(value: status, child: Text(status));
@@ -251,8 +251,8 @@ class _CarFormState extends State<CarForm> {
             // Additional Info TextField
             TextField(
               controller: _additionalInfoController,
-              decoration: const InputDecoration(
-                labelText: 'Additional Info',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.additionalinfo,
                 border: OutlineInputBorder(),
               ),
               maxLines: 2,
@@ -266,7 +266,7 @@ class _CarFormState extends State<CarForm> {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? 'Add Photo' : 'Change Photo'),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
                   ),
                 ),
                 if (_imagePath != null) ...[
@@ -323,21 +323,21 @@ class _CarFormState extends State<CarForm> {
             ],
             const SizedBox(height: 20),
 
-            const Text('Specifications & Details', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.specifications, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             TextField(
               controller: _plateController,
-              decoration: const InputDecoration(labelText: 'License Plate', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.plate, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _tuevController,
-              decoration: const InputDecoration(labelText: 'Next TÜV (MM/YYYY)', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.nexttuev, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Fuel Type', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fueltype, border: OutlineInputBorder()),
               initialValue: _selectedFuel,
               items: _fuelOptions.map((String fuel) {
                 return DropdownMenuItem<String>(value: fuel, child: Text(fuel));
@@ -347,7 +347,7 @@ class _CarFormState extends State<CarForm> {
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Tire Type', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.tiretype, border: OutlineInputBorder()),
               initialValue: _selectedTire,
               items: _tireOptions.map((String tire) {
                 return DropdownMenuItem<String>(value: tire, child: Text(tire));
@@ -356,27 +356,27 @@ class _CarFormState extends State<CarForm> {
             ),
             const SizedBox(height: 20),
 
-            const Text('Financials', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.financials, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             TextField(
               controller: _boughtDateController,
-              decoration: const InputDecoration(labelText: 'Bought Date', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.boughtdate, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _boughtPriceController,
-              decoration: const InputDecoration(labelText: 'Bought Price', border: OutlineInputBorder()), 
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.boughtprice, border: OutlineInputBorder()), 
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _soldDateController,
-              decoration: const InputDecoration(labelText: 'Sold Date', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.solddate, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _soldPriceController,
-              decoration: const InputDecoration(labelText: 'Sold Price', border: OutlineInputBorder()), 
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.soldprice, border: OutlineInputBorder()), 
               keyboardType: TextInputType.number,
             ),
             
@@ -390,7 +390,7 @@ class _CarFormState extends State<CarForm> {
                   // Then execute your save logic
                   _saveCar(); 
                 },
-                child: Text(isEditing ? 'Update Vehicle' : 'Save Vehicle'),
+                child: Text(isEditing ? AppLocalizations.of(context)!.updatecar : AppLocalizations.of(context)!.savecar),
               ),
             ),
             
@@ -405,15 +405,15 @@ class _CarFormState extends State<CarForm> {
                     bool? confirmDelete = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Delete Vehicle'),
-                        content: const Text('Are you sure you want to delete this vehicle? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!'),
+                        title: Text(AppLocalizations.of(context)!.deletecar),
+                        content: Text(AppLocalizations.of(context)!.deletecartext),
                         actions: [
                           TextButton(
                             onPressed: () {
                               HapticFeedback.mediumImpact();
                               Navigator.pop(context, false); // Cancel
                             },
-                            child: const Text('Cancel'),
+                            child: Text(AppLocalizations.of(context)!.cancel),
                           ),
                           TextButton(
                             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -421,7 +421,7 @@ class _CarFormState extends State<CarForm> {
                               HapticFeedback.mediumImpact();
                               Navigator.pop(context, true);
                             }, // Confirm
-                            child: const Text('Delete')
+                            child: Text(AppLocalizations.of(context)!.delete)
                           ),
                         ],
                       ),
@@ -437,7 +437,7 @@ class _CarFormState extends State<CarForm> {
                       }
                     }
                   },
-                  child: const Text('Delete Vehicle', style: TextStyle(color: Colors.red)),
+                  child: Text(AppLocalizations.of(context)!.deletecar, style: TextStyle(color: Colors.red)),
                 ),
               ),
             ],

@@ -27,6 +27,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addNewCar => 'Auto Hinzufügen';
 
   @override
+  String get fuel => 'Krafstoff';
+
+  @override
+  String get maintenance => 'Wartung';
+
+  @override
+  String get stations => 'Tankstellen';
+
+  @override
+  String get companies => 'Unternehmen';
+
+  @override
+  String get cars => 'Autos';
+
+  @override
   String get dashboard => 'Übersicht';
 
   @override
@@ -123,6 +138,143 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deletemaintenance => 'Wartung Löschen';
+
+  @override
+  String get pleaseentercompany => 'Bitte geben Sie einen Firmennamen ein!';
+
+  @override
+  String get editcompany => 'Unternehmen / Geschäft Bearbeiten';
+
+  @override
+  String get addcompany => 'Add Company / Shop';
+
+  @override
+  String get companyname => 'Name der Firma*';
+
+  @override
+  String get location => 'Standort / Adresse';
+
+  @override
+  String get contactperson => 'Ansprechpartner';
+
+  @override
+  String get emailaddress => 'E-Mail-Adresse';
+
+  @override
+  String get telephonenumber => 'Telefonnummer';
+
+  @override
+  String get website => 'Website';
+
+  @override
+  String get updatecompany => 'Unternehmensdaten Aktualisieren';
+
+  @override
+  String get savecompany => 'Unternehmen Speichern';
+
+  @override
+  String get deletecompany => 'Unternehmen Löschen';
+
+  @override
+  String get deletecompanytext =>
+      'Sind Sie sicher, dass Sie dieses Unternehmen löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden. Dabei löschen Sie auch alle zugehörigen Daten!';
+
+  @override
+  String get pleaseenterstation =>
+      'Bitte geben Sie einen Tankstellennamen ein!';
+
+  @override
+  String get nogasstations =>
+      'No Gas Stations recorded yet. Tap the + button to add one!';
+
+  @override
+  String get editstation => 'Tankstelle Bearbeiten';
+
+  @override
+  String get stationname => 'Tankstellenname*';
+
+  @override
+  String get type => 'Typ';
+
+  @override
+  String get updatestation => 'Tankstelle Aktualisieren';
+
+  @override
+  String get savestation => 'Tankstelle Speichern';
+
+  @override
+  String get deletestation => 'Tankstelle Löschen';
+
+  @override
+  String get deletestationtext =>
+      'Sind Sie sicher, dass Sie diese Tankstelle löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden. Dabei löschen Sie auch alle zugehörigen Daten (Kraftstoff, Wartung usw.)!';
+
+  @override
+  String get pleaseentercarname => 'Bitte geben Sie einen Autonamen ein!';
+
+  @override
+  String get editcar => 'Fahrzeug Bearbeiten';
+
+  @override
+  String get basicinfo => 'Grundlegende Informationen';
+
+  @override
+  String get carname => 'Fahrzeugname*';
+
+  @override
+  String get manufacturer => 'Hersteller';
+
+  @override
+  String get yearofmanufacture => 'Baujahr';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get specifications => 'Spezifikationen & Details';
+
+  @override
+  String get plate => 'Kennzeichen';
+
+  @override
+  String get nexttuev => 'Nächster TÜV (MM/JJJJ)';
+
+  @override
+  String get fueltype => 'Kraftstoffart';
+
+  @override
+  String get tiretype => 'Reifentyp';
+
+  @override
+  String get financials => 'Finanzdaten';
+
+  @override
+  String get boughtdate => 'Kaufdatum';
+
+  @override
+  String get boughtprice => 'Kaufpreis';
+
+  @override
+  String get solddate => 'Verkaufsdatum';
+
+  @override
+  String get soldprice => 'Verkaufspreis';
+
+  @override
+  String get updatecar => 'Fahrzeug Aktualisieren';
+
+  @override
+  String get savecar => 'Fahrzeug Speichern';
+
+  @override
+  String get deletecar => 'Fahrzeug Löschen';
+
+  @override
+  String get deletecartext =>
+      'Sind Sie sicher, dass Sie dieses Fahrzeug löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden. Dabei löschen Sie auch alle zugehörigen Daten (Kraftstoff, Wartung usw.)!';
+
+  @override
+  String get performancepervehicle => 'Performance per Vehicle';
 
   @override
   String get settings => 'Einstellungen';

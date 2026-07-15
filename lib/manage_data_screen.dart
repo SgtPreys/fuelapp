@@ -65,7 +65,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
       length: 5,
       child: Column(
         children: [
-          const TabBar(
+          TabBar(
             isScrollable: true,
             tabAlignment: TabAlignment.start,
             labelColor: Colors.blue,
@@ -73,11 +73,11 @@ class ManageDataScreenState extends State<ManageDataScreen> {
             indicatorColor: Colors.blue,
             // --- NEW ORDER: Fuel, Maintenance, Stations, Companies, Cars ---
             tabs: [
-              Tab(icon: Icon(Icons.ev_station, color: Colors.blue), text: 'Fuel'),
-              Tab(icon: Icon(Icons.build, color: Colors.orange), text: 'Maintenance'),
-              Tab(icon: Icon(Icons.local_gas_station, color: Colors.teal), text: 'Stations'),
-              Tab(icon: Icon(Icons.store, color: Colors.purple), text: 'Companies'),
-              Tab(icon: Icon(Icons.directions_car, color: Colors.indigo), text: 'Cars'),
+              Tab(icon: Icon(Icons.ev_station, color: Colors.blue), text: AppLocalizations.of(context)!.fuel),
+              Tab(icon: Icon(Icons.build, color: Colors.orange), text: AppLocalizations.of(context)!.maintenance),
+              Tab(icon: Icon(Icons.local_gas_station, color: Colors.teal), text: AppLocalizations.of(context)!.stations),
+              Tab(icon: Icon(Icons.store, color: Colors.purple), text: AppLocalizations.of(context)!.companies),
+              Tab(icon: Icon(Icons.directions_car, color: Colors.indigo), text: AppLocalizations.of(context)!.cars),
             ],
           ),
           Expanded(
@@ -86,7 +86,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
               children: [
                 // 1. FUEL
                 _fuel.isEmpty
-                    ? const Center(child: Text('No fuel stops saved yet.'))
+                    ? Center(child: Text(AppLocalizations.of(context)!.nofuelstopsyet))
                     : ListView.builder(
                         itemCount: _fuel.length,
                         itemBuilder: (context, index) {
@@ -137,7 +137,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
 
                 // 2. MAINTENANCE
                 _maintenance.isEmpty
-                    ? const Center(child: Text('No maintenance saved yet.'))
+                    ? Center(child: Text(AppLocalizations.of(context)!.nomaintenanceyet))
                     : ListView.builder(
                         itemCount: _maintenance.length,
                         itemBuilder: (context, index) {
@@ -166,7 +166,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
 
                 // 3. STATIONS
                 _stations.isEmpty
-                    ? const Center(child: Text('No gas stations saved yet.'))
+                    ? Center(child: Text(AppLocalizations.of(context)!.nogasstations))
                     : ListView.builder(
                         itemCount: _stations.length,
                         itemBuilder: (context, index) {
@@ -197,7 +197,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
 
                 // 4. COMPANIES
                 _companies.isEmpty
-                    ? const Center(child: Text('No companies saved yet.'))
+                    ? Center(child: Text(AppLocalizations.of(context)!.nocompanyavailable))
                     : ListView.builder(
                         itemCount: _companies.length,
                         itemBuilder: (context, index) {
@@ -237,7 +237,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
 
                 // 5. CARS
                 _cars.isEmpty
-                    ? const Center(child: Text('No cars saved yet.'))
+                    ? Center(child: Text(AppLocalizations.of(context)!.nocarsavailable))
                     : ListView.builder(
                         itemCount: _cars.length,
                         itemBuilder: (context, index) {

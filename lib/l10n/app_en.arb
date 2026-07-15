@@ -5,12 +5,18 @@
   "addGasStation": "Add Gas Station",
   "addCompany": "Add Company",
   "addNewCar": "Add New Car",
+  
+  "fuel": "Fuel",
+  "maintenance": "Maintenance",
+  "stations": "Stations",
+  "companies": "Companies", 
+  "cars": "Cars",
 
   "dashboard": "Dashboard",
   "recentfuelstop": "Recent Fuel Stops",
   "nofuelstopsyet": "No fuel stops recorded yet. Tap the + button to add one!",
   "recentmaintenancestop": "Recent Maintenance",
-  "nomaintenanceyet": "No maintenance recorded yet.",
+  "nomaintenanceyet": "No maintenance recorded yet. Tap the + button to add one!",
 
   "photolibrary": "Photo Library",
   "camera": "Camera",
@@ -19,16 +25,18 @@
   "editfuelstop": "Edit Fuel Stop",
   
   "selectcar": "Select Vehicle*",
-  "nocarsavailable": "No Cars Available - Add one first!",
+  "nocarsavailable": "No cars recorded yet. Tap the + button to add one!",
   "selectstation": "Select Gas Station*",
   "nostationsavailable": "No Stations Available - Add one first!",
   "drivendistance": "Driven Distance (km)",
   "liters": "Liters",
   "price": "Total Price (€)",
   "dateandtime": "Date & Time*",
+
   "additionalinfo": "Additional Info",
   "addphoto": "Add Photo",
   "changephoto": "Change Photo",
+
   "updatefuelstop": "Update Fuel Stop",
   "savefuelstop": "Save Fuel Stop",
   "deletefuelstop": "Delete Fuel Stop",
@@ -36,11 +44,65 @@
   "pleasefillfields": "Please fill out all required fields.",
   "editmaintenancestop": "Edit Maintenance",
   "selectcompany": "Select Shop/Company*",
-  "nocompanyavailable": "No Shops Available - Add one first!",
+  "nocompanyavailable": "No companies recorded yet. Tap the + button to add one!",
   "occurrence": "Occurrence Type*",
   "updatemaintenance": "Update Maintenance",
   "savemaintenance": "Save Maintenance",
   "deletemaintenance": "Delete Maintenance",
+
+  "pleaseentercompany": "Please enter a Company Name!",
+  "editcompany": "Edit Company / Shop",
+  "addcompany": "Add Company / Shop",
+  "companyname": "Company Name*",
+  "location": "Location / Address",
+  "contactperson": "Contact Person",
+  "emailaddress": "Email Address",
+  "telephonenumber": "Telephone Number",
+  "website": "Website",
+  "updatecompany": "Update Company",
+  "savecompany": "Save Company",
+  "deletecompany": "Delete Company",
+  "deletecompanytext": "Are you sure you want to delete this company? This action cannot be undone. In doing so you also delete all related data!",
+
+  "pleaseenterstation": "Please enter a Station Name!",
+  "nogasstations": "No Gas Stations recorded yet. Tap the + button to add one!",
+  "editstation": "Edit Gas Station",
+  "stationname": "Station Name*",
+  "type": "Type",
+  "updatestation": "Update Gas Station",
+  "savestation": "Save Gas Station",
+  "deletestation": "Delete Gas Station",
+  "deletestationtext": "Are you sure you want to delete this gas station? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!",
+
+  "pleaseentercarname": "Please enter a Car Name!",
+  "editcar": "Edit Vehicle", 
+  "basicinfo": "Basic Information",
+  "carname": "Car Name*",
+  "manufacturer": "Manufacturer",
+  "yearofmanufacture": "Year of Manufacture",
+  "status": "Status",
+  "specifications": "Specifications & Details",
+  "plate": "License Plate",
+  "nexttuev": "Next TÜV (MM/YYYY)",
+  "fueltype": "Fuel Type",
+  "tiretype": "Tire Type",
+  "financials": "Financials",
+  "boughtdate": "Bought Date",
+  "boughtprice": "Bought Price",
+  "solddate": "Sold Date",
+  "soldprice": "Sold Price",
+  "updatecar": "Update Vehicle",
+  "savecar": "Save Vehicle",
+  "deletecar": "Delete Vehicle",
+  "deletecartext": "Are you sure you want to delete this vehicle? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!",
+
+
+  
+  "performancepervehicle": "Performance per Vehicle",
+  
+
+
+  
 
 
   "settings": "Settings",

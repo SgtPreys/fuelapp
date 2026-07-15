@@ -75,7 +75,7 @@ class _StationFormState extends State<StationForm> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Photo Library'),
+                title: Text(AppLocalizations.of(context)!.photolibrary),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -83,7 +83,7 @@ class _StationFormState extends State<StationForm> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.camera),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -184,7 +184,7 @@ class _StationFormState extends State<StationForm> {
           children: [
             Center(
               child: Text(
-                isEditing ? 'Edit Gas Station' : 'Add Gas Station', 
+                isEditing ? AppLocalizations.of(context)!.editstation : AppLocalizations.of(context)!.addGasStation, 
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
               ),
             ),
@@ -192,18 +192,18 @@ class _StationFormState extends State<StationForm> {
 
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Name (e.g. Shell, Aral)*', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.stationname, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
             TextField(
               controller: _locationController,
-              decoration: const InputDecoration(labelText: 'Location / City', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder()),
             ),
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(labelText: 'Type', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.type, border: OutlineInputBorder()),
               initialValue: _selectedType,
               items: _typeOptions.map((String type) {
                 return DropdownMenuItem<String>(value: type, child: Text(type));
@@ -214,7 +214,7 @@ class _StationFormState extends State<StationForm> {
 
             TextField(
               controller: _infoController,
-              decoration: const InputDecoration(labelText: 'Additional Information / Notes', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.additionalinfo, border: OutlineInputBorder()),
               maxLines: 3,
             ),
             const SizedBox(height: 10),
@@ -225,7 +225,7 @@ class _StationFormState extends State<StationForm> {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? 'Add Photo' : 'Change Photo'),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
                   ),
                 ),
                 if (_imagePath != null) ...[
@@ -291,7 +291,7 @@ class _StationFormState extends State<StationForm> {
                   // Then execute your save logic
                   _saveStation(); 
                 },
-                child: Text(isEditing ? 'Update Gas Station' : 'Save Gas Station'),
+                child: Text(isEditing ? AppLocalizations.of(context)!.updatestation : AppLocalizations.of(context)!.savestation),
               ),
             ),
             
@@ -306,15 +306,15 @@ class _StationFormState extends State<StationForm> {
                     bool? confirmDelete = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Delete Gas Station'),
-                        content: const Text('Are you sure you want to delete this gas station? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!'),
+                        title: Text(AppLocalizations.of(context)!.deletestation),
+                        content: Text(AppLocalizations.of(context)!.deletestationtext),
                         actions: [
                           TextButton(
                             onPressed: () {
                               HapticFeedback.mediumImpact();
                               Navigator.pop(context, false); // Cancel
                             },
-                            child: const Text('Cancel'),
+                            child: Text(AppLocalizations.of(context)!.cancel),
                           ),
                           TextButton(
                             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -322,7 +322,7 @@ class _StationFormState extends State<StationForm> {
                               HapticFeedback.mediumImpact();
                               Navigator.pop(context, true);
                             }, // Confirm
-                            child: const Text('Delete')
+                            child: Text(AppLocalizations.of(context)!.delete)
                           ),
                         ],
                       ),
@@ -338,7 +338,7 @@ class _StationFormState extends State<StationForm> {
                       }
                     }
                   },
-                  child: const Text('Delete Gas Station', style: TextStyle(color: Colors.red)),
+                  child: Text(AppLocalizations.of(context)!.deletestation, style: TextStyle(color: Colors.red)),
                 ),
               ),
             ],

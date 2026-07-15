@@ -134,6 +134,36 @@ abstract class AppLocalizations {
   /// **'Add New Car'**
   String get addNewCar;
 
+  /// No description provided for @fuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get fuel;
+
+  /// No description provided for @maintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get maintenance;
+
+  /// No description provided for @stations.
+  ///
+  /// In en, this message translates to:
+  /// **'Stations'**
+  String get stations;
+
+  /// No description provided for @companies.
+  ///
+  /// In en, this message translates to:
+  /// **'Companies'**
+  String get companies;
+
+  /// No description provided for @cars.
+  ///
+  /// In en, this message translates to:
+  /// **'Cars'**
+  String get cars;
+
   /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
@@ -161,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @nomaintenanceyet.
   ///
   /// In en, this message translates to:
-  /// **'No maintenance recorded yet.'**
+  /// **'No maintenance recorded yet. Tap the + button to add one!'**
   String get nomaintenanceyet;
 
   /// No description provided for @photolibrary.
@@ -197,7 +227,7 @@ abstract class AppLocalizations {
   /// No description provided for @nocarsavailable.
   ///
   /// In en, this message translates to:
-  /// **'No Cars Available - Add one first!'**
+  /// **'No cars recorded yet. Tap the + button to add one!'**
   String get nocarsavailable;
 
   /// No description provided for @selectstation.
@@ -293,7 +323,7 @@ abstract class AppLocalizations {
   /// No description provided for @nocompanyavailable.
   ///
   /// In en, this message translates to:
-  /// **'No Shops Available - Add one first!'**
+  /// **'No companies recorded yet. Tap the + button to add one!'**
   String get nocompanyavailable;
 
   /// No description provided for @occurrence.
@@ -319,6 +349,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Maintenance'**
   String get deletemaintenance;
+
+  /// No description provided for @pleaseentercompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a Company Name!'**
+  String get pleaseentercompany;
+
+  /// No description provided for @editcompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Company / Shop'**
+  String get editcompany;
+
+  /// No description provided for @addcompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Company / Shop'**
+  String get addcompany;
+
+  /// No description provided for @companyname.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Name*'**
+  String get companyname;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location / Address'**
+  String get location;
+
+  /// No description provided for @contactperson.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Person'**
+  String get contactperson;
+
+  /// No description provided for @emailaddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailaddress;
+
+  /// No description provided for @telephonenumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Telephone Number'**
+  String get telephonenumber;
+
+  /// No description provided for @website.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get website;
+
+  /// No description provided for @updatecompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Company'**
+  String get updatecompany;
+
+  /// No description provided for @savecompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Company'**
+  String get savecompany;
+
+  /// No description provided for @deletecompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Company'**
+  String get deletecompany;
+
+  /// No description provided for @deletecompanytext.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this company? This action cannot be undone. In doing so you also delete all related data!'**
+  String get deletecompanytext;
+
+  /// No description provided for @pleaseenterstation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a Station Name!'**
+  String get pleaseenterstation;
+
+  /// No description provided for @nogasstations.
+  ///
+  /// In en, this message translates to:
+  /// **'No Gas Stations recorded yet. Tap the + button to add one!'**
+  String get nogasstations;
+
+  /// No description provided for @editstation.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Gas Station'**
+  String get editstation;
+
+  /// No description provided for @stationname.
+  ///
+  /// In en, this message translates to:
+  /// **'Station Name*'**
+  String get stationname;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// No description provided for @updatestation.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Gas Station'**
+  String get updatestation;
+
+  /// No description provided for @savestation.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Gas Station'**
+  String get savestation;
+
+  /// No description provided for @deletestation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Gas Station'**
+  String get deletestation;
+
+  /// No description provided for @deletestationtext.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this gas station? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!'**
+  String get deletestationtext;
+
+  /// No description provided for @pleaseentercarname.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a Car Name!'**
+  String get pleaseentercarname;
+
+  /// No description provided for @editcar.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Vehicle'**
+  String get editcar;
+
+  /// No description provided for @basicinfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basicinfo;
+
+  /// No description provided for @carname.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Name*'**
+  String get carname;
+
+  /// No description provided for @manufacturer.
+  ///
+  /// In en, this message translates to:
+  /// **'Manufacturer'**
+  String get manufacturer;
+
+  /// No description provided for @yearofmanufacture.
+  ///
+  /// In en, this message translates to:
+  /// **'Year of Manufacture'**
+  String get yearofmanufacture;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @specifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Specifications & Details'**
+  String get specifications;
+
+  /// No description provided for @plate.
+  ///
+  /// In en, this message translates to:
+  /// **'License Plate'**
+  String get plate;
+
+  /// No description provided for @nexttuev.
+  ///
+  /// In en, this message translates to:
+  /// **'Next TÜV (MM/YYYY)'**
+  String get nexttuev;
+
+  /// No description provided for @fueltype.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Type'**
+  String get fueltype;
+
+  /// No description provided for @tiretype.
+  ///
+  /// In en, this message translates to:
+  /// **'Tire Type'**
+  String get tiretype;
+
+  /// No description provided for @financials.
+  ///
+  /// In en, this message translates to:
+  /// **'Financials'**
+  String get financials;
+
+  /// No description provided for @boughtdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought Date'**
+  String get boughtdate;
+
+  /// No description provided for @boughtprice.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought Price'**
+  String get boughtprice;
+
+  /// No description provided for @solddate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold Date'**
+  String get solddate;
+
+  /// No description provided for @soldprice.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold Price'**
+  String get soldprice;
+
+  /// No description provided for @updatecar.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Vehicle'**
+  String get updatecar;
+
+  /// No description provided for @savecar.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Vehicle'**
+  String get savecar;
+
+  /// No description provided for @deletecar.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Vehicle'**
+  String get deletecar;
+
+  /// No description provided for @deletecartext.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this vehicle? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!'**
+  String get deletecartext;
+
+  /// No description provided for @performancepervehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance per Vehicle'**
+  String get performancepervehicle;
 
   /// No description provided for @settings.
   ///
