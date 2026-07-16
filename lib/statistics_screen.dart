@@ -617,7 +617,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8.0), // Adds the offset/space
                         child: Transform.rotate(
-                          angle: -math.pi / 4, // -45 degrees
+                          angle: -0.5, 
                           child: Text(
                             bottomLabels[index],
                             style: const TextStyle(fontSize: 10, color: Colors.grey),
@@ -697,7 +697,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               titlesData: FlTitlesData(
                 topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: true)),
+                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: true,reservedSize: 38)),
                 
                 // --- The New Bottom Axis ---
                 bottomTitles: AxisTitles(
