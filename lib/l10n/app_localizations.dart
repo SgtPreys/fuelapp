@@ -614,6 +614,162 @@ abstract class AppLocalizations {
   /// **'Performance per Vehicle'**
   String get performancepervehicle;
 
+  /// No description provided for @chartconsumption.
+  ///
+  /// In en, this message translates to:
+  /// **'Consumption (L/100km)'**
+  String get chartconsumption;
+
+  /// No description provided for @chartpriceperliter.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per Liter (€/L)'**
+  String get chartpriceperliter;
+
+  /// No description provided for @totalcosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Costs'**
+  String get totalcosts;
+
+  /// No description provided for @totalrunningcost.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Running Cost'**
+  String get totalrunningcost;
+
+  /// No description provided for @totaldistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Distance'**
+  String get totaldistance;
+
+  /// No description provided for @fuelcosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Costs'**
+  String get fuelcosts;
+
+  /// No description provided for @efficiencyandaverages.
+  ///
+  /// In en, this message translates to:
+  /// **'Efficiency & Averages'**
+  String get efficiencyandaverages;
+
+  /// No description provided for @avgconsumption.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Consumption'**
+  String get avgconsumption;
+
+  /// No description provided for @costperkm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost per km'**
+  String get costperkm;
+
+  /// No description provided for @monthlyspend.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Spend'**
+  String get monthlyspend;
+
+  /// No description provided for @avgmonthlyfuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Monthly Fuel'**
+  String get avgmonthlyfuel;
+
+  /// No description provided for @avgmonthlymaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Monthly Maint.'**
+  String get avgmonthlymaint;
+
+  /// No description provided for @avgmonthlytotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Monthly Total'**
+  String get avgmonthlytotal;
+
+  /// No description provided for @yearlyspend.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly Spend'**
+  String get yearlyspend;
+
+  /// No description provided for @avgyearlyfuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Yearly Fuel'**
+  String get avgyearlyfuel;
+
+  /// No description provided for @avgyearlymaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Yearly Maint.'**
+  String get avgyearlymaint;
+
+  /// No description provided for @avgyearlytotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Yearly Total'**
+  String get avgyearlytotal;
+
+  /// No description provided for @nodatayet.
+  ///
+  /// In en, this message translates to:
+  /// **'No data yet'**
+  String get nodatayet;
+
+  /// No description provided for @expensecalender.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Calender'**
+  String get expensecalender;
+
+  /// No description provided for @fuelstop.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Stop'**
+  String get fuelstop;
+
+  /// No description provided for @noexpensesonthisday.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses recorded on this day.'**
+  String get noexpensesonthisday;
+
+  /// No description provided for @notenoughdatatodrawchart.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough data to draw chart yet. Log at least two stops!'**
+  String get notenoughdatatodrawchart;
+
+  /// No description provided for @unknownlocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown location'**
+  String get unknownlocation;
+
+  /// No description provided for @unknowncontact.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown contact person'**
+  String get unknowncontact;
+
+  /// No description provided for @unknowntelephone.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown telephone number'**
+  String get unknowntelephone;
+
+  /// No description provided for @unknownmanufacturer.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown manufacturer'**
+  String get unknownmanufacturer;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:

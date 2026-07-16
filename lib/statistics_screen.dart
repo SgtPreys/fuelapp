@@ -269,13 +269,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     
                     // 2. Use carId instead of car here!
                     _buildMiniChart(
-                      'Consumption (L/100km)', 
+                      AppLocalizations.of(context)!.chartconsumption, 
                       _carConsumptionSpots[carId] ?? [], 
                       _consumptionDates,
                       Colors.blue
                     ),
                     _buildMiniChart(
-                      'Price per Liter (€)', 
+                      AppLocalizations.of(context)!.chartpriceperliter, 
                       _carPriceSpots[carId] ?? [], 
                       _consumptionDates,
                       Colors.green
@@ -285,33 +285,54 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 ),
               );
             }), // Replaced the => with {} and a return statement
-          const SizedBox(height: 10),
+          const SizedBox(height: 30),
           // --- HIGH LEVEL AGGREGATES ---
-          Text('Total Costs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          Text(AppLocalizations.of(context)!.totalcosts, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           Row(
             children: [
-              Expanded(child: _buildStatCard('Total Running Cost', '€${totalRunningCost.toStringAsFixed(2)}', Icons.account_balance_wallet, Colors.teal)),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.totalrunningcost, '€${totalRunningCost.toStringAsFixed(2)}', Icons.account_balance_wallet, Colors.teal)),
               const SizedBox(width: 10),
-              Expanded(child: _buildStatCard('Total Distance', '${_totalDistance.toStringAsFixed(0)} km', Icons.add_road, Colors.indigo)),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.totaldistance, '${_totalDistance.toStringAsFixed(0)} km', Icons.add_road, Colors.indigo)),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Expanded(child: _buildStatCard('Fuel Costs', '€${_totalFuelCost.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.fuelcosts, '€${_totalFuelCost.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
               const SizedBox(width: 10),
-              Expanded(child: _buildStatCard('Maintenance', '€${_totalMaintenanceCost.toStringAsFixed(2)}', Icons.build, Colors.orange)),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.maintenance, '€${_totalMaintenanceCost.toStringAsFixed(2)}', Icons.build, Colors.orange)),
             ],
           ),
 
           const SizedBox(height: 30),
-
-          // --- UPDATED: MONTHLY SPEND HORIZONTAL LIST ---
-          Text('Monthly Spend', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          // --- UPDATED: Efficiency Grid ---
+          Text(AppLocalizations.of(context)!.efficiencyandaverages, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgconsumption, '${avgConsumption.toStringAsFixed(2)} L/100km', Icons.speed, Colors.green)),
+              const SizedBox(width: 10),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.costperkm, '€${costPerKm.toStringAsFixed(2)}', Icons.query_stats, Colors.purple)),
+            ],
+          ),
+          const SizedBox(height: 30),
+                    // New Split Average Cards
+        
+          // --- UPDATED: MONTHLY SPEND HORIZONTAL LIST ---
+          Text(AppLocalizations.of(context)!.monthlyspend, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgmonthlyfuel, '€${_avgFuelMonthly.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
+              const SizedBox(width: 10),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgmonthlymaint, '€${_avgMaintMonthly.toStringAsFixed(2)}', Icons.build, Colors.orange)),
+              const SizedBox(width: 10),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgmonthlytotal, '€${_avgTotalMonthly.toStringAsFixed(2)}', Icons.calendar_month, Colors.teal)),
+            ],
+          ),
           if (_monthlySpendList.isEmpty)
-            Text('No data yet.', style: TextStyle(color: Colors.grey))
+            Text(AppLocalizations.of(context)!.nodatayet, style: TextStyle(color: Colors.grey))
           else
             SizedBox(
               height: 130, // Increased height to fit three lines
@@ -352,13 +373,69 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 },
               ),
             ),
+          const SizedBox(height: 30),
+          //Yearly Spend area STILL NEEDS YEARLY DATA!!!!!!!!!!!!!!!!!
+          Text(AppLocalizations.of(context)!.yearlyspend, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlyfuel, '€${_avgFuelMonthly.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
+              const SizedBox(width: 10),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlymaint, '€${_avgMaintMonthly.toStringAsFixed(2)}', Icons.build, Colors.orange)),
+              const SizedBox(width: 10),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlytotal, '€${_avgTotalMonthly.toStringAsFixed(2)}', Icons.calendar_today, Colors.teal)),
+            ],
+          ), 
 
+          //NEEDS TO BE SWTICHTED TO YEARLY !!!!!!!!!!!!!!!!
+          if (_monthlySpendList.isEmpty)
+            Text(AppLocalizations.of(context)!.nodatayet, style: TextStyle(color: Colors.grey))
+          else
+            SizedBox(
+              height: 130, // Increased height to fit three lines
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _monthlySpendList.length,
+                itemBuilder: (context, index) {
+                  final item = _monthlySpendList[index];
+                  final monthYear = item['monthYear'] ?? 'Unknown';
+                  final fuel = (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+                  final maint = (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+                  final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
+                  
+                  return SizedBox(
+                    width: 160, // Made it slightly wider
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(monthYear, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 6),
+                            // New Breakdown Rows
+                            Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
+                            const SizedBox(height: 2),
+                            Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
+                            const Divider(height: 8),
+                            Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           const SizedBox(height: 30),
 
           // --- NEW CALENDAR SECTION ---
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 24.0, bottom: 8.0),
-            child: Text('Expense Calendar', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+            child: Text(AppLocalizations.of(context)!.expensecalender, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
           Card(
             child: Padding(
@@ -432,7 +509,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           isFuel ? Icons.local_gas_station : Icons.build,
                           color: isFuel ? Colors.blue : Colors.orange,
                         ),
-                        title: Text(isFuel ? 'Fuel Stop' : 'Maintenance'),
+                        title: Text(isFuel ? AppLocalizations.of(context)!.fuelstop : AppLocalizations.of(context)!.maintenance),
                         subtitle: Text(isFuel 
                             ? 'Liters: ${(event['liters'] ?? 0).toStringAsFixed(1)} Distance: ${(event['distance'] ?? 0).toStringAsFixed(0)} km\nat ${event['stationName'] ?? 'Station Unknown'}'
                             : '${event['occurrence'] ?? 'Other'}\nat ${event['companyName'] ?? 'Company Unknown'}'),
@@ -443,9 +520,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       );
                     }).toList(),
                   ] else if (_selectedDay != null) ...[
-                     const Padding(
+                     Padding(
                        padding: EdgeInsets.all(16.0),
-                       child: Text('No expenses recorded on this day.', style: TextStyle(color: Colors.grey)),
+                       child: Text(AppLocalizations.of(context)!.noexpensesonthisday, style: TextStyle(color: Colors.grey)),
                      )
                   ]
                 ],
@@ -454,52 +531,20 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ),
           const SizedBox(height: 20),
 
-         // --- UPDATED: Efficiency Grid ---
-          const Text('Efficiency & Averages', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(child: _buildStatCard('Avg. Consumption', '${avgConsumption.toStringAsFixed(2)} L/100km', Icons.speed, Colors.green)),
-              const SizedBox(width: 10),
-              Expanded(child: _buildStatCard('Cost per km', '€${costPerKm.toStringAsFixed(2)}', Icons.query_stats, Colors.purple)),
-            ],
-          ),
-          const SizedBox(height: 10),
-          // New Split Average Cards
-          Row(
-            children: [
-              Expanded(child: _buildStatCard('Avg. Monthly Fuel', '€${_avgFuelMonthly.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
-              const SizedBox(width: 10),
-              Expanded(child: _buildStatCard('Avg. Monthly Maint.', '€${_avgMaintMonthly.toStringAsFixed(2)}', Icons.build, Colors.orange)),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(child: _buildStatCard('Avg. Total Monthly', '€${_avgTotalMonthly.toStringAsFixed(2)}', Icons.calendar_month, Colors.teal)),
-              const SizedBox(width: 10),
-              Expanded(child: Container()), 
-            ],
-          ),
-
-          const SizedBox(height: 30),
+         
 
           // --- CHARTS ---
-          const Text('Consumption Trend (L/100km)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          Text(AppLocalizations.of(context)!.chartconsumption, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           _buildChartCard(_consumptionSpots, _consumptionDates, Colors.blue),
 
           const SizedBox(height: 30),
 
-          const Text('Price per Liter Trend (€/L)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
+          Text(AppLocalizations.of(context)!.chartpriceperliter, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
           const SizedBox(height: 10),
           _buildChartCard(_priceSpots, _priceDates, Colors.green),
 
           const SizedBox(height: 30),
-
-          
-
-          const SizedBox(height: 80), 
         ],
       ),
     );
@@ -527,13 +572,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   Widget _buildChartCard(List<FlSpot> spots, List<String> bottomLabels, Color lineColor) {
   if (spots.isEmpty || spots.length < 2) {
-    return const Card(
+    return Card(
       elevation: 2,
       child: Padding(
         padding: EdgeInsets.all(32.0),
         child: Center(
           child: Text(
-            'Not enough data to draw chart yet. Log at least two stops!',
+            AppLocalizations.of(context)!.notenoughdatatodrawchart,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey),
           ),
@@ -616,13 +661,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
   Widget _buildMiniChart(String title, List<FlSpot> spots, List<String> bottomLabels, Color color) {
   if (spots.isEmpty || spots.length < 2) {
-    return const Card(
+    return Card(
       elevation: 2,
       child: Padding(
         padding: EdgeInsets.all(32.0),
         child: Center(
           child: Text(
-            'Not enough data to draw chart yet. Log at least two stops!',
+            AppLocalizations.of(context)!.notenoughdatatodrawchart,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey),
           ),
@@ -643,7 +688,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
         SizedBox(
           height: 140, // Increased slightly from 120 to fit the dates
           child: LineChart(

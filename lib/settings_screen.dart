@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fuelapp/database/database_helper.dart';
-import 'package:fuelapp/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';

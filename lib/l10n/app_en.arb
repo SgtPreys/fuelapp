@@ -99,6 +99,34 @@
 
   
   "performancepervehicle": "Performance per Vehicle",
+  "chartconsumption": "Consumption (L/100km)",
+  "chartpriceperliter": "Price per Liter (€/L)",
+  "totalcosts": "Total Costs",
+  "totalrunningcost": "Total Running Cost", 
+  "totaldistance": "Total Distance",
+  "fuelcosts": "Fuel Costs",
+  "efficiencyandaverages": "Efficiency & Averages",
+  "avgconsumption": "Avg. Consumption",
+  "costperkm": "Cost per km",
+  "monthlyspend": "Monthly Spend",
+  "avgmonthlyfuel": "Avg. Monthly Fuel",
+  "avgmonthlymaint": "Avg. Monthly Maint.",
+  "avgmonthlytotal": "Avg. Monthly Total",
+  "yearlyspend": "Yearly Spend",
+  "avgyearlyfuel": "Avg. Yearly Fuel",
+  "avgyearlymaint": "Avg. Yearly Maint.",
+  "avgyearlytotal": "Avg. Yearly Total",
+  "nodatayet": "No data yet",
+  "expensecalender": "Expense Calender",
+  "fuelstop": "Fuel Stop",
+  "noexpensesonthisday": "No expenses recorded on this day.",
+  "notenoughdatatodrawchart":"Not enough data to draw chart yet. Log at least two stops!",
+
+  "unknownlocation": "Unknown location",
+  "unknowncontact": "Unknown contact person",
+  "unknowntelephone": "Unknown telephone number",
+  "unknownmanufacturer": "Unknown manufacturer",
+
   
 
 

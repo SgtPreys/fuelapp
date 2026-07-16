@@ -173,7 +173,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           final station = _stations[index];
                           String displayLocation = (station['location'] != null && station['location'].toString().trim().isNotEmpty) 
                               ? station['location'] 
-                              : 'Unknown location';
+                              : AppLocalizations.of(context)!.unknownlocation;
                           return ListTile(
                             leading: const Icon(Icons.local_gas_station, color: Colors.teal),
                             title: Text(station['name']),
@@ -204,15 +204,15 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           final company = _companies[index];
                           String displayLocation = (company['location'] != null && company['location'].toString().trim().isNotEmpty) 
                               ? company['location'] 
-                              : 'Unknown location';
+                              : AppLocalizations.of(context)!.unknownlocation;
 
                           String displayContact = (company['contactPerson'] != null && company['contactPerson'].toString().trim().isNotEmpty) 
                               ? company['contactPerson'] 
-                              : 'Unknown contact person';
+                              : AppLocalizations.of(context)!.unknowncontact;
                           
                           String displayTelephone = (company['telephone'] != null && company['telephone'].toString().trim().isNotEmpty) 
                               ? company['telephone'] 
-                              : 'Unknown telephone number';
+                              : AppLocalizations.of(context)!.unknowntelephone;
 
                           return ListTile(
                             leading: const Icon(Icons.store, color: Colors.purple),
@@ -244,7 +244,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           final carMap = _cars[index];
                           String displayManufacturer = (carMap['manufacturer'] != null && carMap['manufacturer'].toString().trim().isNotEmpty) 
                               ? carMap['manufacturer'] 
-                              : 'Unknown manufacturer';
+                              : AppLocalizations.of(context)!.unknownmanufacturer;
                           return ListTile(
                             leading: const Icon(Icons.directions_car, color: Colors.indigo),
                             title: Text(carMap['carName']),

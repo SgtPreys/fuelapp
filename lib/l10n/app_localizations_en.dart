@@ -275,6 +275,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String get performancepervehicle => 'Performance per Vehicle';
 
   @override
+  String get chartconsumption => 'Consumption (L/100km)';
+
+  @override
+  String get chartpriceperliter => 'Price per Liter (€/L)';
+
+  @override
+  String get totalcosts => 'Total Costs';
+
+  @override
+  String get totalrunningcost => 'Total Running Cost';
+
+  @override
+  String get totaldistance => 'Total Distance';
+
+  @override
+  String get fuelcosts => 'Fuel Costs';
+
+  @override
+  String get efficiencyandaverages => 'Efficiency & Averages';
+
+  @override
+  String get avgconsumption => 'Avg. Consumption';
+
+  @override
+  String get costperkm => 'Cost per km';
+
+  @override
+  String get monthlyspend => 'Monthly Spend';
+
+  @override
+  String get avgmonthlyfuel => 'Avg. Monthly Fuel';
+
+  @override
+  String get avgmonthlymaint => 'Avg. Monthly Maint.';
+
+  @override
+  String get avgmonthlytotal => 'Avg. Monthly Total';
+
+  @override
+  String get yearlyspend => 'Yearly Spend';
+
+  @override
+  String get avgyearlyfuel => 'Avg. Yearly Fuel';
+
+  @override
+  String get avgyearlymaint => 'Avg. Yearly Maint.';
+
+  @override
+  String get avgyearlytotal => 'Avg. Yearly Total';
+
+  @override
+  String get nodatayet => 'No data yet';
+
+  @override
+  String get expensecalender => 'Expense Calender';
+
+  @override
+  String get fuelstop => 'Fuel Stop';
+
+  @override
+  String get noexpensesonthisday => 'No expenses recorded on this day.';
+
+  @override
+  String get notenoughdatatodrawchart =>
+      'Not enough data to draw chart yet. Log at least two stops!';
+
+  @override
+  String get unknownlocation => 'Unknown location';
+
+  @override
+  String get unknowncontact => 'Unknown contact person';
+
+  @override
+  String get unknowntelephone => 'Unknown telephone number';
+
+  @override
+  String get unknownmanufacturer => 'Unknown manufacturer';
+
+  @override
   String get settings => 'Settings';
 
   @override

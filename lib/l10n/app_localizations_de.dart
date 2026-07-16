@@ -274,7 +274,87 @@ class AppLocalizationsDe extends AppLocalizations {
       'Sind Sie sicher, dass Sie dieses Fahrzeug löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden. Dabei löschen Sie auch alle zugehörigen Daten (Kraftstoff, Wartung usw.)!';
 
   @override
-  String get performancepervehicle => 'Performance per Vehicle';
+  String get performancepervehicle => 'Leistung pro Fahrzeug';
+
+  @override
+  String get chartconsumption => 'Verbrauch (L/100km)';
+
+  @override
+  String get chartpriceperliter => 'Preis pro Liter (€/L)';
+
+  @override
+  String get totalcosts => 'Gesamtkosten';
+
+  @override
+  String get totalrunningcost => 'Gesamtlaufkosten';
+
+  @override
+  String get totaldistance => 'Gesamtdistanz';
+
+  @override
+  String get fuelcosts => 'Karftstoff';
+
+  @override
+  String get efficiencyandaverages => 'Effizienz & Durchschnittswerte';
+
+  @override
+  String get avgconsumption => 'Durchschnittsverbrauch';
+
+  @override
+  String get costperkm => 'Kosten pro km';
+
+  @override
+  String get monthlyspend => 'Monatliche Ausgaben';
+
+  @override
+  String get avgmonthlyfuel => 'Durchsch. mon. Kraftstoff';
+
+  @override
+  String get avgmonthlymaint => 'Durchsch. mon.Wartung';
+
+  @override
+  String get avgmonthlytotal => 'Durchsch. mon. Gesamtsumme';
+
+  @override
+  String get yearlyspend => 'Jährliche Ausgaben';
+
+  @override
+  String get avgyearlyfuel => 'Durchsch. jährlicher Kraftstoff';
+
+  @override
+  String get avgyearlymaint => 'Durchsch. jährliche Wartung';
+
+  @override
+  String get avgyearlytotal => 'Durchsch. jährliche Gesamtsumme';
+
+  @override
+  String get nodatayet => 'Noch keine Daten';
+
+  @override
+  String get expensecalender => 'Ausgabenkalender';
+
+  @override
+  String get fuelstop => 'Tankstopp';
+
+  @override
+  String get noexpensesonthisday =>
+      'An diesem Tag wurden keine Ausgaben erfasst.';
+
+  @override
+  String get notenoughdatatodrawchart =>
+      'Noch nicht genügend Daten für die Diagrammerstellung vorhanden. Protokolliere mindestens zwei Stopps!';
+
+  @override
+  String get unknownlocation => 'Unbekannter Standort';
+
+  @override
+  String get unknowncontact => 'Unbekannter Ansprechpartner';
+
+  @override
+  String get unknowntelephone => 'Unbekannte Telefonnummer';
+
+  @override
+  String get unknownmanufacturer => 'Unbekannter Hersteller';
 
   @override
   String get settings => 'Einstellungen';
