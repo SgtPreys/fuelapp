@@ -568,5 +568,29 @@ class DatabaseHelper {
       ORDER BY monthYear DESC
     ''');
   }
+  // Gets the yearly spend, split into Fuel, Maintenance, and Total
+  Future<List<Map<String, dynamic>>> getYearlySpend() async {
+    Database db = await instance.database;
+    return await db.rawQuery('''
+      SELECT 
+        year, 
+        SUM(fuelSpend) as fuelSpend, 
+        SUM(maintSpend) as maintSpend, 
+        SUM(fuelSpend) + SUM(maintSpend) as totalSpend
+      FROM (
+        SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend 
+        FROM fuel_stops 
+        WHERE date IS NOT NULL AND date != ''
+        
+        UNION ALL
+        
+        SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend 
+        FROM maintenance_stops 
+        WHERE date IS NOT NULL AND date != ''
+      )
+      GROUP BY year
+      ORDER BY year DESC
+    ''');
+  }
   
 }

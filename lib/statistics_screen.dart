@@ -50,6 +50,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   double _avgFuelMonthly = 0.0;
   double _avgMaintMonthly = 0.0;
   double _avgTotalMonthly = 0.0;
+  List<Map<String, dynamic>> _yearlySpend = [];
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     // We will use allFuelStops directly for the chart so we don't need chartRawData anymore
     final carStats = await DatabaseHelper.instance.getStatsPerCar();
     final monthlyData = await DatabaseHelper.instance.getMonthlySpend();
+    final yearlyData = await DatabaseHelper.instance.getYearlySpend();
 
     final db = await DatabaseHelper.instance.database;
     
@@ -331,6 +333,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgmonthlytotal, '€${_avgTotalMonthly.toStringAsFixed(2)}', Icons.calendar_month, Colors.teal)),
             ],
           ),
+          //Monthly spend cards horizontally
           if (_monthlySpendList.isEmpty)
             Text(AppLocalizations.of(context)!.nodatayet, style: TextStyle(color: Colors.grey))
           else
@@ -388,48 +391,51 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ), 
 
           //NEEDS TO BE SWTICHTED TO YEARLY !!!!!!!!!!!!!!!!
-          if (_monthlySpendList.isEmpty)
-            Text(AppLocalizations.of(context)!.nodatayet, style: TextStyle(color: Colors.grey))
-          else
-            SizedBox(
-              height: 130, // Increased height to fit three lines
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _monthlySpendList.length,
-                itemBuilder: (context, index) {
-                  final item = _monthlySpendList[index];
-                  final monthYear = item['monthYear'] ?? 'Unknown';
-                  final fuel = (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
-                  final maint = (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
-                  final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
-                  
-                  return SizedBox(
-                    width: 160, // Made it slightly wider
-                    child: Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(monthYear, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 6),
-                            // New Breakdown Rows
-                            Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
-                            const SizedBox(height: 2),
-                            Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
-                            const Divider(height: 8),
-                            Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
-                          ],
-                        ),
+          if (_yearlySpend.isEmpty)
+          Text(AppLocalizations.of(context)!.nodatayet, style: const TextStyle(color: Colors.grey))
+        else
+          SizedBox(
+            height: 130, // Increased height to fit three lines
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _yearlySpend.length, // CHANGED: Now using the yearly list
+              itemBuilder: (context, index) {
+                final item = _yearlySpend[index]; // CHANGED: Now using the yearly list
+                
+                // CHANGED: Look for 'year' (lowercase) to match the SQL query
+                final yearString = item['year']?.toString() ?? 'Unknown'; 
+                
+                final fuel = (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+                final maint = (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+                final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
+                
+                return SizedBox(
+                  width: 160, // Made it slightly wider
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(yearString, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 6),
+                          // New Breakdown Rows
+                          Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
+                          const SizedBox(height: 2),
+                          Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
+                          const Divider(height: 8),
+                          Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
+                        ],
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
+          ),
           const SizedBox(height: 30),
 
           // --- NEW CALENDAR SECTION ---
