@@ -591,9 +591,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 spots: spots,
                 isCurved: false,
                 color: lineColor,
-                barWidth: 3,
+                barWidth: 2,
                 isStrokeCapRound: true,
-                dotData: const FlDotData(show: true),
+                dotData: const FlDotData(show: false),
                 belowBarData: BarAreaData(
                   show: true,
                   color: lineColor.withOpacity(0.2),
@@ -615,7 +615,21 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
   Widget _buildMiniChart(String title, List<FlSpot> spots, List<String> bottomLabels, Color color) {
-  if (spots.isEmpty) return const SizedBox();
+  if (spots.isEmpty || spots.length < 2) {
+    return const Card(
+      elevation: 2,
+      child: Padding(
+        padding: EdgeInsets.all(32.0),
+        child: Center(
+          child: Text(
+            'Not enough data to draw chart yet. Log at least two stops!',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+      ),
+    );
+  }
 
   // DYNAMIC INTERVAL: 
   // We divide the total spots by 5. 
@@ -638,7 +652,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               titlesData: FlTitlesData(
                 topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                 rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: true)),
                 
                 // --- The New Bottom Axis ---
                 bottomTitles: AxisTitles(
@@ -672,9 +686,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   spots: spots,
                   isCurved: false,
                   color: color,
-                  barWidth: 3,
+                  barWidth: 2,
                   isStrokeCapRound: true,
-                  dotData: const FlDotData(show: true), // Set this to false if 200 dots look too messy
+                  dotData: const FlDotData(show: false), // Set this to false if 200 dots look too messy
                   belowBarData: BarAreaData(show: true, color: color.withOpacity(0.2)),
                 ),
               ],
