@@ -800,6 +800,18 @@ abstract class AppLocalizations {
   /// **'Hi, I have the following feedback for your app:\n\n'**
   String get sendfeedbacktext;
 
+  /// No description provided for @senddonation.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Donation'**
+  String get senddonation;
+
+  /// No description provided for @senddonationtext.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for wanting to send a Donation. Unfortunetely I am not receiving Donations yet.'**
+  String get senddonationtext;
+
   /// No description provided for @homeTitle.
   ///
   /// In en, this message translates to:

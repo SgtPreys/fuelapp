@@ -144,6 +144,8 @@
   "sendfeedback": "Send Feedback",
   "sendfeedbacktitel": "Feedback Fuel Expense Tracker",
   "sendfeedbacktext": "Hi, I have the following feedback for your app:\n\n",
+  "senddonation": "Send Donation",
+  "senddonationtext": "Thank you for wanting to send a Donation. Unfortunetely I am not receiving Donations yet.",
 
   
   "homeTitle": "Home",

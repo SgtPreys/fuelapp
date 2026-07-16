@@ -373,6 +373,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Hi, I have the following feedback for your app:\n\n';
 
   @override
+  String get senddonation => 'Send Donation';
+
+  @override
+  String get senddonationtext =>
+      'Thank you for wanting to send a Donation. Unfortunetely I am not receiving Donations yet.';
+
+  @override
   String get homeTitle => 'Home';
 
   @override

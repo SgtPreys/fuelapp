@@ -376,6 +376,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Hallo, ich habe folgendes Feedback zu Ihrer App:';
 
   @override
+  String get senddonation => 'Entwicklungsspende';
+
+  @override
+  String get senddonationtext =>
+      'Danke, dass du eine Spende senden möchtest. Leider nehme ich derzeit noch keine Spenden entgegen.';
+
+  @override
   String get homeTitle => 'Startseite';
 
   @override

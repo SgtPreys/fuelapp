@@ -125,6 +125,8 @@
   "sendfeedback": "Feedback senden",
   "sendfeedbacktitel": "Feedback zum Kraftstoffkosten-Tracker",
   "sendfeedbacktext": "Hallo, ich habe folgendes Feedback zu Ihrer App:",
+  "senddonation": "Entwicklungsspende",
+  "senddonationtext": "Danke, dass du eine Spende senden möchtest. Leider nehme ich derzeit noch keine Spenden entgegen.",
 
   "homeTitle": "Startseite",
   "statsTitle": "Statistiken",

@@ -351,6 +351,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
               _sendFeedback(); },
           ),
+          ListTile(
+            leading: const Icon(Icons.account_balance_wallet),
+            title: Text(AppLocalizations.of(context)!.senddonation),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.senddonationtext), backgroundColor: Colors.green));
+            },
+
+          ),
           
         ],
       ),
