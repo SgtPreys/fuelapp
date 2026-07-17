@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CompanyForm extends StatefulWidget {
   final Company? existingCompany; // NEW: Accepts an existing company
@@ -41,6 +42,9 @@ class _CompanyFormState extends State<CompanyForm> {
       _websiteController.text = widget.existingCompany!.website ?? '';
       _infoController.text = widget.existingCompany!.additionalInfo ?? '';
       _imagePath = widget.existingCompany!.imagePath;
+      _emailController.addListener(_updateUI);
+      _phoneController.addListener(_updateUI);
+      _websiteController.addListener(_updateUI);
     }
   }
   Future<void> _pickImage(ImageSource source) async {
@@ -125,6 +129,26 @@ class _CompanyFormState extends State<CompanyForm> {
       },
     );
   }
+  Future<void> _launchEmail(String emailAddress) async {
+  final Uri emailUri = Uri(
+    scheme: 'mailto',
+    path: emailAddress,
+  );
+
+  if (await canLaunchUrl(emailUri)) {
+    await launchUrl(emailUri);
+  } else {
+    // Optional: Show a snackbar if the user has no email app installed
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open email app')),
+      );
+    }
+  }
+}
+void _updateUI() {
+  setState(() {}); 
+}
 
   @override
   void dispose() {
@@ -135,6 +159,9 @@ class _CompanyFormState extends State<CompanyForm> {
     _phoneController.dispose();
     _websiteController.dispose();
     _infoController.dispose();
+    _emailController.removeListener(_updateUI);
+    _phoneController.removeListener(_updateUI);
+    _websiteController.removeListener(_updateUI);
     super.dispose();
   }
 
@@ -210,25 +237,100 @@ class _CompanyFormState extends State<CompanyForm> {
             ),
             const SizedBox(height: 10),
 
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.emailaddress, border: OutlineInputBorder()),
-              keyboardType: TextInputType.emailAddress,
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.emailaddress, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _emailController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.email,
+                      color: _emailController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                    ),
+                    onPressed: _emailController.text.isNotEmpty 
+                      ? () => _launchEmail(_emailController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
 
-            TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.telephonenumber, border: OutlineInputBorder()),
-              keyboardType: TextInputType.phone,
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _phoneController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.telephonenumber, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.phone,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _phoneController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.phone,
+                      color: _phoneController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                    ),
+                    onPressed: _phoneController.text.isNotEmpty 
+                      ? () => _launchEmail(_phoneController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
             ),
+
             const SizedBox(height: 10),
 
-            TextField(
-              controller: _websiteController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.website, border: OutlineInputBorder()),
-              keyboardType: TextInputType.url,
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _websiteController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.website, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.url,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _websiteController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.web,
+                      color: _websiteController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                    ),
+                    onPressed: _websiteController.text.isNotEmpty 
+                      ? () => _launchEmail(_websiteController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
             ),
+
+            
             const SizedBox(height: 10),
 
             TextField(

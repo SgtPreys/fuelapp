@@ -6,6 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'dart:math' as math;
 import 'l10n/app_localizations.dart';
 
+
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
 
