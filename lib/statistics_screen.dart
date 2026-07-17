@@ -51,6 +51,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   double _avgMaintMonthly = 0.0;
   double _avgTotalMonthly = 0.0;
   List<Map<String, dynamic>> _yearlySpend = [];
+  double _avgFuelYearly = 0.0;
+  double _avgMaintYearly = 0.0;
+  double _avgTotalYearly = 0.0;
 
   @override
   void initState() {
@@ -161,6 +164,24 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     double avgMaintMonthly = monthlyData.isNotEmpty ? totalMaintMonthly / monthlyData.length : 0.0;
     double avgTotalMonthly = avgFuelMonthly + avgMaintMonthly;
 
+    //---YEARLY AVERAGES LOGIC ---- 
+    
+  
+    // Calculate the yearly averages
+    double totalFuelYearly = 0.0;
+    double totalMaintYearly = 0.0;
+
+    for (var item in yearlyData) {
+      totalFuelYearly += (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+      totalMaintYearly += (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+    }
+
+    double avgFuelY = yearlyData.isNotEmpty ? totalFuelYearly / yearlyData.length : 0.0;
+    double avgMaintY = yearlyData.isNotEmpty ? totalMaintYearly / yearlyData.length : 0.0;
+    double avgTotalY = avgFuelY + avgMaintY;
+    
+
+
     // 4. --- CALENDAR EVENTS LOGIC ---
     Map<DateTime, List<Map<String, dynamic>>> tempEvents = {};
 
@@ -201,9 +222,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       
       _carStats = carStats;
       _monthlySpendList = monthlyData;
+      _yearlySpend = yearlyData;
       _avgFuelMonthly = avgFuelMonthly;
       _avgMaintMonthly = avgMaintMonthly;
       _avgTotalMonthly = avgTotalMonthly;
+      _avgFuelYearly = avgFuelY;
+      _avgMaintYearly = avgMaintY;
+      _avgTotalYearly = avgTotalY;
       
       _carConsumptionSpots = tempCarCSpots;
       _carPriceSpots = tempCarPSpots;
@@ -382,13 +407,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           const SizedBox(height: 10),
           Row(
             children: [
-              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlyfuel, '€${_avgFuelMonthly.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlyfuel, '€${_avgFuelYearly.toStringAsFixed(2)}', Icons.ev_station, Colors.blue)),
               const SizedBox(width: 10),
-              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlymaint, '€${_avgMaintMonthly.toStringAsFixed(2)}', Icons.build, Colors.orange)),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlymaint, '€${_avgMaintYearly.toStringAsFixed(2)}', Icons.build, Colors.orange)),
               const SizedBox(width: 10),
-              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlytotal, '€${_avgTotalMonthly.toStringAsFixed(2)}', Icons.calendar_today, Colors.teal)),
+              Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlytotal, '€${_avgTotalYearly.toStringAsFixed(2)}', Icons.calendar_today, Colors.teal)),
             ],
-          ), 
+          ),
 
           //NEEDS TO BE SWTICHTED TO YEARLY !!!!!!!!!!!!!!!!
           if (_yearlySpend.isEmpty)
