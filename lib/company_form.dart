@@ -45,6 +45,7 @@ class _CompanyFormState extends State<CompanyForm> {
       _emailController.addListener(_updateUI);
       _phoneController.addListener(_updateUI);
       _websiteController.addListener(_updateUI);
+      _locationController.addListener(_updateUI);
     }
   }
   Future<void> _pickImage(ImageSource source) async {
@@ -184,6 +185,21 @@ Future<void> _launchWebsite(String websiteUrl) async {
     }
   }
 }
+Future<void> _launchMaps(String location) async {
+  // Encode the location so it works even if it contains spaces or special characters
+  final String encodedLocation = Uri.encodeComponent(location);
+  final Uri mapUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedLocation');
+
+  if (await canLaunchUrl(mapUri)) {
+    await launchUrl(mapUri, mode: LaunchMode.externalApplication);
+  } else {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open Google Maps')),
+      );
+    }
+  }
+}
 void _updateUI() {
   setState(() {}); 
 }
@@ -200,6 +216,7 @@ void _updateUI() {
     _emailController.removeListener(_updateUI);
     _phoneController.removeListener(_updateUI);
     _websiteController.removeListener(_updateUI);
+    _locationController.removeListener(_updateUI);
     super.dispose();
   }
 
@@ -263,9 +280,34 @@ void _updateUI() {
             ),
             const SizedBox(height: 10),
 
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder()),
+             Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _locationController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _locationController.text.isNotEmpty ? Colors.purple : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.map_sharp,
+                      color: _locationController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
+                    ),
+                    onPressed: _locationController.text.isNotEmpty 
+                      ? () => _launchMaps(_locationController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
 
@@ -288,14 +330,14 @@ void _updateUI() {
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: _emailController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                      color: _emailController.text.isNotEmpty ? Colors.purple : Colors.grey,
                     ),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: IconButton(
                     icon: Icon(
                       Icons.email,
-                      color: _emailController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                      color: _emailController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
                     ),
                     onPressed: _emailController.text.isNotEmpty 
                       ? () => _launchEmail(_emailController.text) 
@@ -319,14 +361,14 @@ void _updateUI() {
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: _phoneController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                      color: _phoneController.text.isNotEmpty ? Colors.purple : Colors.grey,
                     ),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: IconButton(
                     icon: Icon(
                       Icons.phone,
-                      color: _phoneController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                      color: _phoneController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
                     ),
                     onPressed: _phoneController.text.isNotEmpty 
                       ? () => _launchPhone(_phoneController.text) 
@@ -351,14 +393,14 @@ void _updateUI() {
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: _websiteController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                      color: _websiteController.text.isNotEmpty ? Colors.purple : Colors.grey,
                     ),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: IconButton(
                     icon: Icon(
                       Icons.web,
-                      color: _websiteController.text.isNotEmpty ? Colors.blue : Colors.grey,
+                      color: _websiteController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
                     ),
                     onPressed: _websiteController.text.isNotEmpty 
                       ? () => _launchWebsite(_websiteController.text) 

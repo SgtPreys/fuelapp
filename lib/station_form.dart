@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'database/database_helper.dart';
 import 'models/station.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +47,7 @@ class _StationFormState extends State<StationForm> {
       _infoController.text = widget.existingStation!.additionalInfo ?? '';
       _additionalInfoController.text = widget.existingStation!.additionalInfo ?? '';
       _imagePath = widget.existingStation!.imagePath;
+      _locationController.addListener(_updateUI);
     }
   }
   Future<void> _pickImage(ImageSource source) async {
@@ -130,12 +132,31 @@ class _StationFormState extends State<StationForm> {
       },
     );
   }
+  Future<void> _launchMaps(String location) async {
+  // Encode the location so it works even if it contains spaces or special characters
+  final String encodedLocation = Uri.encodeComponent(location);
+  final Uri mapUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedLocation');
+
+  if (await canLaunchUrl(mapUri)) {
+    await launchUrl(mapUri, mode: LaunchMode.externalApplication);
+  } else {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open Google Maps')),
+      );
+    }
+  }
+}
+void _updateUI() {
+  setState(() {}); 
+}
 
   @override
   void dispose() {
     _nameController.dispose();
     _locationController.dispose();
     _infoController.dispose();
+    _locationController.removeListener(_updateUI);
     super.dispose();
   }
 
@@ -196,9 +217,34 @@ class _StationFormState extends State<StationForm> {
             ),
             const SizedBox(height: 10),
 
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder()),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _locationController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _locationController.text.isNotEmpty ? Colors.teal : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.map_sharp,
+                      color: _locationController.text.isNotEmpty ? Colors.tealAccent : Colors.grey,
+                    ),
+                    onPressed: _locationController.text.isNotEmpty 
+                      ? () => _launchMaps(_locationController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
 
