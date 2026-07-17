@@ -237,7 +237,7 @@ void _updateUI() {
                   child: IconButton(
                     icon: Icon(
                       Icons.map_sharp,
-                      color: _locationController.text.isNotEmpty ? Colors.tealAccent : Colors.grey,
+                      color: _locationController.text.isNotEmpty ? Colors.teal : Colors.grey,
                     ),
                     onPressed: _locationController.text.isNotEmpty 
                       ? () => _launchMaps(_locationController.text) 

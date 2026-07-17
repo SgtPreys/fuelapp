@@ -300,7 +300,7 @@ void _updateUI() {
                   child: IconButton(
                     icon: Icon(
                       Icons.map_sharp,
-                      color: _locationController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
+                      color: _locationController.text.isNotEmpty ? Colors.purple : Colors.grey,
                     ),
                     onPressed: _locationController.text.isNotEmpty 
                       ? () => _launchMaps(_locationController.text) 
@@ -337,7 +337,7 @@ void _updateUI() {
                   child: IconButton(
                     icon: Icon(
                       Icons.email,
-                      color: _emailController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
+                      color: _emailController.text.isNotEmpty ? Colors.purple : Colors.grey,
                     ),
                     onPressed: _emailController.text.isNotEmpty 
                       ? () => _launchEmail(_emailController.text) 
@@ -368,7 +368,7 @@ void _updateUI() {
                   child: IconButton(
                     icon: Icon(
                       Icons.phone,
-                      color: _phoneController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
+                      color: _phoneController.text.isNotEmpty ? Colors.purple : Colors.grey,
                     ),
                     onPressed: _phoneController.text.isNotEmpty 
                       ? () => _launchPhone(_phoneController.text) 
@@ -400,7 +400,7 @@ void _updateUI() {
                   child: IconButton(
                     icon: Icon(
                       Icons.web,
-                      color: _websiteController.text.isNotEmpty ? Colors.purpleAccent : Colors.grey,
+                      color: _websiteController.text.isNotEmpty ? Colors.purple : Colors.grey,
                     ),
                     onPressed: _websiteController.text.isNotEmpty 
                       ? () => _launchWebsite(_websiteController.text) 
