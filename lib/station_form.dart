@@ -191,7 +191,9 @@ void _updateUI() {
   Widget build(BuildContext context) {
     final isEditing = widget.existingStation != null;
 
-    return Padding(
+    return Material(
+      color: Colors.transparent, // Keeps your background style
+      child: Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
         top: 20,
@@ -393,6 +395,6 @@ void _updateUI() {
           ],
         ),
       ),
-    );
+    ));
   }
 }

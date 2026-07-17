@@ -200,7 +200,9 @@ class _CarFormState extends State<CarForm> {
     // Dynamically change the title based on what we are doing
     final isEditing = widget.existingCar != null;
 
-    return Padding(
+    return Material(
+      color: Colors.transparent, // Keeps your background style
+      child: Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
         top: 20,
@@ -446,6 +448,6 @@ class _CarFormState extends State<CarForm> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

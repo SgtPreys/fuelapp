@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fuelapp/models/company.dart';
 import 'package:intl/intl.dart';
 import 'database/database_helper.dart';
 import 'models/maintenance_stop.dart';
@@ -8,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
+import 'car_form.dart';
+import 'company_form.dart';
 
 class MaintenanceForm extends StatefulWidget {
   final MaintenanceStop? existingMaintenanceStop;
@@ -220,32 +223,89 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             ),
             const SizedBox(height: 20),
 
-            DropdownButtonFormField<int>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcar, border: OutlineInputBorder()),
-              initialValue: _selectedCarId,
-              items: _cars.map((car) {
-                return DropdownMenuItem<int>(
-                  value: car['id'] as int,
-                  child: Text(car['carName']),
-                );
-              }).toList(),
-              onChanged: (int? newValue) => setState(() => _selectedCarId = newValue),
-              hint: _cars.isEmpty ? Text(AppLocalizations.of(context)!.nocarsavailable) : null,
-            ),
+            Row(children: [
+              Expanded(child: 
+                  DropdownButtonFormField<int>(
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcar, border: OutlineInputBorder()),
+                  initialValue: _selectedCarId,
+                  items: _cars.map((car) {
+                    return DropdownMenuItem<int>(
+                      value: car['id'] as int,
+                      child: Text(car['carName']),
+                    );
+                  }).toList(),
+                  onChanged: (int? newValue) => setState(() => _selectedCarId = newValue),
+                  hint: _cars.isEmpty ? Text(AppLocalizations.of(context)!.nocarsavailable) : null,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Container(decoration: BoxDecoration(
+                    
+                    border: Border.all(color: Colors.indigo) ,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                      icon: const Icon(Icons.format_list_bulleted_add),
+                      color: Colors.indigo,
+                      onPressed: () async {
+                        // 1. Navigate to your Car creation form
+                        // Replace 'AddCarScreen()' with the actual name of your screen
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CarForm()),
+                        );
+                        
+                        // 2. If the user added a car (e.g., returned 'true'), reload the list
+                        if (result == true) {
+                          _loadDropdownData(); // Assuming you have this helper to refresh
+                        }
+                      },
+                    ),
+                  )
+              ],),
             const SizedBox(height: 10),
+            Row(children: [
+              Expanded(child: 
+                  DropdownButtonFormField<int>(
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcompany, border: OutlineInputBorder()),
+                    initialValue: _selectedCompanyId,
+                    items: _companies.map((company) {
+                      return DropdownMenuItem<int>(
+                        value: company['id'] as int,
+                        child: Text(company['name']),
+                      );
+                    }).toList(),
+                    onChanged: (int? newValue) => setState(() => _selectedCompanyId = newValue),
+                    hint: _companies.isEmpty ? Text(AppLocalizations.of(context)!.nocompanyavailable) : null,
+                  ),
+              ),
+              const SizedBox(width: 10),
+              Container(decoration: BoxDecoration(
+                    
+                    border: Border.all(color: Colors.purple) ,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                      icon: const Icon(Icons.add_business),
+                      color: Colors.purple,
+                      onPressed: () async {
+                        // 1. Navigate to your Car creation form
+                        // Replace 'AddCarScreen()' with the actual name of your screen
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CompanyForm()),
+                        );
+                        
+                        // 2. If the user added a car (e.g., returned 'true'), reload the list
+                        if (result == true) {
+                          _loadDropdownData(); // Assuming you have this helper to refresh
+                        }
+                      },
+                    ),
+                  )
+              ],),
 
-            DropdownButtonFormField<int>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcompany, border: OutlineInputBorder()),
-              initialValue: _selectedCompanyId,
-              items: _companies.map((company) {
-                return DropdownMenuItem<int>(
-                  value: company['id'] as int,
-                  child: Text(company['name']),
-                );
-              }).toList(),
-              onChanged: (int? newValue) => setState(() => _selectedCompanyId = newValue),
-              hint: _companies.isEmpty ? Text(AppLocalizations.of(context)!.nocompanyavailable) : null,
-            ),
+            
             const SizedBox(height: 10),
 
             // --- NEW: Occurrence Dropdown ---

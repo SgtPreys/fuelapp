@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
+import 'car_form.dart';
+import 'station_form.dart';
 
 class FuelForm extends StatefulWidget {
   final FuelStop? existingFuelStop;
@@ -221,33 +223,94 @@ class _FuelFormState extends State<FuelForm> {
             const SizedBox(height: 20),
 
             // --- DYNAMIC CAR DROPDOWN ---
-            DropdownButtonFormField<int>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcar, border: OutlineInputBorder()),
-              initialValue: _selectedCarId,
-              items: _cars.map((car) {
-                return DropdownMenuItem<int>(
-                  value: car['id'] as int,
-                  child: Text(car['carName']),
-                );
-              }).toList(),
-              onChanged: (int? newValue) => setState(() => _selectedCarId = newValue),
-              hint: _cars.isEmpty ? Text(AppLocalizations.of(context)!.nocarsavailable) : null,
-            ),
+            Row(children: [
+              Expanded(child: 
+                  DropdownButtonFormField<int>(
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcar, border: OutlineInputBorder()),
+                  initialValue: _selectedCarId,
+                  items: _cars.map((car) {
+                    return DropdownMenuItem<int>(
+                      value: car['id'] as int,
+                      child: Text(car['carName']),
+                    );
+                  }).toList(),
+                  onChanged: (int? newValue) => setState(() => _selectedCarId = newValue),
+                  hint: _cars.isEmpty ? Text(AppLocalizations.of(context)!.nocarsavailable) : null,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Container(decoration: BoxDecoration(
+                    
+                    border: Border.all(color: Colors.indigo) ,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                      icon: const Icon(Icons.format_list_bulleted_add),
+                      
+                      color: Colors.indigo,
+                      onPressed: () async {
+                        // 1. Navigate to your Car creation form
+                        // Replace 'AddCarScreen()' with the actual name of your screen
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CarForm()),
+                        );
+                        
+                        // 2. If the user added a car (e.g., returned 'true'), reload the list
+                        if (result == true) {
+                          _loadDropdownData(); // Assuming you have this helper to refresh
+                        }
+                      },
+                    ),
+                  )
+              ],),
+            
             const SizedBox(height: 10),
-
             // --- DYNAMIC STATION DROPDOWN ---
-            DropdownButtonFormField<int>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectstation, border: OutlineInputBorder()),
-              initialValue: _selectedStationId,
-              items: _stations.map((station) {
-                return DropdownMenuItem<int>(
-                  value: station['id'] as int,
-                  child: Text(station['name']),
-                );
-              }).toList(),
-              onChanged: (int? newValue) => setState(() => _selectedStationId = newValue),
-              hint: _stations.isEmpty ? Text(AppLocalizations.of(context)!.nostationsavailable) : null,
-            ),
+
+            Row(children: [
+              Expanded(child: 
+                  DropdownButtonFormField<int>(
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectstation, border: OutlineInputBorder()),
+                    initialValue: _selectedStationId,
+                    items: _stations.map((station) {
+                      return DropdownMenuItem<int>(
+                        value: station['id'] as int,
+                        child: Text(station['name']),
+                      );
+                    }).toList(),
+                    onChanged: (int? newValue) => setState(() => _selectedStationId = newValue),
+                    hint: _stations.isEmpty ? Text(AppLocalizations.of(context)!.nostationsavailable) : null,
+                  ),
+              ),
+              const SizedBox(width: 10),
+              Container(decoration: BoxDecoration(
+                    
+                    border: Border.all(color: Colors.teal) ,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                      icon: const Icon(Icons.format_list_bulleted_add),
+                      color: Colors.teal,
+                      onPressed: () async {
+                        // 1. Navigate to your Car creation form
+                        // Replace 'AddCarScreen()' with the actual name of your screen
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const StationForm()),
+                        );
+                        
+                        // 2. If the user added a car (e.g., returned 'true'), reload the list
+                        if (result == true) {
+                          _loadDropdownData(); // Assuming you have this helper to refresh
+                        }
+                      },
+                    ),
+                  )
+              ],),
+
+            
+            
             const SizedBox(height: 10),
 
             TextField(
