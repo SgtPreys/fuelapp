@@ -146,6 +146,44 @@ class _CompanyFormState extends State<CompanyForm> {
     }
   }
 }
+Future<void> _launchPhone(String phoneNumber) async {
+  // Removes spaces or dashes if the user input them
+  final String cleanedNumber = phoneNumber.replaceAll(RegExp(r'\s+'), '');
+  final Uri phoneUri = Uri(
+    scheme: 'tel',
+    path: cleanedNumber,
+  );
+
+  if (await canLaunchUrl(phoneUri)) {
+    await launchUrl(phoneUri);
+  } else {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open phone app')),
+      );
+    }
+  }
+}
+
+Future<void> _launchWebsite(String websiteUrl) async {
+  // Ensure the URL has a scheme (https://)
+  String urlToLaunch = websiteUrl.trim();
+  if (!urlToLaunch.startsWith('http')) {
+    urlToLaunch = 'https://$urlToLaunch';
+  }
+
+  final Uri websiteUri = Uri.parse(urlToLaunch);
+
+  if (await canLaunchUrl(websiteUri)) {
+    await launchUrl(websiteUri, mode: LaunchMode.externalApplication);
+  } else {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open website')),
+      );
+    }
+  }
+}
 void _updateUI() {
   setState(() {}); 
 }
@@ -291,7 +329,7 @@ void _updateUI() {
                       color: _phoneController.text.isNotEmpty ? Colors.blue : Colors.grey,
                     ),
                     onPressed: _phoneController.text.isNotEmpty 
-                      ? () => _launchEmail(_phoneController.text) 
+                      ? () => _launchPhone(_phoneController.text) 
                       : null, // Disables button if empty
                   ),
                 ),
@@ -323,7 +361,7 @@ void _updateUI() {
                       color: _websiteController.text.isNotEmpty ? Colors.blue : Colors.grey,
                     ),
                     onPressed: _websiteController.text.isNotEmpty 
-                      ? () => _launchEmail(_websiteController.text) 
+                      ? () => _launchWebsite(_websiteController.text) 
                       : null, // Disables button if empty
                   ),
                 ),
