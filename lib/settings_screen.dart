@@ -102,6 +102,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: Icon(Icons.info_outline),
             title: Text(AppLocalizations.of(context)!.howto),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.guidefaqtext), backgroundColor: Colors.green));
+            },
+            
             
           ),
           

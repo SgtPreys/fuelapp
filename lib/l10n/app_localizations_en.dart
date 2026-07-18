@@ -369,6 +369,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get howto => 'Guide/FAQ';
 
   @override
+  String get guidefaqtext => 'The Guide will be available soon!';
+
+  @override
   String get databasemanagement => 'Database Management';
 
   @override

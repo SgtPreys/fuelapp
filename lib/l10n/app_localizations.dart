@@ -800,6 +800,12 @@ abstract class AppLocalizations {
   /// **'Guide/FAQ'**
   String get howto;
 
+  /// No description provided for @guidefaqtext.
+  ///
+  /// In en, this message translates to:
+  /// **'The Guide will be available soon!'**
+  String get guidefaqtext;
+
   /// No description provided for @databasemanagement.
   ///
   /// In en, this message translates to:

@@ -192,7 +192,7 @@ void _updateUI() {
     final isEditing = widget.existingStation != null;
 
     return Material(
-      color: Colors.blueGrey, // Keeps your background style
+      //color: Colors.grey, // Keeps your background style
       child: Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,

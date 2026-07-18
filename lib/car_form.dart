@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'database/database_helper.dart';
 import 'models/car.dart';
 import 'package:flutter/services.dart';
@@ -201,7 +202,7 @@ class _CarFormState extends State<CarForm> {
     final isEditing = widget.existingCar != null;
 
     return Material(
-      color: Colors.blueGrey, // Keeps your background style
+      //color: Colors.grey, // Keeps your background style
       child: Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
