@@ -100,9 +100,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: Text("Henri R. Maertins"),
           ),
           ListTile(
-            leading: Icon(Icons.people),
-            title: Text(AppLocalizations.of(context)!.testedby),
-            subtitle: Text("Daniel Kaffenberger, David S. Zang, Max Gruner, Eric Harder, Rebecca Reinhart and others"),
+            leading: Icon(Icons.info_outline),
+            title: Text(AppLocalizations.of(context)!.howto),
+            
           ),
           
           const SizedBox(height: 30),

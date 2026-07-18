@@ -794,6 +794,12 @@ abstract class AppLocalizations {
   /// **'Tested by:'**
   String get testedby;
 
+  /// No description provided for @howto.
+  ///
+  /// In en, this message translates to:
+  /// **'Guide/FAQ'**
+  String get howto;
+
   /// No description provided for @databasemanagement.
   ///
   /// In en, this message translates to:

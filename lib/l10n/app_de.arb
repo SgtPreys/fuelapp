@@ -125,6 +125,7 @@
   "appinfo": "App Info",
   "createdby": "Erstellt von:",
   "testedby": "Getestet von:",
+  "howto": "Guide/FAQ",
   "databasemanagement": "Datenbank Management",
   "importdatabase": "Datenbank Importieren",
   "confirmimport": "⚠️Dem Import Zustimmen",

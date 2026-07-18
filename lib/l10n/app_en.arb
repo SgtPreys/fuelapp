@@ -137,6 +137,7 @@
   "appinfo": "App Info",
   "createdby": "Created by:",
   "testedby": "Tested by:",
+  "howto": "Guide/FAQ",
   "databasemanagement": "Database Management",
   "importdatabase": "Import Database",
   "confirmimport": "⚠️Confirm Import",

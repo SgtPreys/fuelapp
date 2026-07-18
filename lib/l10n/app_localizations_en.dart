@@ -366,6 +366,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get testedby => 'Tested by:';
 
   @override
+  String get howto => 'Guide/FAQ';
+
+  @override
   String get databasemanagement => 'Database Management';
 
   @override

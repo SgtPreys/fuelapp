@@ -255,7 +255,7 @@ void _updateUI() {
     final isEditing = widget.existingCompany != null;
 
     return Material(
-      color: Colors.transparent, // Keeps your background style
+      color: Colors.blueGrey, // Keeps your background style
       child: Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
