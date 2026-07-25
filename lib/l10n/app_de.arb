@@ -1,4 +1,5 @@
 {
+  "@@locale": "de",
   "appTitle": "Fuel Tracker",
   "addFuelStop": "Tankstopp Hinzufügen",
   "addMaintenanceStop": "Wartung Hinzufügen",
@@ -25,9 +26,9 @@
   "editfuelstop": "Tankstopp bearbeiten",
   
   "selectcar": "Fahrzeug Auswählen*",
-  "nocarsavailable": "Keine Autos verfügbar – fügen Sie zuerst eines hinzu!",
+  "nocarsavailable": "Noch keine Autos verfügbar.",
   "selectstation": "Tankstelle auswählen*",
-  "nostationsavailable": "Keine Tankstelle verfügbar – fügen Sie zuerst einen hinzu!",
+  "nostationsavailable": "Noch keine Tankstelle verfügbar.",
   "drivendistance": "Gefahrene Strecke (km)",
   "liters": "Liter",
   "price": "Gesamtpreis (€)",
@@ -42,7 +43,7 @@
   "pleasefillfields": "Bitte füllen Sie alle Pflichtfelder aus.",
   "editmaintenancestop": "Wartung Bearbeiten",
   "selectcompany": "Geschäft/Unternehmen auswählen*",
-  "nocompanyavailable": "Keine Geschäfte verfügbar – fügen Sie zuerst eines hinzu!",
+  "nocompanyavailable": "Noch keine Geschäfte verfügbar.",
   "occurrence": "Art des Ereignisses*",
   "updatemaintenance": "Wartung Updaten",
   "savemaintenance": "Wartung Speichern",
@@ -165,5 +166,7 @@
   "homenavitem": "Start",
   "statsnavitem": "Statistik",
   "datanavitem": "Daten",
-  "settingsnavitem": "Einstellungen"
+  "settingsnavitem": "Einstellungen",
+  "addcompany": "Firma hinzufügen",
+  "nogasstations": "Noch keine Stationen verfügbar"
 }

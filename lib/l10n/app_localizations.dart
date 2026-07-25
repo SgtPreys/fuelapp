@@ -227,7 +227,7 @@ abstract class AppLocalizations {
   /// No description provided for @nocarsavailable.
   ///
   /// In en, this message translates to:
-  /// **'No cars recorded yet. Tap the + button to add one!'**
+  /// **'No cars Available - Add one first!'**
   String get nocarsavailable;
 
   /// No description provided for @selectstation.

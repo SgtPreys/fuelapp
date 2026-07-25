@@ -216,6 +216,7 @@ class _FuelFormState extends State<FuelForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 30),
             Center(
               child: Text(isEditing ? AppLocalizations.of(context)!.editfuelstop : AppLocalizations.of(context)!.addFuelStop, 
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

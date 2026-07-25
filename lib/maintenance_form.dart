@@ -217,6 +217,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 30),
             Center(
               child: Text(isEditing ? AppLocalizations.of(context)!.editmaintenancestop : AppLocalizations.of(context)!.addMaintenanceStop, 
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

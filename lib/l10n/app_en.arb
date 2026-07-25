@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "appTitle": "Fuel Tracker",
   "addFuelStop": "Add Fuel Stop",
   "addMaintenanceStop": "Add Maintenance",
@@ -25,7 +26,7 @@
   "editfuelstop": "Edit Fuel Stop",
   
   "selectcar": "Select Vehicle*",
-  "nocarsavailable": "No cars recorded yet. Tap the + button to add one!",
+  "nocarsavailable": "No cars Available - Add one first!",
   "selectstation": "Select Gas Station*",
   "nostationsavailable": "No Stations Available - Add one first!",
   "drivendistance": "Driven Distance (km)",

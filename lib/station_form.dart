@@ -193,6 +193,8 @@ void _updateUI() {
 
     return Material(
       //color: Colors.grey, // Keeps your background style
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(30.0)),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -205,6 +207,7 @@ void _updateUI() {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 30),
             Center(
               child: Text(
                 isEditing ? AppLocalizations.of(context)!.editstation : AppLocalizations.of(context)!.addGasStation, 

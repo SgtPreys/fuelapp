@@ -203,6 +203,8 @@ class _CarFormState extends State<CarForm> {
 
     return Material(
       //color: Colors.grey, // Keeps your background style
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(30.0)),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -215,6 +217,7 @@ class _CarFormState extends State<CarForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 30),
             Center(
               child: Text(
                 isEditing ? AppLocalizations.of(context)!.editcar : AppLocalizations.of(context)!.addNewCar, 
@@ -336,6 +339,7 @@ class _CarFormState extends State<CarForm> {
             TextField(
               controller: _tuevController,
               decoration: InputDecoration(labelText: AppLocalizations.of(context)!.nexttuev, border: OutlineInputBorder()),
+              keyboardType: TextInputType.datetime,
             ),
             const SizedBox(height: 10),
 
@@ -364,6 +368,7 @@ class _CarFormState extends State<CarForm> {
             TextField(
               controller: _boughtDateController,
               decoration: InputDecoration(labelText: AppLocalizations.of(context)!.boughtdate, border: OutlineInputBorder()),
+              keyboardType: TextInputType.datetime,
             ),
             const SizedBox(height: 10),
             TextField(
@@ -375,6 +380,7 @@ class _CarFormState extends State<CarForm> {
             TextField(
               controller: _soldDateController,
               decoration: InputDecoration(labelText: AppLocalizations.of(context)!.solddate, border: OutlineInputBorder()),
+              keyboardType: TextInputType.datetime,
             ),
             const SizedBox(height: 10),
             TextField(

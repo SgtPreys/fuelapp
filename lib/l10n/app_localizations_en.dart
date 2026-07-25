@@ -74,8 +74,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectcar => 'Select Vehicle*';
 
   @override
-  String get nocarsavailable =>
-      'No cars recorded yet. Tap the + button to add one!';
+  String get nocarsavailable => 'No cars Available - Add one first!';
 
   @override
   String get selectstation => 'Select Gas Station*';

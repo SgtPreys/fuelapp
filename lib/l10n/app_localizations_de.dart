@@ -74,15 +74,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectcar => 'Fahrzeug Auswählen*';
 
   @override
-  String get nocarsavailable =>
-      'Keine Autos verfügbar – fügen Sie zuerst eines hinzu!';
+  String get nocarsavailable => 'Noch keine Autos verfügbar.';
 
   @override
   String get selectstation => 'Tankstelle auswählen*';
 
   @override
-  String get nostationsavailable =>
-      'Keine Tankstelle verfügbar – fügen Sie zuerst einen hinzu!';
+  String get nostationsavailable => 'Noch keine Tankstelle verfügbar.';
 
   @override
   String get drivendistance => 'Gefahrene Strecke (km)';
@@ -124,8 +122,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectcompany => 'Geschäft/Unternehmen auswählen*';
 
   @override
-  String get nocompanyavailable =>
-      'Keine Geschäfte verfügbar – fügen Sie zuerst eines hinzu!';
+  String get nocompanyavailable => 'Noch keine Geschäfte verfügbar.';
 
   @override
   String get occurrence => 'Art des Ereignisses*';
@@ -146,7 +143,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get editcompany => 'Unternehmen / Geschäft Bearbeiten';
 
   @override
-  String get addcompany => 'Add Company / Shop';
+  String get addcompany => 'Firma hinzufügen';
 
   @override
   String get companyname => 'Name der Firma*';
@@ -184,8 +181,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Bitte geben Sie einen Tankstellennamen ein!';
 
   @override
-  String get nogasstations =>
-      'No Gas Stations recorded yet. Tap the + button to add one!';
+  String get nogasstations => 'Noch keine Stationen verfügbar';
 
   @override
   String get editstation => 'Tankstelle Bearbeiten';
