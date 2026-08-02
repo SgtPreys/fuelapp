@@ -22,6 +22,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   double _totalMaintenanceCost = 0.0;
   double _totalDistance = 0.0;
   double _totalLiters = 0.0;
+
+  double _totalCarSpend = 0.0; 
+  double _totalCarIncome = 0.0;
   
   List<FlSpot> _consumptionSpots = []; 
   List<String> _consumptionDates = [];
@@ -55,6 +58,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   double _avgFuelYearly = 0.0;
   double _avgMaintYearly = 0.0;
   double _avgTotalYearly = 0.0;
+
 
   @override
   void initState() {
@@ -168,19 +172,40 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     //---YEARLY AVERAGES LOGIC ---- 
     
   
+    // // Calculate the yearly averages
+    // double totalFuelYearly = 0.0;
+    // double totalMaintYearly = 0.0;
+
+    // for (var item in yearlyData) {
+    //   totalFuelYearly += (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+    //   totalMaintYearly += (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+    // }
+
+    // double avgFuelY = yearlyData.isNotEmpty ? totalFuelYearly / yearlyData.length : 0.0;
+    // double avgMaintY = yearlyData.isNotEmpty ? totalMaintYearly / yearlyData.length : 0.0;
+    // double avgTotalY = avgFuelY + avgMaintY;
+    //---YEARLY AVERAGES LOGIC ---- 
+    
     // Calculate the yearly averages
     double totalFuelYearly = 0.0;
     double totalMaintYearly = 0.0;
+    
+    // NEW: Variables to tally up the grand total of car costs
+    double totalCarSpendGlobal = 0.0; 
+    double totalCarIncomeGlobal = 0.0; 
 
     for (var item in yearlyData) {
       totalFuelYearly += (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
       totalMaintYearly += (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+      
+      // NEW: Read the car purchases and sales from the database!
+      totalCarSpendGlobal += (item['carSpend'] as num?)?.toDouble() ?? 0.0;
+      totalCarIncomeGlobal += (item['carIncome'] as num?)?.toDouble() ?? 0.0;
     }
 
     double avgFuelY = yearlyData.isNotEmpty ? totalFuelYearly / yearlyData.length : 0.0;
     double avgMaintY = yearlyData.isNotEmpty ? totalMaintYearly / yearlyData.length : 0.0;
     double avgTotalY = avgFuelY + avgMaintY;
-    
 
 
     // 4. --- CALENDAR EVENTS LOGIC ---
@@ -214,6 +239,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       _totalLiters = (fuelData['totalLiters'] as num?)?.toDouble() ?? 0.0;
       _totalMaintenanceCost = maintCost;
       
+      // NEW: Save the calculated car totals to the screen's state!
+      _totalCarSpend = totalCarSpendGlobal;     
+      _totalCarIncome = totalCarIncomeGlobal;   
+      
       _consumptionSpots = cSpots;
       _priceSpots = pSpots;
       
@@ -245,7 +274,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final totalRunningCost = _totalFuelCost + _totalMaintenanceCost;
+    //final totalRunningCost = _totalFuelCost + _totalMaintenanceCost; 
+    // Find where totalRunningCost is defined in your build method and add the car spend/income
+    double totalRunningCost = _totalFuelCost + _totalMaintenanceCost + _totalCarSpend - _totalCarIncome;
     double avgConsumption = _totalDistance > 0 && _totalLiters > 0 ? (_totalLiters / _totalDistance) * 100 : 0.0;
     double costPerKm = _totalDistance > 0 ? totalRunningCost / _totalDistance : 0.0;
 
@@ -275,12 +306,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     _buildListTile('Total Distance', '${(car['totalDistance'] ?? 0).toStringAsFixed(0)} km'),
                     _buildListTile('Total Fuel Spent', '€${(car['totalFuelCost'] ?? 0).toStringAsFixed(2)}'),
                     _buildListTile('Total Maint. Spent', '€${(car['totalMaintenanceCost'] ?? 0).toStringAsFixed(2)}'),
-                    _buildListTile('Total Running Cost', '€${((car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0)).toStringAsFixed(2)}'),
+                    _buildListTile('Total Running Cost', '€${((car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0) + (car['boughtPrice'] ?? 0) - (car['soldPrice'] ?? 0)).toStringAsFixed(2)}'),
                     const Divider(),
                     
                     // ADD THIS NEW LINE:
                     Builder(builder: (context) {
-                      double totalCost = (car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0);
+                      //double totalCost = (car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0);
+                      // If you want Cost Per KM to include the car price too:
+                      double totalCost = (car['totalFuelCost'] ?? 0) + (car['totalMaintenanceCost'] ?? 0) + (car['boughtPrice'] ?? 0) - (car['soldPrice'] ?? 0);
                       double totalDist = (car['totalDistance'] ?? 0);
                       double costPerKm = totalDist > 0 ? (totalCost / totalDist) : 0.0;
                       

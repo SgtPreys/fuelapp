@@ -235,7 +235,7 @@ void _updateUI() {
 
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.stationname, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.stationname, border: OutlineInputBorder(),suffixIcon: Icon(Icons.business)),
             ),
             const SizedBox(height: 10),
 
@@ -271,7 +271,7 @@ void _updateUI() {
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.type, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.type, border: OutlineInputBorder(),suffixIcon: Icon(Icons.category)),
               initialValue: _selectedType,
               items: _typeOptions.map((String type) {
                 return DropdownMenuItem<String>(value: type, child: Text(type));

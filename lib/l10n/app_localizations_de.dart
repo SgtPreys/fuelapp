@@ -77,7 +77,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nocarsavailable => 'Noch keine Autos verfügbar.';
 
   @override
-  String get selectstation => 'Tankstelle auswählen*';
+  String get selectstation => 'Tankstelle auswählen';
 
   @override
   String get nostationsavailable => 'Noch keine Tankstelle verfügbar.';
@@ -221,7 +221,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manufacturer => 'Hersteller';
 
   @override
-  String get yearofmanufacture => 'Baujahr';
+  String get yearofmanufacture => 'Baujahr (YYYY)';
 
   @override
   String get status => 'Status';
@@ -233,7 +233,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get plate => 'Kennzeichen';
 
   @override
-  String get nexttuev => 'Nächster TÜV (MM/JJJJ)';
+  String get nexttuev => 'Nächster TÜV';
 
   @override
   String get fueltype => 'Kraftstoffart';

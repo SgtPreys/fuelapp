@@ -517,15 +517,40 @@ class DatabaseHelper {
   }
 
   //Gets all cars and calculates the total money spent on fuel and maintenance for each
+  // Future<List<Map<String, dynamic>>> getAllCarsWithSpend() async {
+  //   Database db = await instance.database;
+  //   return await db.rawQuery('''
+  //     SELECT c.*, 
+  //       (SELECT SUM(f.distance) FROM fuel_stops f WHERE f.carId = c.id) as totalDistance,
+  //       (SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c .id) as totalFuelSpent,
+  //       (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id) as totalMaintenanceSpent,
+  //       ((SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c.id) + (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id)) as totalSpent
+  //     FROM cars c
+  //   ''');
+  // }
   Future<List<Map<String, dynamic>>> getAllCarsWithSpend() async {
     Database db = await instance.database;
     return await db.rawQuery('''
-      SELECT c.*, 
-        (SELECT SUM(f.distance) FROM fuel_stops f WHERE f.carId = c.id) as totalDistance,
-        (SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c .id) as totalFuelSpent,
-        (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id) as totalMaintenanceSpent,
-        ((SELECT SUM(f.totalPrice) FROM fuel_stops f WHERE f.carId = c.id) + (SELECT SUM(m.totalPrice) FROM maintenance_stops m WHERE m.carId = c.id)) as totalSpent
+      SELECT 
+        c.*,
+        (
+          IFNULL(f.fuelTotal, 0) + 
+          IFNULL(m.maintTotal, 0) + 
+          IFNULL(c.boughtPrice, 0) - 
+          IFNULL(c.soldPrice, 0)
+        ) as totalSpent,
+        IFNULL(f.totalDistance, 0) as totalDistance
       FROM cars c
+      LEFT JOIN (
+        SELECT carId, SUM(totalPrice) as fuelTotal, MAX(distance) as totalDistance 
+        FROM fuel_stops 
+        GROUP BY carId
+      ) f ON c.id = f.carId
+      LEFT JOIN (
+        SELECT carId, SUM(totalPrice) as maintTotal 
+        FROM maintenance_stops 
+        GROUP BY carId
+      ) m ON c.id = m.carId
     ''');
   }
 
@@ -536,6 +561,8 @@ class DatabaseHelper {
     return await db.rawQuery('''
       SELECT  c.id,
               c.carName, 
+              c.boughtPrice,   -- ADD THIS LINE
+              c.soldPrice,     -- ADD THIS LINE
              (SELECT SUM(liters) FROM fuel_stops WHERE carId = c.id) as totalLiters, 
              (SELECT SUM(distance) FROM fuel_stops WHERE carId = c.id) as totalDistance, 
              (SELECT SUM(totalPrice) FROM fuel_stops WHERE carId = c.id) as totalFuelCost,
@@ -550,30 +577,90 @@ class DatabaseHelper {
   }
   // Gets the combined total spend per month from both fuel and maintenance
  // Gets the monthly spend, split into Fuel, Maintenance, and Total
-  Future<List<Map<String, dynamic>>> getMonthlySpend() async {
+  // Future<List<Map<String, dynamic>>> getMonthlySpend() async {
+  //   Database db = await instance.database;
+  //   return await db.rawQuery('''
+  //     SELECT 
+  //       monthYear, 
+  //       SUM(fuelSpend) as fuelSpend, 
+  //       SUM(maintSpend) as maintSpend, 
+  //       SUM(fuelSpend) + SUM(maintSpend) as totalSpend
+  //     FROM (
+  //       SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend 
+  //       FROM fuel_stops 
+  //       WHERE date IS NOT NULL AND date != ''
+        
+  //       UNION ALL
+        
+  //       SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend 
+  //       FROM maintenance_stops 
+  //       WHERE date IS NOT NULL AND date != ''
+  //     )
+  //     GROUP BY monthYear
+  //     ORDER BY monthYear DESC
+  //   ''');
+  // }
+ Future<List<Map<String, dynamic>>> getMonthlySpend() async {
     Database db = await instance.database;
     return await db.rawQuery('''
       SELECT 
         monthYear, 
         SUM(fuelSpend) as fuelSpend, 
         SUM(maintSpend) as maintSpend, 
-        SUM(fuelSpend) + SUM(maintSpend) as totalSpend
+        SUM(carSpend) as carSpend,
+        SUM(carIncome) as carIncome,
+        SUM(fuelSpend) + SUM(maintSpend) + SUM(carSpend) - SUM(carIncome) as totalSpend
       FROM (
-        SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend 
+        SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome
         FROM fuel_stops 
         WHERE date IS NOT NULL AND date != ''
         
         UNION ALL
         
-        SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend 
+        SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome
         FROM maintenance_stops 
         WHERE date IS NOT NULL AND date != ''
+        
+        UNION ALL
+        
+        SELECT substr(boughtDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome
+        FROM cars 
+        WHERE boughtDate IS NOT NULL AND boughtDate != ''
+        
+        UNION ALL
+        
+        SELECT substr(soldDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome
+        FROM cars 
+        WHERE soldDate IS NOT NULL AND soldDate != ''
       )
       GROUP BY monthYear
       ORDER BY monthYear DESC
     ''');
   }
   // Gets the yearly spend, split into Fuel, Maintenance, and Total
+  // Future<List<Map<String, dynamic>>> getYearlySpend() async {
+  //   Database db = await instance.database;
+  //   return await db.rawQuery('''
+  //     SELECT 
+  //       year, 
+  //       SUM(fuelSpend) as fuelSpend, 
+  //       SUM(maintSpend) as maintSpend, 
+  //       SUM(fuelSpend) + SUM(maintSpend) as totalSpend
+  //     FROM (
+  //       SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend 
+  //       FROM fuel_stops 
+  //       WHERE date IS NOT NULL AND date != ''
+        
+  //       UNION ALL
+        
+  //       SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend 
+  //       FROM maintenance_stops 
+  //       WHERE date IS NOT NULL AND date != ''
+  //     )
+  //     GROUP BY year
+  //     ORDER BY year DESC
+  //   ''');
+  // }
   Future<List<Map<String, dynamic>>> getYearlySpend() async {
     Database db = await instance.database;
     return await db.rawQuery('''
@@ -581,17 +668,31 @@ class DatabaseHelper {
         year, 
         SUM(fuelSpend) as fuelSpend, 
         SUM(maintSpend) as maintSpend, 
-        SUM(fuelSpend) + SUM(maintSpend) as totalSpend
+        SUM(carSpend) as carSpend,
+        SUM(carIncome) as carIncome,
+        SUM(fuelSpend) + SUM(maintSpend) + SUM(carSpend) - SUM(carIncome) as totalSpend
       FROM (
-        SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend 
+        SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome
         FROM fuel_stops 
         WHERE date IS NOT NULL AND date != ''
         
         UNION ALL
         
-        SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend 
+        SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome
         FROM maintenance_stops 
         WHERE date IS NOT NULL AND date != ''
+
+        UNION ALL
+        
+        SELECT substr(boughtDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome
+        FROM cars 
+        WHERE boughtDate IS NOT NULL AND boughtDate != ''
+        
+        UNION ALL
+        
+        SELECT substr(soldDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome
+        FROM cars 
+        WHERE soldDate IS NOT NULL AND soldDate != ''
       )
       GROUP BY year
       ORDER BY year DESC

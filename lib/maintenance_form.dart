@@ -312,7 +312,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
             // --- NEW: Occurrence Dropdown ---
             DropdownButtonFormField<String>(
               initialValue: _selectedOccurrence,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.occurrence, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.occurrence, border: OutlineInputBorder(),suffixIcon: Icon(Icons.build)),
               items: _occurrenceOptions.map((String type) {
                 return DropdownMenuItem<String>(value: type, child: Text(type));
               }).toList(),
@@ -322,7 +322,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
             TextField(
               controller: _priceController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.price, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.price, border: OutlineInputBorder(),suffixIcon: Icon(Icons.euro)),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),

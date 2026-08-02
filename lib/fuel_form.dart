@@ -339,7 +339,7 @@ class _FuelFormState extends State<FuelForm> {
 
             TextField(
               controller: _distanceController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.drivendistance, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.drivendistance, border: OutlineInputBorder(),suffixIcon: Icon(Icons.add_road)),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
@@ -349,7 +349,7 @@ class _FuelFormState extends State<FuelForm> {
                 Expanded(
                   child: TextField(
                     controller: _litersController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.liters, border: OutlineInputBorder()),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.liters, border: OutlineInputBorder(),suffixIcon: Icon(Icons.local_gas_station)),
                     keyboardType: TextInputType.number,
                   ),
                 ),
@@ -357,7 +357,7 @@ class _FuelFormState extends State<FuelForm> {
                 Expanded(
                   child: TextField(
                     controller: _priceController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.price, border: OutlineInputBorder()),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.price, border: OutlineInputBorder(),suffixIcon: Icon(Icons.euro)),
                     keyboardType: TextInputType.number,
                   ),
                 ),

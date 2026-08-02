@@ -77,7 +77,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nocarsavailable => 'No cars Available - Add one first!';
 
   @override
-  String get selectstation => 'Select Gas Station*';
+  String get selectstation => 'Select Gas Station';
 
   @override
   String get nostationsavailable => 'No Stations Available - Add one first!';
@@ -222,7 +222,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manufacturer => 'Manufacturer';
 
   @override
-  String get yearofmanufacture => 'Year of Manufacture';
+  String get yearofmanufacture => 'Year of Manufacture (YYYY)';
 
   @override
   String get status => 'Status';
@@ -234,7 +234,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plate => 'License Plate';
 
   @override
-  String get nexttuev => 'Next TÜV (MM/YYYY)';
+  String get nexttuev => 'Next TÜV';
 
   @override
   String get fueltype => 'Fuel Type';

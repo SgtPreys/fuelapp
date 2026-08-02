@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class CarForm extends StatefulWidget {
   // NEW: This allows the form to accept an existing car when we want to edit!
@@ -230,23 +231,23 @@ class _CarFormState extends State<CarForm> {
             const SizedBox(height: 10),
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.carname, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.carname, border: OutlineInputBorder(),suffixIcon: Icon(Icons.directions_car)),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _manufacturerController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.manufacturer, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.manufacturer, border: OutlineInputBorder(),suffixIcon: Icon(Icons.business)),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _yearController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.yearofmanufacture, border: OutlineInputBorder()), 
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.yearofmanufacture, border: OutlineInputBorder(),suffixIcon: Icon(Icons.calendar_today)), 
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
             
             DropdownButtonFormField<String>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.status, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.status, border: OutlineInputBorder(),suffixIcon: Icon(Icons.check_circle)),
               initialValue: _selectedStatus,
               items: _statusOptions.map((String status) {
                 return DropdownMenuItem<String>(value: status, child: Text(status));
@@ -333,18 +334,37 @@ class _CarFormState extends State<CarForm> {
             const SizedBox(height: 10),
             TextField(
               controller: _plateController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.plate, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.plate, border: OutlineInputBorder(),suffixIcon: Icon(Icons.card_membership)),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _tuevController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.nexttuev, border: OutlineInputBorder()),
-              keyboardType: TextInputType.datetime,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.nexttuev, border: OutlineInputBorder(),suffixIcon: Icon(Icons.calendar_today)),
+              readOnly: true,
+              onTap: () async {
+                HapticFeedback.lightImpact();
+                
+                // 1. Pick the Date (User picks any day in the target month)
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2101),
+                );
+                
+                // 2. If a date was chosen, format it strictly to Year/Month
+                if (pickedDate != null && mounted) {
+                  setState(() { 
+                    // This saves it as something like "2027-07"
+                    _tuevController.text = DateFormat('yyyy-MM-dd').format(pickedDate); 
+                  });
+                }
+              },
             ),
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fueltype, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.fueltype, border: OutlineInputBorder(),suffixIcon: Icon(Icons.local_gas_station)),
               initialValue: _selectedFuel,
               items: _fuelOptions.map((String fuel) {
                 return DropdownMenuItem<String>(value: fuel, child: Text(fuel));
@@ -354,7 +374,7 @@ class _CarFormState extends State<CarForm> {
             const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.tiretype, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.tiretype, border: OutlineInputBorder(),suffixIcon: Icon(Icons.tire_repair)),
               initialValue: _selectedTire,
               items: _tireOptions.map((String tire) {
                 return DropdownMenuItem<String>(value: tire, child: Text(tire));
@@ -367,25 +387,91 @@ class _CarFormState extends State<CarForm> {
             const SizedBox(height: 10),
             TextField(
               controller: _boughtDateController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.boughtdate, border: OutlineInputBorder()),
-              keyboardType: TextInputType.datetime,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.boughtdate, border: OutlineInputBorder(),suffixIcon: Icon(Icons.calendar_today)),
+              readOnly: true,
+              onTap: () async {
+                HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
+                // 1. Pick the Date
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2101),
+                );
+                
+                // 2. If a date was chosen, pick the Time
+                if (pickedDate != null && mounted) {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  
+                  // 3. Combine them and format!
+                  if (pickedTime != null) {
+                    DateTime combinedDateTime = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                    setState(() { 
+                      _boughtDateController.text = DateFormat('yyyy-MM-dd HH:mm').format(combinedDateTime); 
+                    });
+                  }
+                }
+              },
+              //keyboardType: TextInputType.datetime,
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _boughtPriceController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.boughtprice, border: OutlineInputBorder()), 
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.boughtprice, border: OutlineInputBorder(),suffixIcon: Icon(Icons.euro)), 
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _soldDateController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.solddate, border: OutlineInputBorder()),
-              keyboardType: TextInputType.datetime,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.solddate, border: OutlineInputBorder(),suffixIcon: Icon(Icons.calendar_today)),
+              readOnly: true,
+              onTap: () async {
+                HapticFeedback.lightImpact(); // <-- NEW HAPTIC BUMP
+                // 1. Pick the Date
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2101),
+                );
+                
+                // 2. If a date was chosen, pick the Time
+                if (pickedDate != null && mounted) {
+                  TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  
+                  // 3. Combine them and format!
+                  if (pickedTime != null) {
+                    DateTime combinedDateTime = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                    setState(() { 
+                      _boughtDateController.text = DateFormat('yyyy-MM-dd HH:mm').format(combinedDateTime); 
+                    });
+                  }
+                }
+              },
+              //keyboardType: TextInputType.datetime,
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _soldPriceController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.soldprice, border: OutlineInputBorder()), 
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.soldprice, border: OutlineInputBorder(),suffixIcon: Icon(Icons.euro)), 
               keyboardType: TextInputType.number,
             ),
             

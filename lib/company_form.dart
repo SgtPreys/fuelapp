@@ -281,7 +281,7 @@ void _updateUI() {
 
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.companyname, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.companyname, border: OutlineInputBorder(),suffixIcon: Icon(Icons.business)),
             ),
             const SizedBox(height: 10),
 
@@ -290,7 +290,7 @@ void _updateUI() {
                 Expanded(
                   child: TextFormField(
                     controller: _locationController,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder(),),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.location, border: OutlineInputBorder()),
                     keyboardType: TextInputType.emailAddress,
                   ),
                 ),
@@ -318,7 +318,7 @@ void _updateUI() {
 
             TextField(
               controller: _contactController,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.contactperson, border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.contactperson, border: OutlineInputBorder(),suffixIcon: Icon(Icons.person)),
             ),
             const SizedBox(height: 10),
 

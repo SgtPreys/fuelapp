@@ -233,7 +233,7 @@ abstract class AppLocalizations {
   /// No description provided for @selectstation.
   ///
   /// In en, this message translates to:
-  /// **'Select Gas Station*'**
+  /// **'Select Gas Station'**
   String get selectstation;
 
   /// No description provided for @nostationsavailable.
@@ -515,7 +515,7 @@ abstract class AppLocalizations {
   /// No description provided for @yearofmanufacture.
   ///
   /// In en, this message translates to:
-  /// **'Year of Manufacture'**
+  /// **'Year of Manufacture (YYYY)'**
   String get yearofmanufacture;
 
   /// No description provided for @status.
@@ -539,7 +539,7 @@ abstract class AppLocalizations {
   /// No description provided for @nexttuev.
   ///
   /// In en, this message translates to:
-  /// **'Next TÜV (MM/YYYY)'**
+  /// **'Next TÜV'**
   String get nexttuev;
 
   /// No description provided for @fueltype.
