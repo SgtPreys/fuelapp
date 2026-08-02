@@ -451,7 +451,7 @@ class _CarFormState extends State<CarForm> {
               ),
             ],
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 60),
           ],
         ),
       ),

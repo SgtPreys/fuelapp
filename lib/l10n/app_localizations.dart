@@ -770,6 +770,48 @@ abstract class AppLocalizations {
   /// **'Unknown manufacturer'**
   String get unknownmanufacturer;
 
+  /// No description provided for @unknownstation.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown station'**
+  String get unknownstation;
+
+  /// No description provided for @unknowncompany.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown company'**
+  String get unknowncompany;
+
+  /// No description provided for @unknowncar.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown vehicle'**
+  String get unknowncar;
+
+  /// No description provided for @showindropdowns.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Dropdowns'**
+  String get showindropdowns;
+
+  /// No description provided for @keepstationvisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this station visible when adding a new fuel stop.'**
+  String get keepstationvisible;
+
+  /// No description provided for @hideinactivestations.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide hidden'**
+  String get hideinactivestations;
+
+  /// No description provided for @showhiddenstations.
+  ///
+  /// In en, this message translates to:
+  /// **'Show hidden'**
+  String get showhiddenstations;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:

@@ -168,5 +168,13 @@
   "datanavitem": "Daten",
   "settingsnavitem": "Einstellungen",
   "addcompany": "Firma hinzufügen",
-  "nogasstations": "Noch keine Stationen verfügbar"
+  "nogasstations": "Noch keine Stationen verfügbar",
+
+  "unknownstation": "Unbekannte Tankstelle",
+  "unknowncompany": "Unbekannte Firma",
+  "unknowncar": "Unbekanntes Fahrzeug",
+  "showindropdowns": "In Dropdowns anzeigen",
+  "keepstationvisible": "Diese Station sichtbar lassen, wenn ein neuer Tankstopp hinzugefügt wird.",
+  "hideinactivestations": "Versteckte ausblenden",
+  "showhiddenstations": "Versteckte anzeigen"
 }

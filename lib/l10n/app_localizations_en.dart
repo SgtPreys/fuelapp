@@ -353,6 +353,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownmanufacturer => 'Unknown manufacturer';
 
   @override
+  String get unknownstation => 'Unknown station';
+
+  @override
+  String get unknowncompany => 'Unknown company';
+
+  @override
+  String get unknowncar => 'Unknown vehicle';
+
+  @override
+  String get showindropdowns => 'Show in Dropdowns';
+
+  @override
+  String get keepstationvisible =>
+      'Keep this station visible when adding a new fuel stop.';
+
+  @override
+  String get hideinactivestations => 'Hide hidden';
+
+  @override
+  String get showhiddenstations => 'Show hidden';
+
+  @override
   String get settings => 'Settings';
 
   @override

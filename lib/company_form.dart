@@ -548,7 +548,7 @@ void _updateUI() {
               ),
             ],
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 60),
           ],
         ),
       ),

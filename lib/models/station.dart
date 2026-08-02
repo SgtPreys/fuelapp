@@ -5,6 +5,7 @@ class Station {
   final String? type;
   final String? imagePath;
   final String? additionalInfo;
+  final int? isVisible; // NEW: Visibility field
 
   Station({
     this.id,
@@ -13,6 +14,7 @@ class Station {
     this.type,
     this.imagePath,
     this.additionalInfo,
+    this.isVisible = 1, // NEW: Visibility field
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class Station {
       'type': type,
       'imagePath': imagePath,
       'additionalInfo': additionalInfo,
+      'isVisible': isVisible, // NEW: Visibility field
     };
   }
 
@@ -34,6 +37,7 @@ class Station {
       type: map['type'],
       imagePath: map['imagePath'],
       additionalInfo: map['additionalInfo'],
+      isVisible: map['isVisible'] ?? 1, // NEW: Visibility field
     );
   }
 }

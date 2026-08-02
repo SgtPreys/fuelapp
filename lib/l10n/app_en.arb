@@ -128,8 +128,14 @@
   "unknowntelephone": "Unknown telephone number",
   "unknownmanufacturer": "Unknown manufacturer",
 
-  
+  "unknownstation": "Unknown station",
+  "unknowncompany": "Unknown company",
+  "unknowncar": "Unknown vehicle",
 
+  "showindropdowns": "Show in Dropdowns",
+  "keepstationvisible": "Keep this station visible when adding a new fuel stop.",
+  "hideinactivestations": "Hide hidden",
+  "showhiddenstations": "Show hidden",
 
   
 

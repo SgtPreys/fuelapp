@@ -36,6 +36,8 @@ class _FuelFormState extends State<FuelForm> {
   int? _selectedStationId;
   bool _isLoading = true; // Wait for dropdown data to load
 
+  bool _showAllStations = false; // NEW: Control visibility of stations in dropdown
+
   @override
   void initState() {
     super.initState();
@@ -134,7 +136,10 @@ class _FuelFormState extends State<FuelForm> {
   // --- NEW: Fetch Cars and Stations for the Dropdowns ---
   Future<void> _loadDropdownData() async {
     final allCars = await DatabaseHelper.instance.getAllCars();
-    final stations = await DatabaseHelper.instance.getAllStations();
+    //final stations = await DatabaseHelper.instance.getAllStations();
+    final db = await DatabaseHelper.instance.database;
+    String whereClause = _showAllStations ? "" : "WHERE isVisible = 1";
+    _stations = await db.rawQuery('SELECT * FROM stations $whereClause');
 
     setState(() {
       // --- NEW: Safely filter the car list ---
@@ -144,7 +149,7 @@ class _FuelFormState extends State<FuelForm> {
         return isActive || isAlreadySelected;
       }).toList();
 
-      _stations = stations;
+      _stations = _stations;
       _isLoading = false;
 
       // If we are editing, pre-fill all the data
@@ -170,7 +175,7 @@ class _FuelFormState extends State<FuelForm> {
 
   Future<void> _saveFuelStop() async {
     // Validation
-    if (_selectedCarId == null || _selectedStationId == null) {
+    if (_selectedCarId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.selectcarfirst)),
       );
@@ -286,6 +291,24 @@ class _FuelFormState extends State<FuelForm> {
               ),
               const SizedBox(width: 10),
               Container(decoration: BoxDecoration(
+                border: Border.all(color: Colors.teal),
+                borderRadius: BorderRadius.circular(4),
+              ),child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isLoading = true; // Optional: show loading state while fetching
+                    _showAllStations = !_showAllStations;
+                  });
+                  _loadDropdownData(); // Reload the list with the new filter
+                },
+                child: Text(
+                  _showAllStations ? AppLocalizations.of(context)!.hideinactivestations : AppLocalizations.of(context)!.showhiddenstations,
+                  style: const TextStyle(fontSize: 12, color: Colors.teal),
+                ),
+              ),),
+              
+              const SizedBox(width: 10),
+              Container(decoration: BoxDecoration(
                     
                     border: Border.all(color: Colors.teal) ,
                     borderRadius: BorderRadius.circular(4),
@@ -311,8 +334,8 @@ class _FuelFormState extends State<FuelForm> {
               ],),
 
             
-            
             const SizedBox(height: 10),
+            
 
             TextField(
               controller: _distanceController,
@@ -483,7 +506,7 @@ class _FuelFormState extends State<FuelForm> {
                 ),
               ),
             ],
-            const SizedBox(height: 20),
+            const SizedBox(height: 60),
           ],
         ),
       ),

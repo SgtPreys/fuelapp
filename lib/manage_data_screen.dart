@@ -108,7 +108,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                                     : '0.00 €/L';
                           return ListTile(
                             leading: const Icon(Icons.ev_station, color: Colors.blue),
-                            title: Text('${fuelStop['carName']} at ${fuelStop['stationName']}'),
+                            title: Text('${fuelStop['carName']} at ${fuelStop['stationName'] ?? AppLocalizations.of(context)!.unknownstation}'),
                             subtitle: Builder(
                               builder: (context) {
                                 return Text(

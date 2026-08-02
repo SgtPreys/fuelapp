@@ -91,7 +91,7 @@ class HomeScreenState extends State<HomeScreen> {
                   elevation: 2,
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   child: ListTile(
-                    title: Text('${stop['carName']} at ${stop['stationName']}'),
+                    title: Text('${stop['carName']} at ${stop['stationName'] ?? AppLocalizations.of(context)!.unknownstation}'),
                     // NEW: Multi-line subtitle using our calculations
                     subtitle: Builder(
                       builder: (context) {

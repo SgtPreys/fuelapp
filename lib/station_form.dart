@@ -25,6 +25,7 @@ class _StationFormState extends State<StationForm> {
   final TextEditingController _additionalInfoController = TextEditingController();
   String? _imagePath;
   final ImagePicker _picker = ImagePicker();
+  bool _isVisible = true; // NEW: Visibility toggle
 
   final List<String> _typeOptions = [
     'Standard / City', 
@@ -47,6 +48,7 @@ class _StationFormState extends State<StationForm> {
       _infoController.text = widget.existingStation!.additionalInfo ?? '';
       _additionalInfoController.text = widget.existingStation!.additionalInfo ?? '';
       _imagePath = widget.existingStation!.imagePath;
+      _isVisible = widget.existingStation!.isVisible == 1; // Assuming isVisible is stored as 1 for true, 0 for false
       _locationController.addListener(_updateUI);
     }
   }
@@ -174,6 +176,7 @@ void _updateUI() {
       location: _locationController.text,
       type: _selectedType,
       additionalInfo: _infoController.text,
+      isVisible: _isVisible ? 1 : 0, // NEW: Include visibility in the data
     );
 
     if (widget.existingStation == null) {
@@ -207,6 +210,20 @@ void _updateUI() {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20), // A little spacing
+            // NEW: The Visibility Switch
+            SwitchListTile(
+              title: Text(AppLocalizations.of(context)!.showindropdowns), // You can replace with AppLocalizations if you want!
+              subtitle: Text(AppLocalizations.of(context)!.keepstationvisible), // Optional: A brief description
+              value: _isVisible,
+              activeColor: Theme.of(context).primaryColor,
+              onChanged: (bool value) {
+                setState(() {
+                  _isVisible = value;
+                });
+                HapticFeedback.lightImpact(); // Optional: A nice touch if you are using haptics
+              },
+            ),
             const SizedBox(height: 30),
             Center(
               child: Text(
@@ -394,7 +411,7 @@ void _updateUI() {
               ),
             ],
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 60),
           ],
         ),
       ),

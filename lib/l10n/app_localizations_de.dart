@@ -353,6 +353,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unknownmanufacturer => 'Unbekannter Hersteller';
 
   @override
+  String get unknownstation => 'Unbekannte Tankstelle';
+
+  @override
+  String get unknowncompany => 'Unbekannte Firma';
+
+  @override
+  String get unknowncar => 'Unbekanntes Fahrzeug';
+
+  @override
+  String get showindropdowns => 'In Dropdowns anzeigen';
+
+  @override
+  String get keepstationvisible =>
+      'Diese Station sichtbar lassen, wenn ein neuer Tankstopp hinzugefügt wird.';
+
+  @override
+  String get hideinactivestations => 'Versteckte ausblenden';
+
+  @override
+  String get showhiddenstations => 'Versteckte anzeigen';
+
+  @override
   String get settings => 'Einstellungen';
 
   @override
