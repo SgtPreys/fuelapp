@@ -27,7 +27,7 @@
   
   "selectcar": "Fahrzeug Auswählen*",
   "nocarsavailable": "Noch keine Autos verfügbar.",
-  "selectstation": "Tankstelle auswählen*",
+  "selectstation": "Tankstelle auswählen",
   "nostationsavailable": "Noch keine Tankstelle verfügbar.",
   "drivendistance": "Gefahrene Strecke (km)",
   "liters": "Liter",

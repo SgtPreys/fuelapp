@@ -27,7 +27,7 @@
   
   "selectcar": "Select Vehicle*",
   "nocarsavailable": "No cars Available - Add one first!",
-  "selectstation": "Select Gas Station*",
+  "selectstation": "Select Gas Station",
   "nostationsavailable": "No Stations Available - Add one first!",
   "drivendistance": "Driven Distance (km)",
   "liters": "Liters",
