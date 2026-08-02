@@ -542,7 +542,7 @@ class DatabaseHelper {
         IFNULL(f.totalDistance, 0) as totalDistance
       FROM cars c
       LEFT JOIN (
-        SELECT carId, SUM(totalPrice) as fuelTotal, MAX(distance) as totalDistance 
+        SELECT carId, SUM(totalPrice) as fuelTotal, SUM(distance) as totalDistance 
         FROM fuel_stops 
         GROUP BY carId
       ) f ON c.id = f.carId
