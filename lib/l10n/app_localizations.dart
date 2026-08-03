@@ -539,7 +539,7 @@ abstract class AppLocalizations {
   /// No description provided for @nexttuev.
   ///
   /// In en, this message translates to:
-  /// **'Next TÜV'**
+  /// **'Next TÜV (MM/YYYY)'**
   String get nexttuev;
 
   /// No description provided for @fueltype.
@@ -607,6 +607,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this vehicle? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!'**
   String get deletecartext;
+
+  /// No description provided for @noadditionalinfo.
+  ///
+  /// In en, this message translates to:
+  /// **'No additional information available.'**
+  String get noadditionalinfo;
 
   /// No description provided for @performancepervehicle.
   ///

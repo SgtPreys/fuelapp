@@ -356,7 +356,7 @@ class _CarFormState extends State<CarForm> {
                 if (pickedDate != null && mounted) {
                   setState(() { 
                     // This saves it as something like "2027-07"
-                    _tuevController.text = DateFormat('yyyy-MM-dd').format(pickedDate); 
+                    _tuevController.text = DateFormat('MM/yyyy').format(pickedDate); 
                   });
                 }
               },

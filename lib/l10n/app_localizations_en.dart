@@ -234,7 +234,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plate => 'License Plate';
 
   @override
-  String get nexttuev => 'Next TÜV';
+  String get nexttuev => 'Next TÜV (MM/YYYY)';
 
   @override
   String get fueltype => 'Fuel Type';
@@ -269,6 +269,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get deletecartext =>
       'Are you sure you want to delete this vehicle? This action cannot be undone. In doing so you also delete all related data (fuel, maintenance, etc.)!';
+
+  @override
+  String get noadditionalinfo => 'No additional information available.';
 
   @override
   String get performancepervehicle => 'Performance per Vehicle';

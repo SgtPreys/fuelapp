@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> _recentFuel = [];
   List<Map<String, dynamic>> _recentMaintenance = [];
+  List<Map<String, dynamic>> _cars = [];
   bool _isLoading = true;
 
   @override
@@ -27,12 +28,82 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> refreshData() async {
     final fuel = await DatabaseHelper.instance.getRecentFuelStops();
     final maintenance = await DatabaseHelper.instance.getRecentMaintenanceStops();
+    final loadedCars = await DatabaseHelper.instance.getAllCars();
 
     setState(() {
       _recentFuel = fuel;
       _recentMaintenance = maintenance;
+      _cars = loadedCars;
       _isLoading = false;
     });
+    _checkTuevAlerts(loadedCars);
+  }
+  void _checkTuevAlerts(List<Map<String, dynamic>> cars) {
+    DateTime now = DateTime.now();
+
+    for (var car in cars) {
+      // 1. Skip cars that are sold or have no TÜV set
+      if (car['status'] == 'Sold' || car['nextTuev'] == null || car['nextTuev'].toString().trim().isEmpty) {
+        continue;
+      }
+
+      String tuevString = car['nextTuev']; // Example: "07/2027"
+
+      try {
+        List<String> parts = tuevString.split('/');
+        if (parts.length == 2) {
+          // NOTE: If your app saves it as yyyy/MM, swap these two lines!
+          int month = int.parse(parts[0]); 
+          int year = int.parse(parts[1]);
+
+          // 2. Calculate the difference in months
+          int monthsAway = ((year - now.year) * 12) + (month - now.month);
+
+          // 3. Show Notification if it's 2 months away (or less)
+          if (monthsAway <= 6 && monthsAway >= 0) {
+            // Delaying the SnackBar slightly ensures the screen has finished building
+            Future.delayed(const Duration(seconds: 1), () {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('⚠️ Reminder: TÜV for ${car['carName']} is due in $monthsAway month(s)! ($tuevString)'),
+                    backgroundColor: Colors.orange.shade800,
+                    duration: const Duration(seconds: 10), // Stays on screen for 10 seconds
+                    behavior: SnackBarBehavior.floating,
+                    // margin: EdgeInsets.only(
+                    //   bottom: MediaQuery.of(context).size.height - -20, // Pushes it to the top
+                    //   // left: 15,
+                    //   // right: 15,
+                    // ), // Makes it look like a nice floating notification pill
+                  ),
+                );
+              }
+            });
+          } else if (monthsAway < 0) {
+            // Optional: Show a red alert if it's already expired!
+            Future.delayed(const Duration(seconds: 2), () {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('🚨 Alert: TÜV for ${car['carName']} is EXPIRED!'),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                    // margin: EdgeInsets.only(
+                    //   bottom: MediaQuery.of(context).size.height - -20,
+                    //   // left: 15,
+                    //   // right: 15,
+                    // ),
+                  ),
+                );
+              }
+            });
+          }
+        }
+      } catch (e) {
+        // If a date is formatted weirdly, it just skips that car instead of crashing
+        print('Error parsing TÜV date for ${car['carName']}');
+      }
+    }
   }
 
   @override
@@ -133,12 +204,15 @@ class HomeScreenState extends State<HomeScreen> {
               itemCount: _recentMaintenance.length,
               itemBuilder: (context, index) {
                 final stop = _recentMaintenance[index];
+                final String infoText = (stop['additionalInfo'] == null || stop['additionalInfo'].toString().trim().isEmpty) 
+                          ? AppLocalizations.of(context)!.noadditionalinfo 
+                          : stop['additionalInfo'].toString();
                 return Card(
                   elevation: 2,
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   child: ListTile(
                     title: Text('${stop['occurrence']}'),
-                    subtitle: Text('${stop['carName']} at ${stop['companyName']}\nDate: ${stop['date']}'),
+                    subtitle: Text('${stop['carName']} at ${stop['companyName']}\n${infoText}\nDate: ${stop['date']}'),
                     isThreeLine: true,
                     trailing: Text(
                       stop['totalPrice'] != null ? '\n€${stop['totalPrice'].toStringAsFixed(2)}' : '-',

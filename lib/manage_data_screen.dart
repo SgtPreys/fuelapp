@@ -142,10 +142,13 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemCount: _maintenance.length,
                         itemBuilder: (context, index) {
                           final maintStop = _maintenance[index];
+                          final String infoText = (maintStop['additionalInfo'] == null || maintStop['additionalInfo'].toString().trim().isEmpty) 
+                                  ? AppLocalizations.of(context)!.noadditionalinfo 
+                                  : maintStop['additionalInfo'].toString();
                           return ListTile(
                             leading: const Icon(Icons.build, color: Colors.orange),
                             title: Text('${maintStop['occurrence']}'),
-                            subtitle: Text('${maintStop['carName']} at ${maintStop['companyName']}\nDate: ${maintStop['date']}'),
+                            subtitle: Text('${maintStop['carName']} at ${maintStop['companyName']}\n${infoText}\nDate: ${maintStop['date']}'),
                             isThreeLine: true,
                             trailing: Text(maintStop['totalPrice'] != null ? '€${maintStop['totalPrice']}' : '',
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.orange),
@@ -171,13 +174,16 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                         itemCount: _stations.length,
                         itemBuilder: (context, index) {
                           final station = _stations[index];
-                          String displayLocation = (station['location'] != null && station['location'].toString().trim().isNotEmpty) 
+                          final String displayLocation = (station['location'] != null && station['location'].toString().trim().isNotEmpty) 
                               ? station['location'] 
                               : AppLocalizations.of(context)!.unknownlocation;
+                          final String infoText = (station['additionalInfo'] == null || station['additionalInfo'].toString().trim().isEmpty) 
+                              ? AppLocalizations.of(context)!.noadditionalinfo 
+                              : station['additionalInfo'].toString();
                           return ListTile(
                             leading: const Icon(Icons.local_gas_station, color: Colors.teal),
                             title: Text(station['name']),
-                            subtitle: Text('$displayLocation'),
+                            subtitle: Text('$displayLocation\n${infoText}'),
                             trailing: Text('Total Spent:\n${station['totalSpent'] != null ? '€${(station['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal, fontSize: 15),
                             ),
@@ -213,11 +219,14 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                           String displayTelephone = (company['telephone'] != null && company['telephone'].toString().trim().isNotEmpty) 
                               ? company['telephone'] 
                               : AppLocalizations.of(context)!.unknowntelephone;
+                          String infoText = (company['additionalInfo'] == null || company['additionalInfo'].toString().trim().isEmpty) 
+                              ? AppLocalizations.of(context)!.noadditionalinfo 
+                              : company['additionalInfo'].toString();
 
                           return ListTile(
                             leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
-                            subtitle: Text('$displayLocation\n$displayContact\n$displayTelephone'),
+                            subtitle: Text('$displayLocation\n$displayContact\n$displayTelephone\n${infoText}'),
                             trailing: Text('Total Spent:\n${company['totalSpent'] != null ? '€${(company['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 15),
                             ),
@@ -251,7 +260,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             subtitle: Text(
                               '$displayManufacturer\n'
                               'Distance: ${carMap['totalDistance'] != null ? '${(carMap['totalDistance'] as num).toStringAsFixed(0)} km' : '0 km'} \n'
-                              'Status: ${carMap['status'] ?? 'Unknown'}'
+                              'Status: ${carMap['status'] ?? 'Unknown'}\n''${carMap['status'] != 'Sold' ? 'Next TÜV: ${carMap['nextTuev'] ?? 'Not set'}' : ''}'
                             ),
                             trailing: Text('Total Spent:\n${carMap['totalSpent'] != null ? '€${(carMap['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo, fontSize: 15),

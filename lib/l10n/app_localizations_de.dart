@@ -233,7 +233,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get plate => 'Kennzeichen';
 
   @override
-  String get nexttuev => 'Nächster TÜV';
+  String get nexttuev => 'Nächster TÜV (MM/YYYY)';
 
   @override
   String get fueltype => 'Kraftstoffart';
@@ -268,6 +268,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get deletecartext =>
       'Sind Sie sicher, dass Sie dieses Fahrzeug löschen möchten? Dieser Vorgang kann nicht rückgängig gemacht werden. Dabei löschen Sie auch alle zugehörigen Daten (Kraftstoff, Wartung usw.)!';
+
+  @override
+  String get noadditionalinfo => 'Keine zusätzlichen Informationen verfügbar';
 
   @override
   String get performancepervehicle => 'Leistung pro Fahrzeug';
