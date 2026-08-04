@@ -274,6 +274,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noadditionalinfo => 'No additional information available.';
 
   @override
+  String get searcheverything => 'Search everything...';
+
+  @override
   String get performancepervehicle => 'Performance per Vehicle';
 
   @override

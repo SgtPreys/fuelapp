@@ -614,6 +614,12 @@ abstract class AppLocalizations {
   /// **'No additional information available.'**
   String get noadditionalinfo;
 
+  /// No description provided for @searcheverything.
+  ///
+  /// In en, this message translates to:
+  /// **'Search everything...'**
+  String get searcheverything;
+
   /// No description provided for @performancepervehicle.
   ///
   /// In en, this message translates to:

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fuelapp/database/database_helper.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -9,6 +11,8 @@ import 'providers/theme_provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/language_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -69,6 +73,92 @@ Future<File> exportDatabaseToJson() async {
   }
 }
 
+// 1. Export as JSON Function
+  Future<void> _exportAsJson() async {
+    try {
+      final db = await DatabaseHelper.instance.database;
+      
+      // Fetch data from tables (adjust table names as needed)
+      final List<Map<String, dynamic>> cars = await db.query('cars');
+      final List<Map<String, dynamic>> stations = await db.query('stations');
+      final List<Map<String, dynamic>> fuelStops = await db.query('fuel_stops');
+      final List<Map<String, dynamic>> maintenanceStops = await db.query('maintenance_stops');
+
+      final Map<String, dynamic> exportData = {
+        'cars': cars,
+        'stations': stations,
+        'fuel_stops': fuelStops,
+        'maintenance_stops': maintenanceStops,
+      };
+
+      final jsonString = jsonEncode(exportData);
+      final directory = await getTemporaryDirectory();
+      final path = '${directory.path}/fuel_app_backup.json';
+      final file = File(path);
+      await file.writeAsString(jsonString);
+
+      await Share.shareXFiles(
+        [XFile(path)],
+        text: 'Here is my Fuel App data backup (JSON format).',
+        subject: 'Fuel App JSON Backup',
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        SnackBar(content: Text('Error exporting JSON: $e')),
+      );
+    }
+  }
+
+  // 2. Export as CSV Function
+  Future<void> _exportAsCsv(BuildContext context) async {
+    try {
+      final db = await DatabaseHelper.instance.database;
+      final List<Map<String, dynamic>> fuelStops = await db.query('fuel_stops');
+
+      if (fuelStops.isEmpty) {
+        ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+          const SnackBar(content: Text('No fuel stop data available to export!')),
+        );
+        return;
+      }
+
+      StringBuffer csvBuffer = StringBuffer();
+      // CSV Headers
+      csvBuffer.writeln('ID,Car ID,Station ID,Date,Distance,Liters,Price Per Liter,Total Price,Additional Info');
+
+      // CSV Rows
+      for (var stop in fuelStops) {
+        csvBuffer.writeln(
+          '${stop['id']},'
+          '${stop['carId']},'
+          '${stop['stationId'] ?? ''},'
+          '"${stop['date']}",'
+          '${stop['distance']},'
+          '${stop['liters']},'
+          '${stop['pricePerLiter']},'
+          '${stop['totalPrice']},'
+          '"${stop['additionalInfo'] ?? ''}"'
+        );
+      }
+
+      final directory = await getTemporaryDirectory();
+      final path = '${directory.path}/fuel_stops_export.csv';
+      final file = File(path);
+      await file.writeAsString(csvBuffer.toString());
+
+      await Share.shareXFiles(
+        [XFile(path)],
+        text: 'Here is my Fuel App fuel stops export (.csv format).',
+        subject: 'Fuel App CSV Export',
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        SnackBar(content: Text('Error exporting CSV: $e')),
+      );
+    }
+  }
+
+
 String? encodeQueryParameters(Map<String, String> params) {
   return params.entries
       .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
@@ -77,6 +167,48 @@ String? encodeQueryParameters(Map<String, String> params) {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   // Controller to make the version editable
+  void _showExportOptionsModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Choose Export Format',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              ListTile(
+                leading: const Icon(Icons.code, color: Colors.blue),
+                title: const Text('Export as JSON (Full Backup)'),
+                subtitle: const Text('Includes all cars, stations, and logs'),
+                onTap: () {
+                  Navigator.pop(context); // Close sheet
+                  _exportAsJson();
+                },
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.table_chart, color: Colors.green),
+                title: const Text('Export Fuel Stops as CSV'),
+                subtitle: const Text('Readable in Excel or Google Sheets'),
+                onTap: () {
+                  Navigator.pop(context); // Close sheet
+                  _exportAsCsv(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
   
   
 
@@ -180,6 +312,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               HapticFeedback.mediumImpact(); // <-- NEW HAPTIC BUMP
               File file = await exportDatabaseToJson();
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.databaseexported(file.path))));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.share, color: Colors.indigo),
+            title: const Text('Export & Share Database !!!Experimental feature!!!'), // Or use AppLocalizations if localized
+            subtitle: const Text('Choose format to export and send files'),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              _showExportOptionsModal(context);
             },
           ),
           Card(

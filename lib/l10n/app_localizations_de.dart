@@ -27,7 +27,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addNewCar => 'Auto Hinzufügen';
 
   @override
-  String get fuel => 'Krafstoff';
+  String get fuel => 'Kraftstoff';
 
   @override
   String get maintenance => 'Wartung';
@@ -271,6 +271,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noadditionalinfo => 'Keine zusätzlichen Informationen verfügbar';
+
+  @override
+  String get searcheverything => 'Alles durchsuchen...';
 
   @override
   String get performancepervehicle => 'Leistung pro Fahrzeug';

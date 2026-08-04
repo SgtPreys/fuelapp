@@ -79,7 +79,7 @@ class _MainScreenState extends State<MainScreen> {
       case 0:
         return HomeScreen(key: _homeKey);
       case 1:
-        return const StatisticsScreen();
+        return StatisticsScreen(key: UniqueKey()); // Your statistics screen!
       case 2:
         return ManageDataScreen(key: _manageDataKey); // Your tabbed screen!
       case 3:

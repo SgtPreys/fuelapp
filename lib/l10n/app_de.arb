@@ -177,5 +177,6 @@
   "keepstationvisible": "Diese Station sichtbar lassen, wenn ein neuer Tankstopp hinzugefügt wird.",
   "hideinactivestations": "Versteckte ausblenden",
   "showhiddenstations": "Versteckte anzeigen",
-  "noadditionalinfo": "Keine zusätzlichen Informationen verfügbar"
+  "noadditionalinfo": "Keine zusätzlichen Informationen verfügbar",
+  "searcheverything": "Alles durchsuchen..."
 }
