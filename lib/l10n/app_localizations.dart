@@ -1093,6 +1093,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settingsnavitem;
+
+  /// No description provided for @scanningreceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt scanned!'**
+  String get scanningreceipt;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
+  /// No description provided for @addphotoscan.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Photo/Scan'**
+  String get addphotoscan;
+
+  /// No description provided for @changephotoscan.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Photo/Scan'**
+  String get changephotoscan;
 }
 
 class _AppLocalizationsDelegate

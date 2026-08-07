@@ -196,7 +196,12 @@
   "homenavitem": "Home",
   "statsnavitem": "Stats",
   "datanavitem": "Data",
-  "settingsnavitem": "Settings"
+  "settingsnavitem": "Settings",
+  "scanningreceipt": "Receipt scanned!",
+  "dismiss": "Dismiss",
+  "addphotoscan": "Add Photo/Scan",
+  "changephotoscan": "Change Photo/Scan"
+
 
 
 

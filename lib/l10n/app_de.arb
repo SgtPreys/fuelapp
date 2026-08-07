@@ -180,5 +180,9 @@
   "noadditionalinfo": "Keine zusätzlichen Informationen verfügbar",
   "searcheverything": "Alles durchsuchen...",
   "hideinactivecompanies": "Versteckte ausblenden",
-  "showhiddencompanies": "Versteckte anzeigen"
+  "showhiddencompanies": "Versteckte anzeigen",
+  "scanningreceipt": "Kassenzettel wurde gescannt!",
+  "dismiss": "Verwerfen",
+  "addphotoscan": "Foto/Scan hinzufügen",
+  "changephotoscan": "Foto/Scan ändern"
 }

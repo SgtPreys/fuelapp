@@ -521,4 +521,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsnavitem => 'Einstellungen';
+
+  @override
+  String get scanningreceipt => 'Kassenzettel wurde gescannt!';
+
+  @override
+  String get dismiss => 'Verwerfen';
+
+  @override
+  String get addphotoscan => 'Foto/Scan hinzufügen';
+
+  @override
+  String get changephotoscan => 'Foto/Scan ändern';
 }

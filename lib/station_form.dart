@@ -21,6 +21,10 @@ class StationForm extends StatefulWidget {
 class _StationFormState extends State<StationForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _contactController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
   final TextEditingController _additionalInfoController = TextEditingController();
   String? _imagePath;
@@ -44,11 +48,18 @@ class _StationFormState extends State<StationForm> {
     if (widget.existingStation != null) {
       _nameController.text = widget.existingStation!.name;
       _locationController.text = widget.existingStation!.location ?? '';
+      _contactController.text = widget.existingStation!.contactPerson ?? '';
+      _emailController.text = widget.existingStation!.email ?? '';
+      _phoneController.text = widget.existingStation!.telephone ?? '';
+      _websiteController.text = widget.existingStation!.website ?? '';
       _selectedType = widget.existingStation!.type;
       _infoController.text = widget.existingStation!.additionalInfo ?? '';
       _additionalInfoController.text = widget.existingStation!.additionalInfo ?? '';
       _imagePath = widget.existingStation!.imagePath;
       _isVisible = widget.existingStation!.isVisible == 1; // Assuming isVisible is stored as 1 for true, 0 for false
+      _emailController.addListener(_updateUI);
+      _phoneController.addListener(_updateUI);
+      _websiteController.addListener(_updateUI);
       _locationController.addListener(_updateUI);
     }
   }
@@ -77,22 +88,40 @@ class _StationFormState extends State<StationForm> {
         return SafeArea(
           child: Wrap(
             children: <Widget>[
+              Row(children: [
+                Expanded(
+                  child: ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: Text(AppLocalizations.of(context)!.photolibrary),
+                    iconColor: Colors.blue,
+                    onTap: () {
+                      _pickImage(ImageSource.gallery);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    leading: const Icon(Icons.photo_camera),
+                    title: Text(AppLocalizations.of(context)!.camera),
+                    iconColor: Colors.blue,
+                    onTap: () {
+                      _pickImage(ImageSource.camera);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],),
+              const SizedBox(height: 20),
               ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: Text(AppLocalizations.of(context)!.photolibrary),
+                leading: const Icon(Icons.cancel),
+                title: Text(AppLocalizations.of(context)!.cancel),
+                iconColor: Colors.red,
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: Text(AppLocalizations.of(context)!.camera),
-                onTap: () {
-                  _pickImage(ImageSource.camera);
-                  Navigator.of(context).pop();
-                },
-              ),
+              const SizedBox(height: 150), 
             ],
           ),
         );
@@ -134,7 +163,62 @@ class _StationFormState extends State<StationForm> {
       },
     );
   }
-  Future<void> _launchMaps(String location) async {
+  Future<void> _launchEmail(String emailAddress) async {
+  final Uri emailUri = Uri(
+    scheme: 'mailto',
+    path: emailAddress,
+  );
+
+  if (await canLaunchUrl(emailUri)) {
+    await launchUrl(emailUri);
+  } else {
+    // Optional: Show a snackbar if the user has no email app installed
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open email app')),
+      );
+    }
+  }
+}
+Future<void> _launchPhone(String phoneNumber) async {
+  // Removes spaces or dashes if the user input them
+  final String cleanedNumber = phoneNumber.replaceAll(RegExp(r'\s+'), '');
+  final Uri phoneUri = Uri(
+    scheme: 'tel',
+    path: cleanedNumber,
+  );
+
+  if (await canLaunchUrl(phoneUri)) {
+    await launchUrl(phoneUri);
+  } else {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open phone app')),
+      );
+    }
+  }
+}
+
+Future<void> _launchWebsite(String websiteUrl) async {
+  // Ensure the URL has a scheme (https://)
+  String urlToLaunch = websiteUrl.trim();
+  if (!urlToLaunch.startsWith('http')) {
+    urlToLaunch = 'https://$urlToLaunch';
+  }
+
+  final Uri websiteUri = Uri.parse(urlToLaunch);
+
+  if (await canLaunchUrl(websiteUri)) {
+    await launchUrl(websiteUri, mode: LaunchMode.externalApplication);
+  } else {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open website')),
+      );
+    }
+  }
+}
+Future<void> _launchMaps(String location) async {
   // Encode the location so it works even if it contains spaces or special characters
   final String encodedLocation = Uri.encodeComponent(location);
   final Uri mapUri = Uri.parse('https://www.google.com/maps/search/?api=1&query=$encodedLocation');
@@ -157,7 +241,15 @@ void _updateUI() {
   void dispose() {
     _nameController.dispose();
     _locationController.dispose();
+    _contactController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _websiteController.dispose();
     _infoController.dispose();
+    _contactController.removeListener(_updateUI);
+    _emailController.removeListener(_updateUI);
+    _phoneController.removeListener(_updateUI);
+    _websiteController.removeListener(_updateUI);
     _locationController.removeListener(_updateUI);
     super.dispose();
   }
@@ -173,6 +265,10 @@ void _updateUI() {
     final stationData = Station(
       id: widget.existingStation?.id, // Keep ID if editing
       name: _nameController.text,
+      contactPerson: _contactController.text,
+      email: _emailController.text,
+      telephone: _phoneController.text,
+      website: _websiteController.text,
       location: _locationController.text,
       type: _selectedType,
       additionalInfo: _infoController.text,
@@ -278,6 +374,107 @@ void _updateUI() {
               }).toList(),
               onChanged: (String? newValue) => setState(() => _selectedType = newValue),
             ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _contactController,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.contactperson, border: OutlineInputBorder(),suffixIcon: Icon(Icons.person)),
+            ),
+            const SizedBox(height: 10),
+
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.emailaddress, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _emailController.text.isNotEmpty ? Colors.teal : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.email,
+                      color: _emailController.text.isNotEmpty ? Colors.teal : Colors.grey,
+                    ),
+                    onPressed: _emailController.text.isNotEmpty 
+                      ? () => _launchEmail(_emailController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _phoneController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.telephonenumber, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.phone,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _phoneController.text.isNotEmpty ? Colors.teal : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.phone,
+                      color: _phoneController.text.isNotEmpty ? Colors.teal : Colors.grey,
+                    ),
+                    onPressed: _phoneController.text.isNotEmpty 
+                      ? () => _launchPhone(_phoneController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _websiteController,
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.website, border: OutlineInputBorder(),),
+                    keyboardType: TextInputType.url,
+                  ),
+                ),
+                const SizedBox(width: 10), // Spacing
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _websiteController.text.isNotEmpty ? Colors.teal : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.web,
+                      color: _websiteController.text.isNotEmpty ? Colors.teal : Colors.grey,
+                    ),
+                    onPressed: _websiteController.text.isNotEmpty 
+                      ? () => _launchWebsite(_websiteController.text) 
+                      : null, // Disables button if empty
+                  ),
+                ),
+              ],
+            ),
+
+            
             const SizedBox(height: 10),
 
             TextField(

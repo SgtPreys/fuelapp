@@ -167,6 +167,10 @@ class DatabaseHelper {
         isVisible INTEGER DEFAULT 1,
         name TEXT NOT NULL,
         location TEXT,
+        contactPerson TEXT,
+        email TEXT,
+        telephone TEXT,
+        website TEXT,
         type TEXT,
         imagePath TEXT,
         additionalInfo TEXT
@@ -278,6 +282,10 @@ class DatabaseHelper {
   }
   if (oldVersion < 5) { // Replace X with your new version number
     await db.execute('ALTER TABLE companies ADD COLUMN isVisible INTEGER DEFAULT 1');
+    await db.execute('ALTER TABLE stations ADD COLUMN contactPerson TEXT');
+    await db.execute('ALTER TABLE stations ADD COLUMN email TEXT');
+    await db.execute('ALTER TABLE stations ADD COLUMN telephone TEXT');
+    await db.execute('ALTER TABLE stations ADD COLUMN website TEXT');
   }
 
 }

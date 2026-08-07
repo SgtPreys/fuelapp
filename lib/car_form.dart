@@ -88,22 +88,40 @@ class _CarFormState extends State<CarForm> {
         return SafeArea(
           child: Wrap(
             children: <Widget>[
+              Row(children: [
+                Expanded(
+                  child: ListTile(
+                    leading: const Icon(Icons.photo_library),
+                    title: Text(AppLocalizations.of(context)!.photolibrary),
+                    iconColor: Colors.blue,
+                    onTap: () {
+                      _pickImage(ImageSource.gallery);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    leading: const Icon(Icons.photo_camera),
+                    title: Text(AppLocalizations.of(context)!.camera),
+                    iconColor: Colors.blue,
+                    onTap: () {
+                      _pickImage(ImageSource.camera);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],),
+              const SizedBox(height: 20),
               ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: Text(AppLocalizations.of(context)!.photolibrary),
+                leading: const Icon(Icons.cancel),
+                title: Text(AppLocalizations.of(context)!.cancel),
+                iconColor: Colors.red,
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: Text(AppLocalizations.of(context)!.camera),
-                onTap: () {
-                  _pickImage(ImageSource.camera);
-                  Navigator.of(context).pop();
-                },
-              ),
+              const SizedBox(height: 150), 
             ],
           ),
         );

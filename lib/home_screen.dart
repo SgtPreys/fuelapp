@@ -64,12 +64,18 @@ class HomeScreenState extends State<HomeScreen> {
             // Delaying the SnackBar slightly ensures the screen has finished building
             Future.delayed(const Duration(seconds: 1), () {
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                ScaffoldMessenger.of(context).showMaterialBanner(
+                  MaterialBanner(
                     content: Text('⚠️ Reminder: TÜV for ${car['carName']} is due in $monthsAway month(s)! ($tuevString)'),
-                    backgroundColor: Colors.orange.shade800,
-                    duration: const Duration(seconds: 10), // Stays on screen for 10 seconds
-                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.orange.shade800, actions: [
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                        },
+                        child: Text(AppLocalizations.of(context)!.dismiss, style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                    
                     // margin: EdgeInsets.only(
                     //   bottom: MediaQuery.of(context).size.height - -20, // Pushes it to the top
                     //   // left: 15,
@@ -83,11 +89,18 @@ class HomeScreenState extends State<HomeScreen> {
             // Optional: Show a red alert if it's already expired!
             Future.delayed(const Duration(seconds: 2), () {
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                ScaffoldMessenger.of(context).showMaterialBanner(
+                  MaterialBanner(
                     content: Text('🚨 Alert: TÜV for ${car['carName']} is EXPIRED!'),
                     backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating,
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                        },
+                        child: Text(AppLocalizations.of(context)!.dismiss, style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
                     // margin: EdgeInsets.only(
                     //   bottom: MediaQuery.of(context).size.height - -20,
                     //   // left: 15,
