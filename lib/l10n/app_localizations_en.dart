@@ -381,6 +381,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showhiddenstations => 'Show hidden';
 
   @override
+  String get hideinactivecompanies => 'Hide hidden';
+
+  @override
+  String get showhiddencompanies => 'Show hidden';
+
+  @override
   String get settings => 'Settings';
 
   @override

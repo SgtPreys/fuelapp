@@ -381,6 +381,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get showhiddenstations => 'Versteckte anzeigen';
 
   @override
+  String get hideinactivecompanies => 'Versteckte ausblenden';
+
+  @override
+  String get showhiddencompanies => 'Versteckte anzeigen';
+
+  @override
   String get settings => 'Einstellungen';
 
   @override

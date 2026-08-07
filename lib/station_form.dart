@@ -216,7 +216,7 @@ void _updateUI() {
               title: Text(AppLocalizations.of(context)!.showindropdowns), // You can replace with AppLocalizations if you want!
               subtitle: Text(AppLocalizations.of(context)!.keepstationvisible), // Optional: A brief description
               value: _isVisible,
-              activeColor: Theme.of(context).primaryColor,
+              activeThumbColor: Colors.teal,
               onChanged: (bool value) {
                 setState(() {
                   _isVisible = value;

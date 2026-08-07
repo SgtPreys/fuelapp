@@ -38,6 +38,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
   int? _selectedCarId;
   int? _selectedCompanyId;
   bool _isLoading = true;
+  bool _showAllCompanies = false; // New state variable to toggle company visibility
 
   @override
   void initState() {
@@ -138,7 +139,10 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
   Future<void> _loadDropdownData() async {
     final allCars = await DatabaseHelper.instance.getAllCars();
-    final companies = await DatabaseHelper.instance.getAllCompanies();
+    //final companies = await DatabaseHelper.instance.getAllCompanies();
+    final db = await DatabaseHelper.instance.database;
+    String whereClause = _showAllCompanies ? "" : "WHERE isVisible = 1";
+    _companies = await db.rawQuery('SELECT * FROM companies $whereClause');
 
     setState(() {
       // --- NEW: Safely filter the car list ---
@@ -148,7 +152,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
         return isActive || isAlreadySelected;
       }).toList();
 
-      _companies = companies;
+      _companies = _companies;
       _isLoading = false;
 
       if (widget.existingMaintenanceStop != null) {
@@ -280,6 +284,24 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                     hint: _companies.isEmpty ? Text(AppLocalizations.of(context)!.nocompanyavailable) : null,
                   ),
               ),
+              const SizedBox(width: 10),
+              Container(decoration: BoxDecoration(
+                border: Border.all(color: Colors.purple),
+                borderRadius: BorderRadius.circular(4),
+              ),child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isLoading = true; // Optional: show loading state while fetching
+                    _showAllCompanies = !_showAllCompanies;
+                  });
+                  _loadDropdownData(); // Reload the list with the new filter
+                },
+                child: Text(
+                  _showAllCompanies ? AppLocalizations.of(context)!.hideinactivecompanies : AppLocalizations.of(context)!.showhiddencompanies,
+                  style: const TextStyle(fontSize: 12, color: Colors.purple),
+                ),
+              ),),
+
               const SizedBox(width: 10),
               Container(decoration: BoxDecoration(
                     

@@ -28,6 +28,7 @@ class _CompanyFormState extends State<CompanyForm> {
   final TextEditingController _infoController = TextEditingController();
   String? _imagePath;
   final ImagePicker _picker = ImagePicker();
+  bool _isVisible = true; // NEW: Visibility toggle
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _CompanyFormState extends State<CompanyForm> {
       _websiteController.text = widget.existingCompany!.website ?? '';
       _infoController.text = widget.existingCompany!.additionalInfo ?? '';
       _imagePath = widget.existingCompany!.imagePath;
+      _isVisible = widget.existingCompany!.isVisible == 1;
       _emailController.addListener(_updateUI);
       _phoneController.addListener(_updateUI);
       _websiteController.addListener(_updateUI);
@@ -237,6 +239,7 @@ void _updateUI() {
       telephone: _phoneController.text,
       website: _websiteController.text,
       additionalInfo: _infoController.text,
+      isVisible: _isVisible ? 1 : 0, // NEW: Use the visibility toggle
     );
 
     if (widget.existingCompany == null) {
@@ -270,6 +273,20 @@ void _updateUI() {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20), // A little spacing
+            // NEW: The Visibility Switch
+            SwitchListTile(
+              title: Text(AppLocalizations.of(context)!.showindropdowns), // You can replace with AppLocalizations if you want!
+              subtitle: Text(AppLocalizations.of(context)!.keepstationvisible), // Optional: A brief description
+              value: _isVisible,
+              activeThumbColor: Colors.purple,
+              onChanged: (bool value) {
+                setState(() {
+                  _isVisible = value;
+                });
+                HapticFeedback.lightImpact(); // Optional: A nice touch if you are using haptics
+              },
+            ),
             const SizedBox(height: 30),
             Center(
               child: Text(

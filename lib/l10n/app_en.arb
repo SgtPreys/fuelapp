@@ -138,7 +138,8 @@
   "keepstationvisible": "Keep this station visible when adding a new fuel stop.",
   "hideinactivestations": "Hide hidden",
   "showhiddenstations": "Show hidden",
-
+  "hideinactivecompanies": "Hide hidden",
+  "showhiddencompanies": "Show hidden",
   
 
 

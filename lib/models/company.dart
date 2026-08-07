@@ -8,6 +8,7 @@ class Company {
   final String? website;
   final String? imagePath;
   final String? additionalInfo;
+  final int? isVisible;
 
   Company({
     this.id,
@@ -19,6 +20,7 @@ class Company {
     this.website,
     this.imagePath,
     this.additionalInfo,
+    this.isVisible = 1,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,6 +34,7 @@ class Company {
       'website': website,
       'imagePath': imagePath,
       'additionalInfo': additionalInfo,
+      'isVisible': isVisible,
     };
   }
 
@@ -46,6 +49,7 @@ class Company {
       website: map['website'],
       imagePath: map['imagePath'],
       additionalInfo: map['additionalInfo'],
+      isVisible: map['isVisible'] ?? 1,
     );
   }
 }

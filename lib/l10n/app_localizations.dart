@@ -824,6 +824,18 @@ abstract class AppLocalizations {
   /// **'Show hidden'**
   String get showhiddenstations;
 
+  /// No description provided for @hideinactivecompanies.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide hidden'**
+  String get hideinactivecompanies;
+
+  /// No description provided for @showhiddencompanies.
+  ///
+  /// In en, this message translates to:
+  /// **'Show hidden'**
+  String get showhiddencompanies;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:

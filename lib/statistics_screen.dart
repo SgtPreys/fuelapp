@@ -436,7 +436,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ),
           const SizedBox(height: 30),
-          //Yearly Spend area STILL NEEDS YEARLY DATA!!!!!!!!!!!!!!!!!
+          //Yearly Spend area 
           Text(AppLocalizations.of(context)!.yearlyspend, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           const SizedBox(height: 10),
           Row(
@@ -449,7 +449,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ],
           ),
 
-          //NEEDS TO BE SWTICHTED TO YEARLY !!!!!!!!!!!!!!!!
+          //NEEDS TO BE UPDATED: YEARLY SPEND HORIZONTAL LIST
           if (_yearlySpend.isEmpty)
           Text(AppLocalizations.of(context)!.nodatayet, style: const TextStyle(color: Colors.grey))
         else

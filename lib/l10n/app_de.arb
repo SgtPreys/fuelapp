@@ -178,5 +178,7 @@
   "hideinactivestations": "Versteckte ausblenden",
   "showhiddenstations": "Versteckte anzeigen",
   "noadditionalinfo": "Keine zusätzlichen Informationen verfügbar",
-  "searcheverything": "Alles durchsuchen..."
+  "searcheverything": "Alles durchsuchen...",
+  "hideinactivecompanies": "Versteckte ausblenden",
+  "showhiddencompanies": "Versteckte anzeigen"
 }

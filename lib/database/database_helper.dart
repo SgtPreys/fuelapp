@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 
 class DatabaseHelper {
   static const _databaseName = "FuelAppDatabase.db";
-  static const _databaseVersion = 4;
+  static const _databaseVersion = 5;
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -177,6 +177,7 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE companies (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        isVisible INTEGER DEFAULT 1,
         name TEXT NOT NULL,
         location TEXT,
         contactPerson TEXT,
@@ -274,6 +275,9 @@ class DatabaseHelper {
   }
   if (oldVersion < 4) { // Replace X with your new version number
     await db.execute('ALTER TABLE stations ADD COLUMN isVisible INTEGER DEFAULT 1');
+  }
+  if (oldVersion < 5) { // Replace X with your new version number
+    await db.execute('ALTER TABLE companies ADD COLUMN isVisible INTEGER DEFAULT 1');
   }
 
 }
@@ -427,7 +431,7 @@ class DatabaseHelper {
       SELECT m.*, c.carName, comp.name as companyName 
       FROM maintenance_stops m
       JOIN cars c ON m.carId = c.id
-      JOIN companies comp ON m.companyId = comp.id
+      LEFT JOIN companies comp ON m.companyId = comp.id
       ORDER BY m.date DESC
       LIMIT 3
     ''');
