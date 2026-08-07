@@ -136,6 +136,7 @@
 
   "showindropdowns": "Show in Dropdowns",
   "keepstationvisible": "Keep this station visible when adding a new fuel stop.",
+  "keepscompanyvisible": "Keep this company visible when adding a new maintenance stop.",
   "hideinactivestations": "Hide hidden",
   "showhiddenstations": "Show hidden",
   "hideinactivecompanies": "Hide hidden",

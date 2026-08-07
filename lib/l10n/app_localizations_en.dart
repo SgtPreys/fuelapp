@@ -375,6 +375,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Keep this station visible when adding a new fuel stop.';
 
   @override
+  String get keepscompanyvisible =>
+      'Keep this company visible when adding a new maintenance stop.';
+
+  @override
   String get hideinactivestations => 'Hide hidden';
 
   @override

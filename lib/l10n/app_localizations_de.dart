@@ -375,6 +375,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Station sichtbar lassen, wenn ein neuer Tankstopp hinzugefügt wird.';
 
   @override
+  String get keepscompanyvisible =>
+      'Diese Firma sichtbar lassen, wenn ein neuer Wartungseintrag hinzugefügt wird.';
+
+  @override
   String get hideinactivestations => 'Versteckte ausbl.';
 
   @override

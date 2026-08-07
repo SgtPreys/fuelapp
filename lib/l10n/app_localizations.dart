@@ -812,6 +812,12 @@ abstract class AppLocalizations {
   /// **'Keep this station visible when adding a new fuel stop.'**
   String get keepstationvisible;
 
+  /// No description provided for @keepscompanyvisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this company visible when adding a new maintenance stop.'**
+  String get keepscompanyvisible;
+
   /// No description provided for @hideinactivestations.
   ///
   /// In en, this message translates to:

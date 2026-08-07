@@ -295,7 +295,7 @@ void _updateUI() {
             // NEW: The Visibility Switch
             SwitchListTile(
               title: Text(AppLocalizations.of(context)!.showindropdowns), // You can replace with AppLocalizations if you want!
-              subtitle: Text(AppLocalizations.of(context)!.keepstationvisible), // Optional: A brief description
+              subtitle: Text(AppLocalizations.of(context)!.keepscompanyvisible), // Optional: A brief description
               value: _isVisible,
               activeThumbColor: Colors.purple,
               onChanged: (bool value) {
