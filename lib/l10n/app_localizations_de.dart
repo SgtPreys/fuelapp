@@ -375,16 +375,16 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Station sichtbar lassen, wenn ein neuer Tankstopp hinzugefügt wird.';
 
   @override
-  String get hideinactivestations => 'Versteckte ausblenden';
+  String get hideinactivestations => 'Versteckte ausbl.';
 
   @override
-  String get showhiddenstations => 'Versteckte anzeigen';
+  String get showhiddenstations => 'Versteckte anz.';
 
   @override
-  String get hideinactivecompanies => 'Versteckte ausblenden';
+  String get hideinactivecompanies => 'Versteckte ausbl.';
 
   @override
-  String get showhiddencompanies => 'Versteckte anzeigen';
+  String get showhiddencompanies => 'Versteckte anz.';
 
   @override
   String get settings => 'Einstellungen';

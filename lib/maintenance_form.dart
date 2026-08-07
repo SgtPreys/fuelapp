@@ -38,7 +38,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
   int? _selectedCarId;
   int? _selectedCompanyId;
   bool _isLoading = true;
-  bool _showAllCompanies = false; // New state variable to toggle company visibility
+  bool _showAllCompanies = true; // New state variable to toggle company visibility
 
   @override
   void initState() {
@@ -159,8 +159,20 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
     final allCars = await DatabaseHelper.instance.getAllCars();
     //final companies = await DatabaseHelper.instance.getAllCompanies();
     final db = await DatabaseHelper.instance.database;
-    String whereClause = _showAllCompanies ? "" : "WHERE isVisible = 1";
-    _companies = await db.rawQuery('SELECT * FROM companies $whereClause');
+    String whereClause = "";
+    if (!_showAllCompanies) {
+      // If we have a company currently selected (like when editing), 
+      // we MUST include it in the list so the dropdown doesn't crash!
+      if (_selectedCompanyId != null) {
+        whereClause = "WHERE isVisible = 1 OR id = $_selectedCompanyId";
+      } else {
+        // Standard behavior for a brand new form
+        whereClause = "WHERE isVisible = 1";
+      }
+    }
+    _companies = await DatabaseHelper.instance.database.then(
+      (db) => db.rawQuery('SELECT * FROM companies $whereClause')
+    );
 
     setState(() {
       // --- NEW: Safely filter the car list ---
@@ -229,6 +241,8 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
 
     final isEditing = widget.existingMaintenanceStop != null;
 
+   
+    bool companyExists = _companies.any((company) => company['id'] == _selectedCompanyId);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -291,7 +305,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
               Expanded(child: 
                   DropdownButtonFormField<int>(
                     decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectcompany, border: OutlineInputBorder()),
-                    initialValue: _selectedCompanyId,
+                    initialValue: companyExists ? _selectedCompanyId : null,
                     items: _companies.map((company) {
                       return DropdownMenuItem<int>(
                         value: company['id'] as int,

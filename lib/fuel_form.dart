@@ -38,7 +38,9 @@ class _FuelFormState extends State<FuelForm> {
   int? _selectedStationId;
   bool _isLoading = true; // Wait for dropdown data to load
 
-  bool _showAllStations = false; // NEW: Control visibility of stations in dropdown
+  bool _showAllStations = true; // NEW: Control visibility of stations in dropdown
+
+  
 
   @override
   void initState() {
@@ -260,9 +262,22 @@ class _FuelFormState extends State<FuelForm> {
   Future<void> _loadDropdownData() async {
     final allCars = await DatabaseHelper.instance.getAllCars();
     //final stations = await DatabaseHelper.instance.getAllStations();
+    
     final db = await DatabaseHelper.instance.database;
-    String whereClause = _showAllStations ? "" : "WHERE isVisible = 1";
-    _stations = await db.rawQuery('SELECT * FROM stations $whereClause');
+    String whereClause = "";
+    if (!_showAllStations) {
+      // If we have a station currently selected (like when editing), 
+      // we MUST include it in the list so the dropdown doesn't crash!
+      if (_selectedStationId != null) {
+        whereClause = "WHERE isVisible = 1 OR id = $_selectedStationId";
+      } else {
+        // Standard behavior for a brand new form
+        whereClause = "WHERE isVisible = 1";
+      }
+    }
+    _stations = await DatabaseHelper.instance.database.then(
+      (db) => db.rawQuery('SELECT * FROM stations $whereClause')
+    );
 
     setState(() {
       // --- NEW: Safely filter the car list ---
@@ -334,6 +349,8 @@ class _FuelFormState extends State<FuelForm> {
 
     final isEditing = widget.existingFuelStop != null;
 
+    
+    bool stationExists = _stations.any((station) => station['id'] == _selectedStationId);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -400,8 +417,8 @@ class _FuelFormState extends State<FuelForm> {
             Row(children: [
               Expanded(child: 
                   DropdownButtonFormField<int>(
+                    initialValue: stationExists ? _selectedStationId : null,
                     decoration: InputDecoration(labelText: AppLocalizations.of(context)!.selectstation, border: OutlineInputBorder()),
-                    initialValue: _selectedStationId,
                     items: _stations.map((station) {
                       return DropdownMenuItem<int>(
                         value: station['id'] as int,
