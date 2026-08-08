@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'database/database_helper.dart';
 import 'car_form.dart';
 import 'models/car.dart';
@@ -100,6 +101,8 @@ class ManageDataScreenState extends State<ManageDataScreen> {
       }
     });
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -263,6 +266,17 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                               );
                               if (result == true) refreshData();
                             },
+                          ).animate(
+                            effects: [
+                              FadeEffect(duration: 250.ms, curve: Curves.easeOut),
+                              SlideEffect(
+                                begin: const Offset(0, 0.2), // Slide up slightly from the bottom
+                                end: Offset.zero,
+                                duration: 250.ms,
+                                curve: Curves.easeOut,
+                              ),
+                            ],
+                            
                           );
                         },
                       ),
