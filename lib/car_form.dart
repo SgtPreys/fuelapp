@@ -236,6 +236,18 @@ class _CarFormState extends State<CarForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- THE DRAG HANDLE ---
+            Center(
+              child: Container(
+                width: 40, // How wide the bar is
+                height: 5,  // How thick the bar is
+                margin: const EdgeInsets.only(bottom: 20), // Space between bar and your title
+                decoration: BoxDecoration(
+                  color: Colors.grey[400], // A subtle grey color
+                  borderRadius: BorderRadius.circular(10), // Rounds the edges perfectly
+                ),
+              ),
+            ),
             const SizedBox(height: 30),
             Center(
               child: Text(
