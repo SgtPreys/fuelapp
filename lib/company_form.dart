@@ -605,7 +605,7 @@ void _updateUI() {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphotoscan : AppLocalizations.of(context)!.changephotoscan),
                   ),
                 ),
                 if (_imagePath != null) ...[
