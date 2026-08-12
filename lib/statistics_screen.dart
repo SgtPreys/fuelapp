@@ -7,6 +7,8 @@ import 'database/database_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:math' as math;
 import 'l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'statistics_avgcard.dart';
 
 
 class StatisticsScreen extends StatefulWidget {
@@ -422,7 +424,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         borderRadius: BorderRadius.circular(12), 
                         // 3. Add your onTap function here!
                         onTap: () {
-                          
+                          showModalBottomSheet(
+                            context: context, 
+                            isScrollControlled: true,
+                            showDragHandle: true,
+                            builder: (context) => StatisticsAvgCard(
+                              selectedPeriod: monthYear.toString(),
+                              avgFuelSpend: fuel,
+                              avgMaintSpend: maint,
+                              totalAvgSpend: total,
+                            )
+                          );
                           // TODO: Open your detailed view here
                           // Example: Navigator.push(...) or showModalBottomSheet(...)
                           HapticFeedback.mediumImpact();
@@ -499,6 +511,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         borderRadius: BorderRadius.circular(12), 
                         // 3. Add your onTap function here!
                         onTap: () {
+                          showModalBottomSheet(
+                            context: context, 
+                            isScrollControlled: true,
+                            showDragHandle: true,
+                            builder: (context) => StatisticsAvgCard(
+                              selectedPeriod: yearString.toString(),
+                              avgFuelSpend: fuel,
+                              avgMaintSpend: maint,
+                              totalAvgSpend: total,
+                            )
+                          );
                           
                           // TODO: Open your detailed view here
                           // Example: Navigator.push(...) or showModalBottomSheet(...)
