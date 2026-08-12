@@ -266,18 +266,19 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                               );
                               if (result == true) refreshData();
                             },
-                          ).animate(
-                            effects: [
-                              FadeEffect(duration: 250.ms, curve: Curves.easeOut),
-                              SlideEffect(
-                                begin: const Offset(0, 0.2), // Slide up slightly from the bottom
-                                end: Offset.zero,
-                                duration: 250.ms,
-                                curve: Curves.easeOut,
-                              ),
-                            ],
-                            
                           );
+                          // .animate(
+                          //   effects: [
+                          //     FadeEffect(duration: 250.ms, curve: Curves.easeOut),
+                          //     SlideEffect(
+                          //       begin: const Offset(0, 0.2), // Slide up slightly from the bottom
+                          //       end: Offset.zero,
+                          //       duration: 250.ms,
+                          //       curve: Curves.easeOut,
+                          //     ),
+                          //   ],
+                            
+                          // );
                         },
                       ),
 
@@ -330,6 +331,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             leading: const Icon(Icons.local_gas_station, color: Colors.teal),
                             title: Text(station['name']),
                             subtitle: Text('$displayLocation\n${infoText}'),
+                            isThreeLine: true,
                             trailing: Text('Total Spent:\n${station['totalSpent'] != null ? '€${(station['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal, fontSize: 15),
                             ),
@@ -373,6 +375,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                             leading: const Icon(Icons.store, color: Colors.purple),
                             title: Text(company['name']),
                             subtitle: Text('$displayLocation\n$displayContact\n$displayTelephone\n${infoText}'),
+                            isThreeLine: true,
                             trailing: Text('Total Spent:\n${company['totalSpent'] != null ? '€${(company['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple, fontSize: 15),
                             ),
@@ -408,6 +411,7 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                               'Distance: ${carMap['totalDistance'] != null ? '${(carMap['totalDistance'] as num).toStringAsFixed(0)} km' : '0 km'} \n'
                               'Status: ${carMap['status'] ?? 'Unknown'}\n''${carMap['status'] != 'Sold' ? 'Next TÜV: ${carMap['nextTuev'] ?? 'Not set'}' : ''}'
                             ),
+                            isThreeLine: true,
                             trailing: Text('Total Spent:\n${carMap['totalSpent'] != null ? '€${(carMap['totalSpent'] as num).toStringAsFixed(2)}' : '€0.00'}',
                               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo, fontSize: 15),
                             ),

@@ -309,25 +309,25 @@ class AppLocalizationsDe extends AppLocalizations {
   String get monthlyspend => 'Monatliche Ausgaben';
 
   @override
-  String get avgmonthlyfuel => 'Durchsch. mon. Kraftstoff';
+  String get avgmonthlyfuel => 'Durchsch. mon. \nKraftstoff';
 
   @override
-  String get avgmonthlymaint => 'Durchsch. mon.Wartung';
+  String get avgmonthlymaint => 'Durchsch. mon. \nWartung';
 
   @override
-  String get avgmonthlytotal => 'Durchsch. mon. Gesamtsumme';
+  String get avgmonthlytotal => 'Durchsch. mon. \nGesamtsumme';
 
   @override
   String get yearlyspend => 'Jährliche Ausgaben';
 
   @override
-  String get avgyearlyfuel => 'Durchsch. jährlicher Kraftstoff';
+  String get avgyearlyfuel => 'Durchsch. jährlicher \nKraftstoff';
 
   @override
-  String get avgyearlymaint => 'Durchsch. jährliche Wartung';
+  String get avgyearlymaint => 'Durchsch. jährliche \nWartung';
 
   @override
-  String get avgyearlytotal => 'Durchsch. jährliche Gesamtsumme';
+  String get avgyearlytotal => 'Durchsch. jährliche \nGesamtsumme';
 
   @override
   String get nodatayet => 'Noch keine Daten';

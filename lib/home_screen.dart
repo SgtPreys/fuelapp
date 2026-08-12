@@ -71,6 +71,7 @@ class HomeScreenState extends State<HomeScreen> {
                       TextButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                          HapticFeedback.mediumImpact();
                         },
                         child: Text(AppLocalizations.of(context)!.dismiss, style: TextStyle(color: Colors.white)),
                       ),
@@ -96,6 +97,7 @@ class HomeScreenState extends State<HomeScreen> {
                     actions: [
                       TextButton(
                         onPressed: () {
+                          HapticFeedback.mediumImpact();
                           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
                         },
                         child: Text(AppLocalizations.of(context)!.dismiss, style: TextStyle(color: Colors.white)),

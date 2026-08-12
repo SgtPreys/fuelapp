@@ -12,6 +12,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/language_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class SettingsScreen extends StatefulWidget {

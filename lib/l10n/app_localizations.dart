@@ -689,19 +689,19 @@ abstract class AppLocalizations {
   /// No description provided for @avgmonthlyfuel.
   ///
   /// In en, this message translates to:
-  /// **'Avg. Monthly Fuel'**
+  /// **'Avg. Monthly \nFuel'**
   String get avgmonthlyfuel;
 
   /// No description provided for @avgmonthlymaint.
   ///
   /// In en, this message translates to:
-  /// **'Avg. Monthly Maint.'**
+  /// **'Avg. Monthly \nMaint.'**
   String get avgmonthlymaint;
 
   /// No description provided for @avgmonthlytotal.
   ///
   /// In en, this message translates to:
-  /// **'Avg. Monthly Total'**
+  /// **'Avg. Monthly \nTotal'**
   String get avgmonthlytotal;
 
   /// No description provided for @yearlyspend.
@@ -713,19 +713,19 @@ abstract class AppLocalizations {
   /// No description provided for @avgyearlyfuel.
   ///
   /// In en, this message translates to:
-  /// **'Avg. Yearly Fuel'**
+  /// **'Avg. Yearly \nFuel'**
   String get avgyearlyfuel;
 
   /// No description provided for @avgyearlymaint.
   ///
   /// In en, this message translates to:
-  /// **'Avg. Yearly Maint.'**
+  /// **'Avg. Yearly \nMaint.'**
   String get avgyearlymaint;
 
   /// No description provided for @avgyearlytotal.
   ///
   /// In en, this message translates to:
-  /// **'Avg. Yearly Total'**
+  /// **'Avg. Yearly \nTotal'**
   String get avgyearlytotal;
 
   /// No description provided for @nodatayet.

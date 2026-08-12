@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'database/database_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:math' as math;
@@ -300,6 +302,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               
               return Card(
                 child: ExpansionTile(
+                  
                   title: Text(car['carName'], style: const TextStyle(fontWeight: FontWeight.bold)),
                   children: [
                     _buildListTile('Total Fuel Consumed', '${(car['totalLiters'] ?? 0).toStringAsFixed(1)} L'),
@@ -409,25 +412,42 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
                   
                   return SizedBox(
-                    width: 160, // Made it slightly wider
+                    width: 160, 
                     child: Card(
                       elevation: 2,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(monthYear, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 6),
-                            // New Breakdown Rows
-                            Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
-                            const SizedBox(height: 2),
-                            Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
-                            const Divider(height: 8),
-                            Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
-                          ],
+                      // 1. Add the InkWell right here as the child of the Card
+                      child: InkWell(
+                        // 2. Match the border radius so the ripple effect doesn't spill out the corners
+                        borderRadius: BorderRadius.circular(12), 
+                        // 3. Add your onTap function here!
+                        onTap: () {
+                          
+                          // TODO: Open your detailed view here
+                          // Example: Navigator.push(...) or showModalBottomSheet(...)
+                          HapticFeedback.mediumImpact();
+                          Fluttertoast.showToast(
+                            msg: "Card tapped for $monthYear",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.CENTER,
+                          );
+                        },
+                        // 4. Your existing Padding becomes the child of the InkWell
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(monthYear, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 6),
+                              Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
+                              const SizedBox(height: 2),
+                              Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
+                              const Divider(height: 8),
+                              Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -469,29 +489,46 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
                 
                 return SizedBox(
-                  width: 160, // Made it slightly wider
-                  child: Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(yearString, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 6),
-                          // New Breakdown Rows
-                          Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
-                          const SizedBox(height: 2),
-                          Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
-                          const Divider(height: 8),
-                          Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
-                        ],
+                    width: 160, 
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      // 1. Add the InkWell right here as the child of the Card
+                      child: InkWell(
+                        // 2. Match the border radius so the ripple effect doesn't spill out the corners
+                        borderRadius: BorderRadius.circular(12), 
+                        // 3. Add your onTap function here!
+                        onTap: () {
+                          
+                          // TODO: Open your detailed view here
+                          // Example: Navigator.push(...) or showModalBottomSheet(...)
+                          HapticFeedback.mediumImpact();
+                          Fluttertoast.showToast(
+                            msg: "Card tapped for $yearString",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.CENTER,
+                          );
+                        },
+                        // 4. Your existing Padding becomes the child of the InkWell
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(yearString, style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 6),
+                              Text('Fuel: €${fuel.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.blue)),
+                              const SizedBox(height: 2),
+                              Text('Maint: €${maint.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, color: Colors.orange)),
+                              const Divider(height: 8),
+                              Text('Total: €${total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.teal)),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                );
+                  );
               },
             ),
           ),
@@ -718,6 +755,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   Widget _buildListTile(String title, String value) {
+    HapticFeedback.mediumImpact();
     return ListTile(
       title: Text(title, style: const TextStyle(fontSize: 14)),
       trailing: Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),

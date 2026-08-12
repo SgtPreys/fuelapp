@@ -310,25 +310,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthlyspend => 'Monthly Spend';
 
   @override
-  String get avgmonthlyfuel => 'Avg. Monthly Fuel';
+  String get avgmonthlyfuel => 'Avg. Monthly \nFuel';
 
   @override
-  String get avgmonthlymaint => 'Avg. Monthly Maint.';
+  String get avgmonthlymaint => 'Avg. Monthly \nMaint.';
 
   @override
-  String get avgmonthlytotal => 'Avg. Monthly Total';
+  String get avgmonthlytotal => 'Avg. Monthly \nTotal';
 
   @override
   String get yearlyspend => 'Yearly Spend';
 
   @override
-  String get avgyearlyfuel => 'Avg. Yearly Fuel';
+  String get avgyearlyfuel => 'Avg. Yearly \nFuel';
 
   @override
-  String get avgyearlymaint => 'Avg. Yearly Maint.';
+  String get avgyearlymaint => 'Avg. Yearly \nMaint.';
 
   @override
-  String get avgyearlytotal => 'Avg. Yearly Total';
+  String get avgyearlytotal => 'Avg. Yearly \nTotal';
 
   @override
   String get nodatayet => 'No data yet';
