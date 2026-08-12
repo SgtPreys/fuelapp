@@ -198,7 +198,7 @@
   "statsnavitem": "Stats",
   "datanavitem": "Data",
   "settingsnavitem": "Settings",
-  "scanningreceipt": "Receipt scanned!",
+  "scanningimage": "Image scanned!",
   "dismiss": "Dismiss",
   "addphotoscan": "Add Photo/Scan",
   "changephotoscan": "Change Photo/Scan"

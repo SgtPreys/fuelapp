@@ -11,6 +11,8 @@ import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
 import 'car_form.dart';
 import 'company_form.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MaintenanceForm extends StatefulWidget {
   final MaintenanceStop? existingMaintenanceStop;
@@ -67,6 +69,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
       setState(() {
         _imagePath = savedImagePath;
       });
+       await _performTextRecognition(savedImagePath);
     }
   }
 
@@ -151,6 +154,110 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
         );
       },
     );
+  }
+  Future<void> _performTextRecognition(String imagePath) async {
+  try {
+    // 1. Tell the user we are scanning (optional but good for UX)
+    if (mounted) {
+      Fluttertoast.showToast(
+        msg: AppLocalizations.of(context)!.scanningimage,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+      );
+      // ScaffoldMessenger.of(context).showMaterialBanner(
+      //   MaterialBanner(
+      //     content: Text('Scanning receipt...'), actions: [
+      //       TextButton(
+      //         onPressed: () {
+      //           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+      //         },
+      //         child: Text('Dismiss'),
+      //       ),
+      //     ],
+      //     //animation: Duration(seconds: 2),
+      //     // behavior: SnackBarBehavior.floating,
+      //     // margin: EdgeInsets.only(
+      //     //   bottom: MediaQuery.of(context).size.height - 150, // Pushes it to the top
+      //     //   left: 15, // Nice padding on the sides
+      //     //   right: 15,
+          
+      //     // ),)
+      //   )
+      // );
+    }
+
+    // 2. Prepare the image for ML Kit
+    final inputImage = InputImage.fromFilePath(imagePath);
+    
+    // 3. Initialize the text recognizer (Latin script covers English, German, etc.)
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    
+    // 4. Process the image and extract the text
+    final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+
+    String foundPrice = '';
+    String foundInfo = '';
+
+    // This Regular Expression looks for numbers with decimals/commas (e.g., 45.60 or 45,60)
+    final numberPattern = RegExp(r'\d+[.,]\d+');
+
+    // 3. The Brains: Parse line by line
+    for (TextBlock block in recognizedText.blocks) {
+      for (TextLine line in block.lines) {
+        // Convert to lowercase to make searching easier
+        final text = line.text.toLowerCase();
+
+        // --- HUNT FOR PRICE ---
+        if (text.contains('summe') || text.contains('total') || text.contains('eur') || text.contains('€')) {
+          final match = numberPattern.firstMatch(text);
+          if (match != null) {
+            // Replace comma with dot so Flutter can parse it as a double later
+            foundPrice = match.group(0)!.replaceAll(',', '.');
+          }
+        }
+
+        // --- HUNT FOR INFO ---
+        // Look for common keywords. Add any specific words you expect on your documents!
+        if (text.contains('info') || text.contains('bemerkung') || text.contains('details')) {
+          // Instead of looking for a number, we grab the whole line's text.
+          // We use RegExp to remove the keyword itself (like "Info: ") so you only get the useful text.
+          foundInfo = line.text
+              .replaceAll(RegExp(r'(info|bemerkung|details):?\s*', caseSensitive: false), '')
+              .trim();
+        }
+      }
+    }
+
+    // 4. Update the UI (Fallback Strategy)
+    // We update the controllers, but WE DO NOT SAVE automatically. 
+    // This lets the user verify the AI's work and correct it if needed.
+    setState(() {
+      if (foundPrice.isNotEmpty) {
+        _priceController.text = foundPrice;
+      }
+      if (foundInfo.isNotEmpty) {
+        _infoController.text = foundInfo;
+      }
+    });
+    
+    // 5. Close the recognizer to save memory
+    textRecognizer.close();
+
+    // TEMPORARY: Print the massive block of text to your VS Code terminal so we can see what it found!
+    print("------- SCANNED IMAGE TEXT -------");
+    print(recognizedText.text);
+    print("------------------------------------");
+
+    // Next step will go here: Searching the text for liters and prices!
+
+  } catch (e) {
+    print("Error scanning image: $e");
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to read image: $e')),
+      );
+    }
+  }
   }
 
 
@@ -434,7 +541,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphotoscan : AppLocalizations.of(context)!.changephotoscan),
                   ),
                 ),
                 if (_imagePath != null) ...[

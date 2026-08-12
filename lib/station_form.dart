@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class StationForm extends StatefulWidget {
   final Station? existingStation; // NEW: Accepts an existing station
@@ -79,6 +81,7 @@ class _StationFormState extends State<StationForm> {
       setState(() {
         _imagePath = savedImagePath;
       });
+      await _performTextRecognition(savedImagePath);
     }
   }
   void _showImagePickerOptions() {
@@ -162,6 +165,162 @@ class _StationFormState extends State<StationForm> {
         );
       },
     );
+  }
+   Future<void> _performTextRecognition(String imagePath) async {
+  try {
+    // 1. Tell the user we are scanning (optional but good for UX)
+    if (mounted) {
+      Fluttertoast.showToast(
+        msg: AppLocalizations.of(context)!.scanningimage,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+      );
+      // ScaffoldMessenger.of(context).showMaterialBanner(
+      //   MaterialBanner(
+      //     content: Text('Scanning receipt...'), actions: [
+      //       TextButton(
+      //         onPressed: () {
+      //           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+      //         },
+      //         child: Text('Dismiss'),
+      //       ),
+      //     ],
+      //     //animation: Duration(seconds: 2),
+      //     // behavior: SnackBarBehavior.floating,
+      //     // margin: EdgeInsets.only(
+      //     //   bottom: MediaQuery.of(context).size.height - 150, // Pushes it to the top
+      //     //   left: 15, // Nice padding on the sides
+      //     //   right: 15,
+          
+      //     // ),)
+      //   )
+      // );
+    }
+
+    // 2. Prepare the image for ML Kit
+    final inputImage = InputImage.fromFilePath(imagePath);
+    
+    // 3. Initialize the text recognizer (Latin script covers English, German, etc.)
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    
+    // 4. Process the image and extract the text
+    final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+
+    String foundName = '';
+    String foundContact = '';
+    String foundLocation = '';
+    String foundEmail = '';
+    String foundPhone = '';
+    String foundWebsite = '';
+    String foundInfo = '';
+    // --- REGEX PATTERNS ---
+    // Matches standard emails (e.g., info@autohaus.de)
+    final emailPattern = RegExp(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}');
+    // Matches German/International phones (e.g., 06021 12345 or +49 170 12345)
+    final phonePattern = RegExp(r'(\+49|0)[0-9\s\-\/]{6,}');
+    // Matches standard URLs (e.g., www.reifen.simon.com)
+    final urlPattern = RegExp(r'(www\.[a-zA-Z0-9\-]+\.[a-zA-Z]{2,})');
+    // Matches German Zip + City (e.g., 63808 Haibach)
+    final plzCityPattern = RegExp(r'\b\d{5}\s+[a-zA-ZäöüÄÖÜß\s\-]+\b'); 
+    // Matches Street Names (e.g., Industriestraße 1 or Musterstr. 12)
+    final streetPattern = RegExp(r'[a-zA-ZäöüÄÖÜß]+\s*(str\.|straße|strasse)\s*\d+', caseSensitive: false);
+
+    bool isFirstLine = true;
+
+    // --- THE BRAINS: PARSE LINE BY LINE ---
+    for (TextBlock block in recognizedText.blocks) {
+      for (TextLine line in block.lines) {
+        final text = line.text;
+        final textLower = text.toLowerCase();
+        
+
+        // 1. HUNT FOR NAME (Usually the very first line of the receipt/card)
+        if (isFirstLine && text.isNotEmpty) {
+          foundName = text;
+          isFirstLine = false;
+        }
+
+        // 2. HUNT FOR EMAIL
+        if (emailPattern.hasMatch(text)) {
+          foundEmail = emailPattern.firstMatch(text)!.group(0)!;
+        }
+
+        // 3. HUNT FOR WEBSITE (Ensure we don't accidentally grab an email)
+        else if (!text.contains('@') && (urlPattern.hasMatch(textLower) || textLower.contains('.de') || textLower.contains('.com'))) {
+          final match = urlPattern.firstMatch(textLower);
+          if (match != null) {
+            foundWebsite = match.group(0)!;
+          } else if (textLower.startsWith('www.')) {
+            foundWebsite = textLower; 
+          }
+        }
+
+        // 4. HUNT FOR PHONE (Look for keywords or matching regex)
+        if (textLower.contains('tel') || textLower.contains('mobil') || textLower.contains('telefon')) {
+          final match = phonePattern.firstMatch(text);
+          if (match != null) {
+            foundPhone = match.group(0)!;
+          } else {
+            // Fallback: Just strip the word "Tel:" and take the rest of the line
+            // NEW WORKING LINE:
+            foundPhone = text.replaceAll(RegExp(r'(tel\.?|telefon|mobil):?\s*', caseSensitive: false), '').trim();
+          }
+        } else if (phonePattern.hasMatch(text) && foundPhone.isEmpty) {
+          // Catch phone numbers that don't have "Tel:" in front of them
+          foundPhone = phonePattern.firstMatch(text)!.group(0)!;
+        }
+
+        // 5. HUNT FOR LOCATION (Combine Street and City if found)
+        if (streetPattern.hasMatch(textLower)) {
+          foundLocation += (foundLocation.isEmpty ? '' : ', ') + text;
+        }
+        if (plzCityPattern.hasMatch(text)) {
+          foundLocation += (foundLocation.isEmpty ? '' : ', ') + text;
+        }
+
+        // --- HUNT FOR CONTACT PERSON ---
+        if (textLower.contains('inhaber') || textLower.contains('geschäftsführer') || 
+            textLower.contains('inh.') || textLower.contains('contact') || 
+            textLower.contains('manager') || textLower.contains('inhaberin')
+            || textLower.contains('contact person')|| textLower.contains('ansprechpartner')) {
+          foundContact = text.replaceAll(RegExp(r'(inhaber|geschäftsführer|inh\.|contact|manager|inhaberin):?\s*', caseSensitive: false), '').trim();
+        }
+        // --- HUNT FOR INFO ---
+        if (textLower.contains('info') || textLower.contains('bemerkung') || textLower.contains('details')) {
+          foundInfo = text.replaceAll(RegExp(r'(info|bemerkung|details):?\s*', caseSensitive: false), '').trim();
+        }
+      }
+    }
+
+    // --- INJECT TO CONTROLLERS ---
+    setState(() {
+      if (foundName.isNotEmpty) _nameController.text = foundName;
+      if (foundLocation.isNotEmpty) _locationController.text = foundLocation;
+      if (foundEmail.isNotEmpty) _emailController.text = foundEmail;
+      if (foundPhone.isNotEmpty) _phoneController.text = foundPhone;
+      if (foundWebsite.isNotEmpty) _websiteController.text = foundWebsite;
+      if (foundContact.isNotEmpty) _contactController.text = foundContact;
+      if (foundInfo.isNotEmpty) _infoController.text = foundInfo;
+    });
+    
+    // 5. Close the recognizer to save memory
+    textRecognizer.close();
+
+    // TEMPORARY: Print the massive block of text to your VS Code terminal so we can see what it found!
+    print("------- SCANNED RECEIPT TEXT -------");
+    print(recognizedText.text);
+    print("------------------------------------");
+
+    // Next step will go here: Searching the text for liters and prices!
+
+  } catch (e) {
+    print("Error scanning image: $e");
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to read image: $e')),
+      );
+    }
+  }
   }
   Future<void> _launchEmail(String emailAddress) async {
   final Uri emailUri = Uri(
@@ -490,7 +649,7 @@ void _updateUI() {
                   child: ElevatedButton.icon(
                     onPressed: _showImagePickerOptions,
                     icon: const Icon(Icons.camera_alt),
-                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphoto : AppLocalizations.of(context)!.changephoto),
+                    label: Text(_imagePath == null ? AppLocalizations.of(context)!.addphotoscan : AppLocalizations.of(context)!.changephotoscan),
                   ),
                 ),
                 if (_imagePath != null) ...[

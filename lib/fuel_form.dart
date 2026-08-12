@@ -68,7 +68,7 @@ class _FuelFormState extends State<FuelForm> {
       setState(() {
         _imagePath = savedImagePath;
       });
-      await _scanReceipt(savedImagePath); // Scan the receipt after saving the image
+      await _performTextRecognition(savedImagePath); // Scan the receipt after saving the image
     }
   }
   void _showImagePickerOptions() {
@@ -153,35 +153,15 @@ class _FuelFormState extends State<FuelForm> {
       },
     );
   }
-  Future<void> _scanReceipt(String imagePath) async {
+  Future<void> _performTextRecognition(String imagePath) async {
   try {
     // 1. Tell the user we are scanning (optional but good for UX)
     if (mounted) {
       Fluttertoast.showToast(
-        msg: AppLocalizations.of(context)!.scanningreceipt,
+        msg: AppLocalizations.of(context)!.scanningimage,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.CENTER,
       );
-      // ScaffoldMessenger.of(context).showMaterialBanner(
-      //   MaterialBanner(
-      //     content: Text('Scanning receipt...'), actions: [
-      //       TextButton(
-      //         onPressed: () {
-      //           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-      //         },
-      //         child: Text('Dismiss'),
-      //       ),
-      //     ],
-      //     //animation: Duration(seconds: 2),
-      //     // behavior: SnackBarBehavior.floating,
-      //     // margin: EdgeInsets.only(
-      //     //   bottom: MediaQuery.of(context).size.height - 150, // Pushes it to the top
-      //     //   left: 15, // Nice padding on the sides
-      //     //   right: 15,
-          
-      //     // ),)
-      //   )
-      // );
     }
 
     // 2. Prepare the image for ML Kit
@@ -195,6 +175,7 @@ class _FuelFormState extends State<FuelForm> {
 
     String foundLiters = '';
     String foundPrice = '';
+    String foundInfo = '';
 
     // This Regular Expression looks for numbers with decimals/commas (e.g., 45.60 or 45,60)
     final numberPattern = RegExp(r'\d+[.,]\d+');
@@ -221,6 +202,10 @@ class _FuelFormState extends State<FuelForm> {
             foundPrice = match.group(0)!.replaceAll(',', '.');
           }
         }
+        // --- HUNT FOR INFO ---
+        if (text.contains('info') || text.contains('bemerkung') || text.contains('details')) {
+          foundInfo = text.replaceAll(RegExp(r'(info|bemerkung|details):?\s*', caseSensitive: false), '').trim();
+        }
       }
     }
 
@@ -234,27 +219,28 @@ class _FuelFormState extends State<FuelForm> {
       if (foundPrice.isNotEmpty) {
         _priceController.text = foundPrice;
       }
+      if (foundInfo.isNotEmpty) _additionalInfoController.text = foundInfo;
     });
     
     // 5. Close the recognizer to save memory
     textRecognizer.close();
 
     // TEMPORARY: Print the massive block of text to your VS Code terminal so we can see what it found!
-    print("------- SCANNED RECEIPT TEXT -------");
+    print("------- SCANNED IMAGE TEXT -------");
     print(recognizedText.text);
     print("------------------------------------");
 
     // Next step will go here: Searching the text for liters and prices!
 
   } catch (e) {
-    print("Error scanning receipt: $e");
+    print("Error scanning image: $e");
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to read receipt: $e')),
+        SnackBar(content: Text('Failed to read image: $e')),
       );
     }
   }
-}
+  }
 
 
 

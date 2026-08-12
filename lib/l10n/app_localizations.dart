@@ -1100,11 +1100,11 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsnavitem;
 
-  /// No description provided for @scanningreceipt.
+  /// No description provided for @scanningimage.
   ///
   /// In en, this message translates to:
-  /// **'Receipt scanned!'**
-  String get scanningreceipt;
+  /// **'Image scanned!'**
+  String get scanningimage;
 
   /// No description provided for @dismiss.
   ///

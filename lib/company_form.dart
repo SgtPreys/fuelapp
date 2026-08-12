@@ -8,6 +8,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CompanyForm extends StatefulWidget {
   final Company? existingCompany; // NEW: Accepts an existing company
@@ -66,6 +68,7 @@ class _CompanyFormState extends State<CompanyForm> {
       setState(() {
         _imagePath = savedImagePath;
       });
+      await _performTextRecognition(savedImagePath);
     }
   }
   void _showImagePickerOptions() {
@@ -149,6 +152,128 @@ class _CompanyFormState extends State<CompanyForm> {
         );
       },
     );
+  }
+  Future<void> _performTextRecognition(String imagePath) async {
+  try {
+    // 1. Tell the user we are scanning (optional but good for UX)
+    if (mounted) {
+      Fluttertoast.showToast(
+        msg: AppLocalizations.of(context)!.scanningimage,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+      );
+    }
+
+    // 2. Prepare the image for ML Kit
+    final inputImage = InputImage.fromFilePath(imagePath);
+    
+    // 3. Initialize the text recognizer (Latin script covers English, German, etc.)
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+    
+    // 4. Process the image and extract the text
+    final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+
+    String foundName = '';
+    String foundLocation = '';
+    String foundContact = '';
+    String foundEmail = '';
+    String foundPhone = '';
+    String foundWebsite = '';
+    String foundInfo = '';
+
+    // --- REGULAR EXPRESSIONS ---
+    // Looks for standard email formats (e.g., test@example.com)
+    final emailPattern = RegExp(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}');
+    // Looks for URLs starting with www. or http(s)://
+    final websitePattern = RegExp(r'(www\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})');
+    // Looks for German zip codes + city (e.g., "63808 Haibach")
+    final zipCityPattern = RegExp(r'\d{5}\s+[a-zA-ZäöüÄÖÜß]+');
+
+    bool isFirstLine = true;
+
+    // 3. The Brains: Parse line by line
+    for (TextBlock block in recognizedText.blocks) {
+      for (TextLine line in block.lines) {
+        final text = line.text;
+        final lowerText = text.toLowerCase();
+
+        // --- HUNT FOR NAME (Educated Guess: The very first line of the document) ---
+        if (isFirstLine && text.trim().isNotEmpty) {
+          foundName = text.trim();
+          isFirstLine = false;
+        }
+
+        // --- HUNT FOR EMAIL ---
+        if (emailPattern.hasMatch(text)) {
+          foundEmail = emailPattern.firstMatch(text)!.group(0)!;
+        }
+
+        // --- HUNT FOR WEBSITE ---
+        if (websitePattern.hasMatch(text)) {
+          foundWebsite = websitePattern.firstMatch(text)!.group(0)!;
+        }
+
+        // --- HUNT FOR PHONE ---
+        if (lowerText.contains('tel') || lowerText.contains('mobil') || lowerText.contains('phone')) {
+          // Use the case-insensitive trick we fixed earlier to strip the word "Tel:" and keep the number
+          foundPhone = text.replaceAll(RegExp(r'(tel\.?|telefon|mobil|phone):?\s*', caseSensitive: false), '').trim();
+        }
+
+        // --- HUNT FOR LOCATION (Address) ---
+        // Looks for "Str." or "Straße" or a 5-digit zip code
+        if (lowerText.contains('str.') || lowerText.contains('straße') || zipCityPattern.hasMatch(text)) {
+          if (foundLocation.isEmpty) {
+            foundLocation = text;
+          } else {
+            // If it finds multiple lines of an address (Street on one line, City on the next), combine them!
+            foundLocation += ', $text';
+          }
+        }
+        
+        // --- HUNT FOR CONTACT PERSON ---
+        if (lowerText.contains('inhaber') || lowerText.contains('geschäftsführer') || 
+            lowerText.contains('inh.') || lowerText.contains('contact') || 
+            lowerText.contains('manager') || lowerText.contains('inhaberin')
+            || lowerText.contains('contact person')|| lowerText.contains('ansprechpartner')) {
+          foundContact = text.replaceAll(RegExp(r'(inhaber|geschäftsführer|inh\.|contact|manager|inhaberin):?\s*', caseSensitive: false), '').trim();
+        }
+
+        // --- HUNT FOR INFO ---
+        if (lowerText.contains('info') || lowerText.contains('bemerkung') || lowerText.contains('details')) {
+          foundInfo = text.replaceAll(RegExp(r'(info|bemerkung|details):?\s*', caseSensitive: false), '').trim();
+        }
+      }
+    }
+
+    // 4. Update the UI (Fallback Strategy)
+    setState(() {
+      if (foundName.isNotEmpty) _nameController.text = foundName;
+      if (foundLocation.isNotEmpty) _locationController.text = foundLocation;
+      if (foundContact.isNotEmpty) _contactController.text = foundContact;
+      if (foundEmail.isNotEmpty) _emailController.text = foundEmail;
+      if (foundPhone.isNotEmpty) _phoneController.text = foundPhone;
+      if (foundWebsite.isNotEmpty) _websiteController.text = foundWebsite;
+      if (foundInfo.isNotEmpty) _infoController.text = foundInfo;
+    });
+    
+    // 5. Close the recognizer to save memory
+    textRecognizer.close();
+
+    // TEMPORARY: Print the massive block of text to your VS Code terminal so we can see what it found!
+    print("------- SCANNED IMAGE TEXT -------");
+    print(recognizedText.text);
+    print("------------------------------------");
+
+    // Next step will go here: Searching the text for liters and prices!
+
+  } catch (e) {
+    print("Error scanning image: $e");
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to read image: $e')),
+      );
+    }
+  }
   }
   Future<void> _launchEmail(String emailAddress) async {
   final Uri emailUri = Uri(

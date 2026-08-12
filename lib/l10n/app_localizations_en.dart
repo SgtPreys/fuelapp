@@ -526,7 +526,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsnavitem => 'Settings';
 
   @override
-  String get scanningreceipt => 'Receipt scanned!';
+  String get scanningimage => 'Image scanned!';
 
   @override
   String get dismiss => 'Dismiss';

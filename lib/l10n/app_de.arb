@@ -182,7 +182,7 @@
   "hideinactivecompanies": "Versteckte ausbl.",
   "showhiddencompanies": "Versteckte anz.",
   "keepscompanyvisible": "Diese Firma sichtbar lassen, wenn ein neuer Wartungseintrag hinzugefügt wird.",
-  "scanningreceipt": "Kassenzettel wurde gescannt!",
+  "scanningimage": "Foto wurde gescannt!",
   "dismiss": "Verwerfen",
   "addphotoscan": "Foto/Scan hinzufügen",
   "changephotoscan": "Foto/Scan ändern"
