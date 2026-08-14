@@ -537,4 +537,49 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get changephotoscan => 'Foto/Scan ändern';
+
+  @override
+  String get carupdated => 'Fahrzeug aktualisiert!';
+
+  @override
+  String get caradded => 'Fahrzeug hinzugefügt!';
+
+  @override
+  String get cardeleted => 'Fahrzeug gelöscht!';
+
+  @override
+  String get stationupdated => 'Tankstelle aktualisiert!';
+
+  @override
+  String get stationadded => 'Tankstelle hinzugefügt!';
+
+  @override
+  String get stationdeleted => 'Tankstelle gelöscht!';
+
+  @override
+  String get companyupdated => 'Unternehmen aktualisiert!';
+
+  @override
+  String get companyadded => 'Unternehmen hinzugefügt!';
+
+  @override
+  String get companydeleted => 'Unternehmen gelöscht!';
+
+  @override
+  String get maintenanceupdated => 'Wartung aktualisiert!';
+
+  @override
+  String get maintenanceadded => 'Wartung hinzugefügt!';
+
+  @override
+  String get maintenancedeleted => 'Wartung gelöscht!';
+
+  @override
+  String get fuelstopupdated => 'Tankstopp aktualisiert!';
+
+  @override
+  String get fuelstopadded => 'Tankstopp hinzugefügt!';
+
+  @override
+  String get fuelstopdeleted => 'Tankstopp gelöscht!';
 }

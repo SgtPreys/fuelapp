@@ -669,6 +669,11 @@ void _updateUI() {
                   HapticFeedback.mediumImpact();
                   // Then execute your save logic
                   _saveCompany(); 
+                  Fluttertoast.showToast(
+                    msg: isEditing ? AppLocalizations.of(context)!.companyupdated : AppLocalizations.of(context)!.companyadded,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
                 },
                 child: Text(isEditing ? AppLocalizations.of(context)!.updatecompany : AppLocalizations.of(context)!.savecompany),
               ),
@@ -713,7 +718,12 @@ void _updateUI() {
                       // Tell the database to delete this ID
                       await DatabaseHelper.instance.deleteCompany(widget.existingCompany!.id!);
                       if (mounted) {
-                        Navigator.pop(context, true); // Close form and trigger refresh
+                        Navigator.pop(context, true);
+                        Fluttertoast.showToast(
+                          msg: AppLocalizations.of(context)!.companydeleted,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                        ); // Close form and trigger refresh
                       }
                     }
                   },

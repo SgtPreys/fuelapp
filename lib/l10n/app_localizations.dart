@@ -1123,6 +1123,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change Photo/Scan'**
   String get changephotoscan;
+
+  /// No description provided for @carupdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle updated!'**
+  String get carupdated;
+
+  /// No description provided for @caradded.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle added!'**
+  String get caradded;
+
+  /// No description provided for @cardeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle deleted!'**
+  String get cardeleted;
+
+  /// No description provided for @stationupdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas Station updated!'**
+  String get stationupdated;
+
+  /// No description provided for @stationadded.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas Station added!'**
+  String get stationadded;
+
+  /// No description provided for @stationdeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas Station deleted!'**
+  String get stationdeleted;
+
+  /// No description provided for @companyupdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Company updated!'**
+  String get companyupdated;
+
+  /// No description provided for @companyadded.
+  ///
+  /// In en, this message translates to:
+  /// **'Company added!'**
+  String get companyadded;
+
+  /// No description provided for @companydeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Company deleted!'**
+  String get companydeleted;
+
+  /// No description provided for @maintenanceupdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance record updated!'**
+  String get maintenanceupdated;
+
+  /// No description provided for @maintenanceadded.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance record added!'**
+  String get maintenanceadded;
+
+  /// No description provided for @maintenancedeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance record deleted!'**
+  String get maintenancedeleted;
+
+  /// No description provided for @fuelstopupdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Stop updated!'**
+  String get fuelstopupdated;
+
+  /// No description provided for @fuelstopadded.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Stop added!'**
+  String get fuelstopadded;
+
+  /// No description provided for @fuelstopdeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Stop deleted!'**
+  String get fuelstopdeleted;
 }
 
 class _AppLocalizationsDelegate

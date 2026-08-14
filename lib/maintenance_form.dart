@@ -620,6 +620,11 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                   HapticFeedback.mediumImpact();
                   // Then execute your save logic
                   _saveMaintenance(); 
+                  Fluttertoast.showToast(
+                    msg: isEditing ? AppLocalizations.of(context)!.maintenanceupdated : AppLocalizations.of(context)!.maintenanceadded,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
                 },
                 child: Text(isEditing ? AppLocalizations.of(context)!.updatemaintenance : AppLocalizations.of(context)!.savemaintenance),
               ),
@@ -633,6 +638,11 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                     HapticFeedback.heavyImpact();
                     await DatabaseHelper.instance.deleteMaintenanceStop(widget.existingMaintenanceStop!.id!);
                     if (mounted) Navigator.pop(context, true);
+                    Fluttertoast.showToast(
+                    msg: AppLocalizations.of(context)!.maintenancedeleted,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
                   },
                   child: Text(AppLocalizations.of(context)!.deletemaintenance, style: TextStyle(color: Colors.red)),
                 ),

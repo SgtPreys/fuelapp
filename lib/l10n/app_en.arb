@@ -201,7 +201,27 @@
   "scanningimage": "Image scanned!",
   "dismiss": "Dismiss",
   "addphotoscan": "Add Photo/Scan",
-  "changephotoscan": "Change Photo/Scan"
+  "changephotoscan": "Change Photo/Scan",
+
+  "carupdated": "Vehicle updated!",
+  "caradded": "Vehicle added!",
+  "cardeleted": "Vehicle deleted!",
+
+  "stationupdated": "Gas Station updated!",
+  "stationadded": "Gas Station added!",
+  "stationdeleted": "Gas Station deleted!",
+
+  "companyupdated": "Company updated!",
+  "companyadded": "Company added!",
+  "companydeleted": "Company deleted!",
+
+  "maintenanceupdated": "Maintenance record updated!",
+  "maintenanceadded": "Maintenance record added!",
+  "maintenancedeleted": "Maintenance record deleted!",
+
+  "fuelstopupdated": "Fuel Stop updated!",
+  "fuelstopadded": "Fuel Stop added!",
+  "fuelstopdeleted": "Fuel Stop deleted!"
 
 
 

@@ -628,6 +628,11 @@ class _FuelFormState extends State<FuelForm> {
                   HapticFeedback.mediumImpact();
                   // Then execute your save logic
                   _saveFuelStop(); 
+                  Fluttertoast.showToast(
+                    msg: isEditing ? AppLocalizations.of(context)!.fuelstopupdated : AppLocalizations.of(context)!.fuelstopadded,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
                 },
                 child: Text(isEditing ? AppLocalizations.of(context)!.updatefuelstop : AppLocalizations.of(context)!.savefuelstop),
               ),
@@ -641,6 +646,11 @@ class _FuelFormState extends State<FuelForm> {
                     HapticFeedback.heavyImpact();
                     await DatabaseHelper.instance.deleteFuelStop(widget.existingFuelStop!.id!);
                     if (mounted) Navigator.pop(context, true);
+                    Fluttertoast.showToast(
+                    msg: AppLocalizations.of(context)!.fuelstopdeleted,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
                   },
                   child: Text(AppLocalizations.of(context)!.deletefuelstop, style: TextStyle(color: Colors.red)),
                 ),

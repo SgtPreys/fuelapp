@@ -729,6 +729,11 @@ void _updateUI() {
                   
                   // Then execute your save logic
                   _saveStation(); 
+                  Fluttertoast.showToast(
+                    msg: isEditing ? AppLocalizations.of(context)!.stationupdated : AppLocalizations.of(context)!.stationadded,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
                 },
                 child: Text(isEditing ? AppLocalizations.of(context)!.updatestation : AppLocalizations.of(context)!.savestation),
               ),
@@ -773,7 +778,12 @@ void _updateUI() {
                       // Tell the database to delete this ID
                       await DatabaseHelper.instance.deleteStation(widget.existingStation!.id!);
                       if (mounted) {
-                        Navigator.pop(context, true); // Close form and trigger refresh
+                        Navigator.pop(context, true);
+                        Fluttertoast.showToast(
+                          msg: AppLocalizations.of(context)!.stationdeleted,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                        ); // Close form and trigger refresh
                       }
                     }
                   },

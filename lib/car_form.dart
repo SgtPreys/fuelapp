@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CarForm extends StatefulWidget {
   // NEW: This allows the form to accept an existing car when we want to edit!
@@ -514,6 +515,12 @@ class _CarFormState extends State<CarForm> {
                   HapticFeedback.mediumImpact();
                   // Then execute your save logic
                   _saveCar(); 
+                  Fluttertoast.showToast(
+                    msg: isEditing ? AppLocalizations.of(context)!.carupdated : AppLocalizations.of(context)!.caradded,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
+
                 },
                 child: Text(isEditing ? AppLocalizations.of(context)!.updatecar : AppLocalizations.of(context)!.savecar),
               ),
@@ -558,7 +565,12 @@ class _CarFormState extends State<CarForm> {
                       // Tell the database to delete this ID
                       await DatabaseHelper.instance.deleteCar(widget.existingCar!.id!);
                       if (mounted) {
-                        Navigator.pop(context, true); // Close form and trigger refresh
+                        Navigator.pop(context, true);
+                        Fluttertoast.showToast(
+                          msg: AppLocalizations.of(context)!.cardeleted,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                        ); // Close form and trigger refresh
                       }
                     }
                   },

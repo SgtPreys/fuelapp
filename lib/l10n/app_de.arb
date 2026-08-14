@@ -185,5 +185,25 @@
   "scanningimage": "Foto wurde gescannt!",
   "dismiss": "Verwerfen",
   "addphotoscan": "Foto/Scan hinzufügen",
-  "changephotoscan": "Foto/Scan ändern"
+  "changephotoscan": "Foto/Scan ändern",
+
+  "carupdated": "Fahrzeug aktualisiert!",
+  "caradded": "Fahrzeug hinzugefügt!",
+  "cardeleted": "Fahrzeug gelöscht!",
+
+  "stationupdated": "Tankstelle aktualisiert!",
+  "stationadded": "Tankstelle hinzugefügt!",
+  "stationdeleted": "Tankstelle gelöscht!",
+
+  "companyupdated": "Unternehmen aktualisiert!",
+  "companyadded": "Unternehmen hinzugefügt!",
+  "companydeleted": "Unternehmen gelöscht!",
+
+  "maintenanceupdated": "Wartung aktualisiert!",
+  "maintenanceadded": "Wartung hinzugefügt!",
+  "maintenancedeleted": "Wartung gelöscht!",
+
+  "fuelstopupdated": "Tankstopp aktualisiert!",
+  "fuelstopadded": "Tankstopp hinzugefügt!",
+  "fuelstopdeleted": "Tankstopp gelöscht!"
 }

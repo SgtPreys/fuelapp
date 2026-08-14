@@ -438,11 +438,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           // TODO: Open your detailed view here
                           // Example: Navigator.push(...) or showModalBottomSheet(...)
                           HapticFeedback.mediumImpact();
-                          Fluttertoast.showToast(
-                            msg: "Card tapped for $monthYear",
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.CENTER,
-                          );
+                          // Fluttertoast.showToast(
+                          //   msg: "Card tapped for $monthYear",
+                          //   toastLength: Toast.LENGTH_LONG,
+                          //   gravity: ToastGravity.CENTER,
+                          // );
                         },
                         // 4. Your existing Padding becomes the child of the InkWell
                         child: Padding(
@@ -526,11 +526,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           // TODO: Open your detailed view here
                           // Example: Navigator.push(...) or showModalBottomSheet(...)
                           HapticFeedback.mediumImpact();
-                          Fluttertoast.showToast(
-                            msg: "Card tapped for $yearString",
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.CENTER,
-                          );
+                          // Fluttertoast.showToast(
+                          //   msg: "Card tapped for $yearString",
+                          //   toastLength: Toast.LENGTH_LONG,
+                          //   gravity: ToastGravity.CENTER,
+                          // );
                         },
                         // 4. Your existing Padding becomes the child of the InkWell
                         child: Padding(

@@ -536,4 +536,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changephotoscan => 'Change Photo/Scan';
+
+  @override
+  String get carupdated => 'Vehicle updated!';
+
+  @override
+  String get caradded => 'Vehicle added!';
+
+  @override
+  String get cardeleted => 'Vehicle deleted!';
+
+  @override
+  String get stationupdated => 'Gas Station updated!';
+
+  @override
+  String get stationadded => 'Gas Station added!';
+
+  @override
+  String get stationdeleted => 'Gas Station deleted!';
+
+  @override
+  String get companyupdated => 'Company updated!';
+
+  @override
+  String get companyadded => 'Company added!';
+
+  @override
+  String get companydeleted => 'Company deleted!';
+
+  @override
+  String get maintenanceupdated => 'Maintenance record updated!';
+
+  @override
+  String get maintenanceadded => 'Maintenance record added!';
+
+  @override
+  String get maintenancedeleted => 'Maintenance record deleted!';
+
+  @override
+  String get fuelstopupdated => 'Fuel Stop updated!';
+
+  @override
+  String get fuelstopadded => 'Fuel Stop added!';
+
+  @override
+  String get fuelstopdeleted => 'Fuel Stop deleted!';
 }
