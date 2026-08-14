@@ -136,8 +136,12 @@ class ManageDataScreenState extends State<ManageDataScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ),
+            ).animate(onPlay: (controller) => controller.repeat(reverse: true)).shimmer(
+                duration: 3000.ms,
+                // Creates the blue and orange glowing sweep effect
+                colors: [Colors.blue, Colors.orange,Colors.blue, Colors.orange,Colors.blue, Colors.orange],)
           ),
+          
           TabBar(
             isScrollable: true,
             tabAlignment: TabAlignment.start,

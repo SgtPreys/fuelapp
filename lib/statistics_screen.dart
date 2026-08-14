@@ -35,8 +35,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   List<FlSpot> _priceSpots = []; 
   List<String> _priceDates = [];
 
+  List<FlSpot> _costPerKmSpots = [];
+  List<String> _costPerKmDates = [];
+
   Map<int, List<FlSpot>> _carConsumptionSpots = {};
   Map<int, List<FlSpot>> _carPriceSpots = {};
+  Map<int, List<FlSpot>> _carCostPerKmSpots = {};
 
 
 
@@ -160,6 +164,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       }
     }
 
+    
     // 3. --- MONTHLY AVERAGES LOGIC ---
     double totalFuelMonthly = 0.0;
     double totalMaintMonthly = 0.0;
