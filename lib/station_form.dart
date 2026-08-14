@@ -100,6 +100,7 @@ class _StationFormState extends State<StationForm> {
                     title: Text(AppLocalizations.of(context)!.photolibrary),
                     iconColor: Colors.blue,
                     onTap: () {
+                      HapticFeedback.lightImpact();
                       _pickImage(ImageSource.gallery);
                       Navigator.of(context).pop();
                     },
@@ -111,6 +112,7 @@ class _StationFormState extends State<StationForm> {
                     title: Text(AppLocalizations.of(context)!.camera),
                     iconColor: Colors.blue,
                     onTap: () {
+                      HapticFeedback.lightImpact();
                       _pickImage(ImageSource.camera);
                       Navigator.of(context).pop();
                     },
@@ -123,6 +125,7 @@ class _StationFormState extends State<StationForm> {
                 title: Text(AppLocalizations.of(context)!.cancel),
                 iconColor: Colors.red,
                 onTap: () {
+                  HapticFeedback.lightImpact();
                   Navigator.of(context).pop();
                 },
               ),
@@ -159,7 +162,10 @@ class _StationFormState extends State<StationForm> {
                 right: 20,
                 child: IconButton(
                   icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
             ],
@@ -432,6 +438,7 @@ void _updateUI() {
       website: _websiteController.text,
       location: _locationController.text,
       type: _selectedType,
+      imagePath: _imagePath,
       additionalInfo: _infoController.text,
       isVisible: _isVisible ? 1 : 0, // NEW: Include visibility in the data
     );

@@ -89,6 +89,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                     title: Text(AppLocalizations.of(context)!.photolibrary),
                     iconColor: Colors.blue,
                     onTap: () {
+                      HapticFeedback.lightImpact(); 
                       _pickImage(ImageSource.gallery);
                       Navigator.of(context).pop();
                     },
@@ -100,6 +101,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                     title: Text(AppLocalizations.of(context)!.camera),
                     iconColor: Colors.blue,
                     onTap: () {
+                      HapticFeedback.lightImpact(); 
                       _pickImage(ImageSource.camera);
                       Navigator.of(context).pop();
                     },
@@ -112,6 +114,7 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                 title: Text(AppLocalizations.of(context)!.cancel),
                 iconColor: Colors.red,
                 onTap: () {
+                  HapticFeedback.lightImpact(); 
                   Navigator.of(context).pop();
                 },
               ),
@@ -148,7 +151,10 @@ class _MaintenanceFormState extends State<MaintenanceForm> {
                 right: 20,
                 child: IconButton(
                   icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
             ],

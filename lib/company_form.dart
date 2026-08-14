@@ -87,6 +87,7 @@ class _CompanyFormState extends State<CompanyForm> {
                     title: Text(AppLocalizations.of(context)!.photolibrary),
                     iconColor: Colors.blue,
                     onTap: () {
+                      HapticFeedback.lightImpact(); // Provide a subtle physical feedback
                       _pickImage(ImageSource.gallery);
                       Navigator.of(context).pop();
                     },
@@ -98,6 +99,7 @@ class _CompanyFormState extends State<CompanyForm> {
                     title: Text(AppLocalizations.of(context)!.camera),
                     iconColor: Colors.blue,
                     onTap: () {
+                      HapticFeedback.lightImpact(); // Provide a subtle physical feedback
                       _pickImage(ImageSource.camera);
                       Navigator.of(context).pop();
                     },
@@ -110,6 +112,7 @@ class _CompanyFormState extends State<CompanyForm> {
                 title: Text(AppLocalizations.of(context)!.cancel),
                 iconColor: Colors.red,
                 onTap: () {
+                  HapticFeedback.lightImpact(); // Provide a subtle physical feedback
                   Navigator.of(context).pop();
                 },
               ),
@@ -146,7 +149,10 @@ class _CompanyFormState extends State<CompanyForm> {
                 right: 20,
                 child: IconButton(
                   icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
             ],
@@ -383,6 +389,7 @@ void _updateUI() {
       email: _emailController.text,
       telephone: _phoneController.text,
       website: _websiteController.text,
+      imagePath: _imagePath,
       additionalInfo: _infoController.text,
       isVisible: _isVisible ? 1 : 0, // NEW: Use the visibility toggle
     );
