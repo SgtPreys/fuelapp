@@ -221,7 +221,15 @@
 
   "fuelstopupdated": "Fuel Stop updated!",
   "fuelstopadded": "Fuel Stop added!",
-  "fuelstopdeleted": "Fuel Stop deleted!"
+  "fuelstopdeleted": "Fuel Stop deleted!",
+
+  "consumed": "Consumed",
+  "distance": "Distance",
+  "fuelvalue": "Fuel Value",
+  "efficiency": "Efficiency",
+  "priceperliter": "Price per Liter",
+  "carspend": "Car Spend",
+  "carincome": "Car Income"
 
 
 

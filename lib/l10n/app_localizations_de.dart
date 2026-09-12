@@ -582,4 +582,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get fuelstopdeleted => 'Tankstopp gelöscht!';
+
+  @override
+  String get consumed => 'Verbraucht';
+
+  @override
+  String get distance => 'Distanz';
+
+  @override
+  String get fuelvalue => 'Kraftstoffwert';
+
+  @override
+  String get efficiency => 'Effizienz';
+
+  @override
+  String get priceperliter => 'Preis pro Liter';
+
+  @override
+  String get carspend => 'Fahrzeugausgaben';
+
+  @override
+  String get carincome => 'Fahrzeugeinnahmen';
 }

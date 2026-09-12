@@ -205,5 +205,13 @@
 
   "fuelstopupdated": "Tankstopp aktualisiert!",
   "fuelstopadded": "Tankstopp hinzugefügt!",
-  "fuelstopdeleted": "Tankstopp gelöscht!"
+  "fuelstopdeleted": "Tankstopp gelöscht!",
+
+  "consumed": "Verbraucht",
+  "distance": "Distanz",
+  "fuelvalue": "Kraftstoffwert",
+  "efficiency": "Effizienz",
+  "priceperliter": "Preis pro Liter",
+  "carspend": "Fahrzeugausgaben",
+  "carincome": "Fahrzeugeinnahmen"
 }

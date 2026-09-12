@@ -62,10 +62,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   double _avgFuelMonthly = 0.0;
   double _avgMaintMonthly = 0.0;
   double _avgTotalMonthly = 0.0;
-  List<Map<String, dynamic>> _yearlySpend = [];
+  double _avgDistanceMonthly = 0.0;
+  double _avgLitersMonthly = 0.0;
+  List<Map<String, dynamic>> _yearlySpendList = [];
   double _avgFuelYearly = 0.0;
   double _avgMaintYearly = 0.0;
   double _avgTotalYearly = 0.0;
+  double _avgDistanceYearly = 0.0;
+  double _avgLitersYearly = 0.0;
 
 
   @override
@@ -166,55 +170,62 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     
     // 3. --- MONTHLY AVERAGES LOGIC ---
-    double totalFuelMonthly = 0.0;
-    double totalMaintMonthly = 0.0;
-    
-    for (var m in monthlyData) {
-      totalFuelMonthly += (m['fuelSpend'] as num?)?.toDouble() ?? 0.0;
-      totalMaintMonthly += (m['maintSpend'] as num?)?.toDouble() ?? 0.0;
+    double avgFuelMonthly = 0.0;
+    double avgMaintMonthly = 0.0;
+    double avgTotalMonthly = 0.0;
+
+    if (monthlyData.isNotEmpty) {
+      double totalFuel = 0.0;
+      double totalMaint = 0.0;
+      double totalDist = 0.0;
+      double totalLit = 0.0;
+      
+      // We must loop through 'monthlyData' here, NOT '_monthlySpendList'
+      for (var monthData in monthlyData) {
+        totalFuel += (monthData['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+        totalMaint += (monthData['maintSpend'] as num?)?.toDouble() ?? 0.0;
+        totalDist += (monthData['distance'] as num?)?.toDouble() ?? 0.0;
+        totalLit += (monthData['liters'] as num?)?.toDouble() ?? 0.0;
+      }
+      
+      avgFuelMonthly = totalFuel / monthlyData.length;
+      avgMaintMonthly = totalMaint / monthlyData.length;
+      avgTotalMonthly = avgFuelMonthly + avgMaintMonthly;
+      _avgDistanceMonthly = totalDist / monthlyData.length;
+      _avgLitersMonthly = totalLit / monthlyData.length;
     }
-    
-    double avgFuelMonthly = monthlyData.isNotEmpty ? totalFuelMonthly / monthlyData.length : 0.0;
-    double avgMaintMonthly = monthlyData.isNotEmpty ? totalMaintMonthly / monthlyData.length : 0.0;
-    double avgTotalMonthly = avgFuelMonthly + avgMaintMonthly;
 
-    //---YEARLY AVERAGES LOGIC ---- 
-    
-  
-    // // Calculate the yearly averages
-    // double totalFuelYearly = 0.0;
-    // double totalMaintYearly = 0.0;
-
-    // for (var item in yearlyData) {
-    //   totalFuelYearly += (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
-    //   totalMaintYearly += (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
-    // }
-
-    // double avgFuelY = yearlyData.isNotEmpty ? totalFuelYearly / yearlyData.length : 0.0;
-    // double avgMaintY = yearlyData.isNotEmpty ? totalMaintYearly / yearlyData.length : 0.0;
-    // double avgTotalY = avgFuelY + avgMaintY;
-    //---YEARLY AVERAGES LOGIC ---- 
-    
-    // Calculate the yearly averages
-    double totalFuelYearly = 0.0;
-    double totalMaintYearly = 0.0;
-    
-    // NEW: Variables to tally up the grand total of car costs
+    // --- YEARLY AVERAGES LOGIC ---- 
+    double avgFuelY = 0.0;
+    double avgMaintY = 0.0;
+    double avgTotalY = 0.0;
     double totalCarSpendGlobal = 0.0; 
     double totalCarIncomeGlobal = 0.0; 
 
-    for (var item in yearlyData) {
-      totalFuelYearly += (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
-      totalMaintYearly += (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+    if (yearlyData.isNotEmpty) {
+      double totalFuel = 0.0;
+      double totalMaint = 0.0;
+      double totalDist = 0.0;
+      double totalLit = 0.0;
       
-      // NEW: Read the car purchases and sales from the database!
-      totalCarSpendGlobal += (item['carSpend'] as num?)?.toDouble() ?? 0.0;
-      totalCarIncomeGlobal += (item['carIncome'] as num?)?.toDouble() ?? 0.0;
+      // We must loop through 'yearlyData' here, NOT '_yearlySpendList'
+      for (var yearData in yearlyData) { 
+        totalFuel += (yearData['fuelSpend'] as num?)?.toDouble() ?? 0.0;
+        totalMaint += (yearData['maintSpend'] as num?)?.toDouble() ?? 0.0;
+        totalDist += (yearData['distance'] as num?)?.toDouble() ?? 0.0;
+        totalLit += (yearData['liters'] as num?)?.toDouble() ?? 0.0;
+        
+        // Track car purchases and sales globally
+        totalCarSpendGlobal += (yearData['carSpend'] as num?)?.toDouble() ?? 0.0;
+        totalCarIncomeGlobal += (yearData['carIncome'] as num?)?.toDouble() ?? 0.0;
+      }
+      
+      avgFuelY = totalFuel / yearlyData.length;
+      avgMaintY = totalMaint / yearlyData.length;
+      avgTotalY = avgFuelY + avgMaintY;
+      _avgDistanceYearly = totalDist / yearlyData.length;
+      _avgLitersYearly = totalLit / yearlyData.length;
     }
-
-    double avgFuelY = yearlyData.isNotEmpty ? totalFuelYearly / yearlyData.length : 0.0;
-    double avgMaintY = yearlyData.isNotEmpty ? totalMaintYearly / yearlyData.length : 0.0;
-    double avgTotalY = avgFuelY + avgMaintY;
 
 
     // 4. --- CALENDAR EVENTS LOGIC ---
@@ -261,7 +272,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       
       _carStats = carStats;
       _monthlySpendList = monthlyData;
-      _yearlySpend = yearlyData;
+      _yearlySpendList = yearlyData;
       _avgFuelMonthly = avgFuelMonthly;
       _avgMaintMonthly = avgMaintMonthly;
       _avgTotalMonthly = avgTotalMonthly;
@@ -414,42 +425,51 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 itemBuilder: (context, index) {
                   final item = _monthlySpendList[index];
                   final monthYear = item['monthYear'] ?? 'Unknown';
+                  
+                  // Extract ALL values directly from the tapped month
                   final fuel = (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
                   final maint = (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+                  final carSpend = (item['carSpend'] as num?)?.toDouble() ?? 0.0;
+                  final carIncome = (item['carIncome'] as num?)?.toDouble() ?? 0.0;
                   final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
+                  final dist = (item['distance'] as num?)?.toDouble() ?? 0.0;
+                  final lit = (item['liters'] as num?)?.toDouble() ?? 0.0;
                   
                   return SizedBox(
                     width: 160, 
                     child: Card(
                       elevation: 2,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      // 1. Add the InkWell right here as the child of the Card
                       child: InkWell(
-                        // 2. Match the border radius so the ripple effect doesn't spill out the corners
                         borderRadius: BorderRadius.circular(12), 
-                        // 3. Add your onTap function here!
                         onTap: () {
+                          // Calculate efficiencies strictly using this month's numbers
+                          double calcConsumption = dist > 0 ? (lit / dist) * 100 : 0.0;
+                          double calcPricePerLiter = lit > 0 ? (fuel / lit) : 0.0;
+                          double calcLitersPerEuro = fuel > 0 ? (lit / fuel) : 0.0;
+                          double calcCostPerKm = dist > 0 ? (total / dist) : 0.0;
+
                           showModalBottomSheet(
-                            context: context, 
-                            isScrollControlled: true,
+                            context: context,
+                            isScrollControlled: true, 
                             showDragHandle: true,
                             builder: (context) => StatisticsAvgCard(
-                              selectedPeriod: monthYear.toString(),
+                              selectedPeriod: monthYear.toString(), 
                               avgFuelSpend: fuel,
                               avgMaintSpend: maint,
+                              avgCarSpend: carSpend,
+                              avgCarIncome: carIncome,
                               totalAvgSpend: total,
-                            )
+                              avgDistance: dist,
+                              avgLiters: lit,
+                              avgConsumption: calcConsumption,
+                              avgPricePerLiter: calcPricePerLiter,
+                              avgLitersPerEuro: calcLitersPerEuro,
+                              avgCostPerKm: calcCostPerKm,
+                            ),
                           );
-                          // TODO: Open your detailed view here
-                          // Example: Navigator.push(...) or showModalBottomSheet(...)
                           HapticFeedback.mediumImpact();
-                          // Fluttertoast.showToast(
-                          //   msg: "Card tapped for $monthYear",
-                          //   toastLength: Toast.LENGTH_LONG,
-                          //   gravity: ToastGravity.CENTER,
-                          // );
                         },
-                        // 4. Your existing Padding becomes the child of the InkWell
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
@@ -470,8 +490,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ),
                   );
                 },
-              ),
-            ),
+            ),),
           const SizedBox(height: 30),
           //Yearly Spend area 
           Text(AppLocalizations.of(context)!.yearlyspend, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)).animate().shimmer(duration: 1000.ms, color: Colors.orange),
@@ -485,59 +504,65 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               Expanded(child: _buildStatCard(AppLocalizations.of(context)!.avgyearlytotal, '€${_avgTotalYearly.toStringAsFixed(2)}', Icons.calendar_today, Colors.teal)),
             ],
           ),
+          
 
           //NEEDS TO BE UPDATED: YEARLY SPEND HORIZONTAL LIST
-          if (_yearlySpend.isEmpty)
+          if (_yearlySpendList.isEmpty)
           Text(AppLocalizations.of(context)!.nodatayet, style: const TextStyle(color: Colors.grey))
         else
           SizedBox(
             height: 130, // Increased height to fit three lines
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: _yearlySpend.length, // CHANGED: Now using the yearly list
+              itemCount: _yearlySpendList.length, // CHANGED: Now using the yearly list
               itemBuilder: (context, index) {
-                final item = _yearlySpend[index]; // CHANGED: Now using the yearly list
-                
-                // CHANGED: Look for 'year' (lowercase) to match the SQL query
+                final item = _yearlySpendList[index]; 
                 final yearString = item['year']?.toString() ?? 'Unknown'; 
                 
+                // Extract ALL values directly from the tapped year
                 final fuel = (item['fuelSpend'] as num?)?.toDouble() ?? 0.0;
                 final maint = (item['maintSpend'] as num?)?.toDouble() ?? 0.0;
+                final carSpend = (item['carSpend'] as num?)?.toDouble() ?? 0.0;
+                final carIncome = (item['carIncome'] as num?)?.toDouble() ?? 0.0;
                 final total = (item['totalSpend'] as num?)?.toDouble() ?? 0.0;
+                final dist = (item['distance'] as num?)?.toDouble() ?? 0.0;
+                final lit = (item['liters'] as num?)?.toDouble() ?? 0.0;
                 
                 return SizedBox(
                     width: 160, 
                     child: Card(
                       elevation: 2,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      // 1. Add the InkWell right here as the child of the Card
                       child: InkWell(
-                        // 2. Match the border radius so the ripple effect doesn't spill out the corners
                         borderRadius: BorderRadius.circular(12), 
-                        // 3. Add your onTap function here!
                         onTap: () {
+                          // Calculate efficiencies strictly using this year's numbers
+                          double calcConsumption = dist > 0 ? (lit / dist) * 100 : 0.0;
+                          double calcPricePerLiter = lit > 0 ? (fuel / lit) : 0.0;
+                          double calcLitersPerEuro = fuel > 0 ? (lit / fuel) : 0.0;
+                          double calcCostPerKm = dist > 0 ? (total / dist) : 0.0;
+
                           showModalBottomSheet(
-                            context: context, 
-                            isScrollControlled: true,
+                            context: context,
+                            isScrollControlled: true, 
                             showDragHandle: true,
                             builder: (context) => StatisticsAvgCard(
-                              selectedPeriod: yearString.toString(),
+                              selectedPeriod: yearString,
                               avgFuelSpend: fuel,
                               avgMaintSpend: maint,
+                              avgCarSpend: carSpend,
+                              avgCarIncome: carIncome,
                               totalAvgSpend: total,
-                            )
+                              avgDistance: dist,
+                              avgLiters: lit,
+                              avgConsumption: calcConsumption,
+                              avgPricePerLiter: calcPricePerLiter,
+                              avgLitersPerEuro: calcLitersPerEuro,
+                              avgCostPerKm: calcCostPerKm,
+                            ),
                           );
-                          
-                          // TODO: Open your detailed view here
-                          // Example: Navigator.push(...) or showModalBottomSheet(...)
                           HapticFeedback.mediumImpact();
-                          // Fluttertoast.showToast(
-                          //   msg: "Card tapped for $yearString",
-                          //   toastLength: Toast.LENGTH_LONG,
-                          //   gravity: ToastGravity.CENTER,
-                          // );
                         },
-                        // 4. Your existing Padding becomes the child of the InkWell
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
@@ -558,7 +583,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ),
                   );
               },
-            ),
+          ),
           ),
           const SizedBox(height: 30),
 

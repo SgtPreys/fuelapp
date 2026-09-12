@@ -581,4 +581,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fuelstopdeleted => 'Fuel Stop deleted!';
+
+  @override
+  String get consumed => 'Consumed';
+
+  @override
+  String get distance => 'Distance';
+
+  @override
+  String get fuelvalue => 'Fuel Value';
+
+  @override
+  String get efficiency => 'Efficiency';
+
+  @override
+  String get priceperliter => 'Price per Liter';
+
+  @override
+  String get carspend => 'Car Spend';
+
+  @override
+  String get carincome => 'Car Income';
 }

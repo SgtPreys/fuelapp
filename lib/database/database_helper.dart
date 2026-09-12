@@ -589,32 +589,45 @@ class DatabaseHelper {
       FROM cars c
     ''');
   }
-  // Gets the combined total spend per month from both fuel and maintenance
- // Gets the monthly spend, split into Fuel, Maintenance, and Total
-  // Future<List<Map<String, dynamic>>> getMonthlySpend() async {
-  //   Database db = await instance.database;
-  //   return await db.rawQuery('''
-  //     SELECT 
-  //       monthYear, 
-  //       SUM(fuelSpend) as fuelSpend, 
-  //       SUM(maintSpend) as maintSpend, 
-  //       SUM(fuelSpend) + SUM(maintSpend) as totalSpend
-  //     FROM (
-  //       SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend 
-  //       FROM fuel_stops 
-  //       WHERE date IS NOT NULL AND date != ''
+ 
+//  Future<List<Map<String, dynamic>>> getMonthlySpend() async {
+//     Database db = await instance.database;
+//     return await db.rawQuery('''
+//       SELECT 
+//         monthYear, 
+//         SUM(fuelSpend) as fuelSpend, 
+//         SUM(maintSpend) as maintSpend, 
+//         SUM(carSpend) as carSpend,
+//         SUM(carIncome) as carIncome,
+//         SUM(fuelSpend) + SUM(maintSpend) + SUM(carSpend) - SUM(carIncome) as totalSpend
+//       FROM (
+//         SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome
+//         FROM fuel_stops 
+//         WHERE date IS NOT NULL AND date != ''
         
-  //       UNION ALL
+//         UNION ALL
         
-  //       SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend 
-  //       FROM maintenance_stops 
-  //       WHERE date IS NOT NULL AND date != ''
-  //     )
-  //     GROUP BY monthYear
-  //     ORDER BY monthYear DESC
-  //   ''');
-  // }
- Future<List<Map<String, dynamic>>> getMonthlySpend() async {
+//         SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome
+//         FROM maintenance_stops 
+//         WHERE date IS NOT NULL AND date != ''
+        
+//         UNION ALL
+        
+//         SELECT substr(boughtDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome
+//         FROM cars 
+//         WHERE boughtDate IS NOT NULL AND boughtDate != ''
+        
+//         UNION ALL
+        
+//         SELECT substr(soldDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome
+//         FROM cars 
+//         WHERE soldDate IS NOT NULL AND soldDate != ''
+//       )
+//       GROUP BY monthYear
+//       ORDER BY monthYear DESC
+//     ''');
+//   }
+  Future<List<Map<String, dynamic>>> getMonthlySpend() async {
     Database db = await instance.database;
     return await db.rawQuery('''
       SELECT 
@@ -623,27 +636,29 @@ class DatabaseHelper {
         SUM(maintSpend) as maintSpend, 
         SUM(carSpend) as carSpend,
         SUM(carIncome) as carIncome,
+        SUM(distance) as distance,
+        SUM(liters) as liters,
         SUM(fuelSpend) + SUM(maintSpend) + SUM(carSpend) - SUM(carIncome) as totalSpend
       FROM (
-        SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome
+        SELECT substr(date, 1, 7) as monthYear, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome, distance as distance, liters as liters
         FROM fuel_stops 
         WHERE date IS NOT NULL AND date != ''
         
         UNION ALL
         
-        SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome
+        SELECT substr(date, 1, 7) as monthYear, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome, 0 as distance, 0 as liters
         FROM maintenance_stops 
         WHERE date IS NOT NULL AND date != ''
         
         UNION ALL
         
-        SELECT substr(boughtDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome
+        SELECT substr(boughtDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome, 0 as distance, 0 as liters
         FROM cars 
         WHERE boughtDate IS NOT NULL AND boughtDate != ''
         
         UNION ALL
         
-        SELECT substr(soldDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome
+        SELECT substr(soldDate, 1, 7) as monthYear, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome, 0 as distance, 0 as liters
         FROM cars 
         WHERE soldDate IS NOT NULL AND soldDate != ''
       )
@@ -651,7 +666,7 @@ class DatabaseHelper {
       ORDER BY monthYear DESC
     ''');
   }
-  // Gets the yearly spend, split into Fuel, Maintenance, and Total
+  
   // Future<List<Map<String, dynamic>>> getYearlySpend() async {
   //   Database db = await instance.database;
   //   return await db.rawQuery('''
@@ -659,17 +674,31 @@ class DatabaseHelper {
   //       year, 
   //       SUM(fuelSpend) as fuelSpend, 
   //       SUM(maintSpend) as maintSpend, 
-  //       SUM(fuelSpend) + SUM(maintSpend) as totalSpend
+  //       SUM(carSpend) as carSpend,
+  //       SUM(carIncome) as carIncome,
+  //       SUM(fuelSpend) + SUM(maintSpend) + SUM(carSpend) - SUM(carIncome) as totalSpend
   //     FROM (
-  //       SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend 
+  //       SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome
   //       FROM fuel_stops 
   //       WHERE date IS NOT NULL AND date != ''
         
   //       UNION ALL
         
-  //       SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend 
+  //       SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome
   //       FROM maintenance_stops 
   //       WHERE date IS NOT NULL AND date != ''
+
+  //       UNION ALL
+        
+  //       SELECT substr(boughtDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome
+  //       FROM cars 
+  //       WHERE boughtDate IS NOT NULL AND boughtDate != ''
+        
+  //       UNION ALL
+        
+  //       SELECT substr(soldDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome
+  //       FROM cars 
+  //       WHERE soldDate IS NOT NULL AND soldDate != ''
   //     )
   //     GROUP BY year
   //     ORDER BY year DESC
@@ -684,27 +713,29 @@ class DatabaseHelper {
         SUM(maintSpend) as maintSpend, 
         SUM(carSpend) as carSpend,
         SUM(carIncome) as carIncome,
+        SUM(distance) as distance,
+        SUM(liters) as liters,
         SUM(fuelSpend) + SUM(maintSpend) + SUM(carSpend) - SUM(carIncome) as totalSpend
       FROM (
-        SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome
+        SELECT substr(date, 1, 4) as year, totalPrice as fuelSpend, 0 as maintSpend, 0 as carSpend, 0 as carIncome, distance as distance, liters as liters
         FROM fuel_stops 
         WHERE date IS NOT NULL AND date != ''
         
         UNION ALL
         
-        SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome
+        SELECT substr(date, 1, 4) as year, 0 as fuelSpend, totalPrice as maintSpend, 0 as carSpend, 0 as carIncome, 0 as distance, 0 as liters
         FROM maintenance_stops 
         WHERE date IS NOT NULL AND date != ''
 
         UNION ALL
         
-        SELECT substr(boughtDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome
+        SELECT substr(boughtDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, boughtPrice as carSpend, 0 as carIncome, 0 as distance, 0 as liters
         FROM cars 
         WHERE boughtDate IS NOT NULL AND boughtDate != ''
         
         UNION ALL
         
-        SELECT substr(soldDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome
+        SELECT substr(soldDate, 1, 4) as year, 0 as fuelSpend, 0 as maintSpend, 0 as carSpend, soldPrice as carIncome, 0 as distance, 0 as liters
         FROM cars 
         WHERE soldDate IS NOT NULL AND soldDate != ''
       )

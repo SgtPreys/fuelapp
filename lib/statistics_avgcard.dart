@@ -1,93 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // For HapticFeedback
-import 'package:fluttertoast/fluttertoast.dart'; // For showing toast messages
-import 'l10n/app_localizations.dart'; // For localization support
-import 'package:intl/intl.dart'; // For date formatting
-import 'database/database_helper.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'l10n/app_localizations.dart'; 
 
-class StatisticsAvgCard extends StatefulWidget {
-
+class StatisticsAvgCard extends StatelessWidget {
   final String selectedPeriod;
   final double avgFuelSpend;
   final double avgMaintSpend;
+  final double avgCarSpend;
+  final double avgCarIncome;
   final double totalAvgSpend;
-  // If you need to pass your calculated averages into this card, 
-  // you can add them here later (e.g., final double avgFuelSpend;)
+  
+  // New usage & efficiency metrics
+  final double avgDistance;
+  final double avgLiters;
+  final double avgConsumption;
+  final double avgPricePerLiter;
+  final double avgLitersPerEuro;
+  final double avgCostPerKm;
+
   const StatisticsAvgCard({
     super.key, 
     required this.selectedPeriod, 
     required this.avgFuelSpend, 
     required this.avgMaintSpend, 
-    required this.totalAvgSpend});
-
-  @override
-  State<StatisticsAvgCard> createState() => _StatisticsAvgCardState();
-}
-
-class _StatisticsAvgCardState extends State<StatisticsAvgCard> {
-  
-  
-  bool _isLoading = true;
-  List<Map<String, dynamic>> _monthlySpendList = [];
-  double _avgFuelMonthly = 0.0;
-  double _avgMaintMonthly = 0.0;
-  double _avgTotalMonthly = 0.0;
-  List<Map<String, dynamic>> _yearlySpend = [];
-  double _avgFuelYearly = 0.0;
-  double _avgMaintYearly = 0.0;
-  double _avgTotalYearly = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadStatistics();
-  }
-
-  Future<void> _loadStatistics() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Fetch monthly and yearly statistics from the database
-    _monthlySpendList = await DatabaseHelper.instance.getMonthlySpend();
-    _yearlySpend = await DatabaseHelper.instance.getYearlySpend();
-
-    // Calculate averages for monthly statistics
-    if (_monthlySpendList.isNotEmpty) {
-      double totalFuel = 0.0;
-      double totalMaint = 0.0;
-      for (var monthData in _monthlySpendList) {
-        totalFuel += monthData['fuel'] ?? 0.0;
-        totalMaint += monthData['maintenance'] ?? 0.0;
-      }
-      _avgFuelMonthly = totalFuel / _monthlySpendList.length;
-      _avgMaintMonthly = totalMaint / _monthlySpendList.length;
-      _avgTotalMonthly = _avgFuelMonthly + _avgMaintMonthly;
-    }
-
-    // Calculate averages for yearly statistics
-    if (_yearlySpend.isNotEmpty) {
-      double totalFuelYearly = 0.0;
-      double totalMaintYearly = 0.0;
-      for (var yearData in _yearlySpend) {
-        totalFuelYearly += yearData['fuel'] ?? 0.0;
-        totalMaintYearly += yearData['maintenance'] ?? 0.0;
-      }
-      _avgFuelYearly = totalFuelYearly / _yearlySpend.length;
-      _avgMaintYearly = totalMaintYearly / _yearlySpend.length;
-      _avgTotalYearly = _avgFuelYearly + _avgMaintYearly;
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
- 
+    required this.avgCarSpend, 
+    required this.avgCarIncome,
+    required this.totalAvgSpend,
+    required this.avgDistance,
+    required this.avgLiters,
+    required this.avgConsumption,
+    required this.avgPricePerLiter,
+    required this.avgLitersPerEuro,
+    required this.avgCostPerKm,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // Adds padding around the edges, and respects the bottom safe area (like the iPhone home bar)
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
@@ -95,51 +44,118 @@ class _StatisticsAvgCardState extends State<StatisticsAvgCard> {
         bottom: MediaQuery.of(context).padding.bottom + 20, 
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // Crucial for bottom sheets so they don't take up the whole screen
+        mainAxisSize: MainAxisSize.min, 
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title
           Center(
             child: Text(
-              'Data for ${widget.selectedPeriod.toString()}', // Display the selected period
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
+              'Data for $selectedPeriod', 
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.blue),
+            ).animate().shimmer(duration: 1000.ms, color: Colors.orange),
           ),
           const SizedBox(height: 24),
 
-          // --- YOUR AVERAGE STATS GO HERE ---
-          // This is placeholder text. You will replace this with your actual variables later!
-          _buildStatRow(Icons.local_gas_station, AppLocalizations.of(context)!.fuel, '€${widget.avgFuelSpend.toStringAsFixed(2)}', Colors.blue),
-          const SizedBox(height: 12),
-          _buildStatRow(Icons.build, AppLocalizations.of(context)!.maintenance, '€${widget.avgMaintSpend.toStringAsFixed(2)}', Colors.orange),
-          const SizedBox(height: 12),
+          // --- ROW 1: Financials ---
+          Row(
+            children: [
+              Expanded(child: _buildGridItem(Icons.local_gas_station, AppLocalizations.of(context)!.fuel ?? 'Fuel', '€${avgFuelSpend.toStringAsFixed(2)}', Colors.blue)),
+              const SizedBox(width: 16),
+              Expanded(child: _buildGridItem(Icons.build, AppLocalizations.of(context)!.maintenance ?? 'Maint.', '€${avgMaintSpend.toStringAsFixed(2)}', Colors.orange)),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          
+
+          // --- ROW 2: Usage ---
+          Row(
+            children: [
+              Expanded(child: _buildGridItem(Icons.water_drop, AppLocalizations.of(context)!.consumed, '${avgLiters.toStringAsFixed(1)} L', Colors.lightBlue)),
+              const SizedBox(width: 16),
+              Expanded(child: _buildGridItem(Icons.route, AppLocalizations.of(context)!.distance, '${avgDistance.toStringAsFixed(0)} km', Colors.indigo)),
+              
+              
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // --- ROW 3: Efficiency ---
+          Row(
+            children: [
+              Expanded(child: _buildGridItem(Icons.local_drink, AppLocalizations.of(context)!.priceperliter, '€${avgPricePerLiter.toStringAsFixed(2)}/L', Colors.lightBlue)),
+              //Expanded(child: _buildGridItem(Icons.local_drink, AppLocalizations.of(context)!.fuelvalue, '${avgLitersPerEuro.toStringAsFixed(2)} L/€', Colors.lightBlue)),
+              const SizedBox(width: 16),
+              Expanded(child: _buildGridItem(Icons.speed, AppLocalizations.of(context)!.efficiency, '${avgConsumption.toStringAsFixed(2)} L/100', Colors.green)),
+              //const SizedBox(width: 8),
+              
+              
+            ],
+          ),
+          const SizedBox(height: 16),
           const Divider(),
           const SizedBox(height: 12),
-          _buildStatRow(Icons.functions, AppLocalizations.of(context)!.totalcosts, '€${widget.totalAvgSpend.toStringAsFixed(2)}', Colors.teal),
-          
+          // --- ROW 2: Vehicle Capital (Purchases & Sales) ---
+          Row(
+            children: [
+              Expanded(child: _buildGridItem(Icons.directions_car, AppLocalizations.of(context)!.carspend ?? 'Car Spend', '€${avgCarSpend.toStringAsFixed(2)}', Colors.pink)),
+              const SizedBox(width: 16),
+              Expanded(child: _buildGridItem(Icons.payments, AppLocalizations.of(context)!.carincome ?? 'Car Income', '€${avgCarIncome.toStringAsFixed(2)}', Colors.lightGreen)),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          const Divider(),
+          const SizedBox(height: 12),
+
+          // --- ROW 4: Totals & Value ---
+          Row(
+            children: [
+              Expanded(child: _buildGridItem(Icons.functions, AppLocalizations.of(context)!.totalcosts ?? 'Total', '€${totalAvgSpend.toStringAsFixed(2)}', Colors.redAccent)),
+              const SizedBox(width: 16),
+              Expanded(child: _buildGridItem(Icons.euro, AppLocalizations.of(context)!.costperkm ?? 'Cost per km', '€${avgCostPerKm.toStringAsFixed(2)}', Colors.brown)),
+              
+              
+            ],
+          ),
           const SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  // A tiny helper widget to make your stats look clean and uniform
-  Widget _buildStatRow(IconData icon, String label, String value, Color color) {
-    return Row(
-      children: [
-        Icon(icon, color: color, size: 28),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+  // Updated helper widget for a compact, vertical grid-style layout
+  Widget _buildGridItem(IconData icon, String label, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(fontSize: 13, color: Colors.grey[700], fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-        ),
-        Text(
-          value,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: color),
+          ),
+        ],
+      ),
     );
   }
 }

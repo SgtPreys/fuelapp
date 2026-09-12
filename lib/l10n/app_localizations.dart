@@ -1213,6 +1213,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fuel Stop deleted!'**
   String get fuelstopdeleted;
+
+  /// No description provided for @consumed.
+  ///
+  /// In en, this message translates to:
+  /// **'Consumed'**
+  String get consumed;
+
+  /// No description provided for @distance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get distance;
+
+  /// No description provided for @fuelvalue.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel Value'**
+  String get fuelvalue;
+
+  /// No description provided for @efficiency.
+  ///
+  /// In en, this message translates to:
+  /// **'Efficiency'**
+  String get efficiency;
+
+  /// No description provided for @priceperliter.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per Liter'**
+  String get priceperliter;
+
+  /// No description provided for @carspend.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Spend'**
+  String get carspend;
+
+  /// No description provided for @carincome.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Income'**
+  String get carincome;
 }
 
 class _AppLocalizationsDelegate
