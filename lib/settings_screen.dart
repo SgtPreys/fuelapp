@@ -13,6 +13,11 @@ import 'l10n/app_localizations.dart';
 import 'providers/language_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/widgets.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
 
 
 class SettingsScreen extends StatefulWidget {
@@ -167,7 +172,24 @@ String? encodeQueryParameters(Map<String, String> params) {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // Controller to make the version editable
+  String _version = '';
+  String _buildNumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersionInfo();
+  }
+
+  Future<void> _loadVersionInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = info.version;
+      _buildNumber = info.buildNumber;
+    });
+  }
+
+  
   void _showExportOptionsModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -487,8 +509,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           //),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text("App Version"),
-            trailing: const Text("1.0.1+2"), // Read-only
+            title: const Text('App Version'), // You can replace this with your localized string
+            trailing: Text(_version.isEmpty ? 'Loading...' : 'v$_version+$_buildNumber'),
           ),
           ListTile(
             leading: const Icon(Icons.email),
