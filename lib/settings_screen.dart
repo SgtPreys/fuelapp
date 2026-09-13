@@ -488,7 +488,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text("App Version"),
-            trailing: const Text("1.0.0"), // Read-only
+            trailing: const Text("1.0.1+2"), // Read-only
           ),
           ListTile(
             leading: const Icon(Icons.email),
