@@ -12,10 +12,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/language_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 
